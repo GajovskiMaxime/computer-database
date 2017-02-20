@@ -4,6 +4,7 @@ import java.util.Date;
 
 import interfaces.ICompany;
 import interfaces.IComputer;
+import interfaces.IComputerValidation;
 
 
 /**
@@ -115,7 +116,9 @@ public class Computer implements IComputer{
 		}
 		
 		public IComputer build(){
-			return new Computer(this);
+			IComputer computer = new Computer(this);
+			IComputerValidation.checkComputer(computer);
+			return computer;
 		}
 
 	}

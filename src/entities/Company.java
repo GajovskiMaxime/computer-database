@@ -1,6 +1,7 @@
 package entities;
 
 import interfaces.ICompany;
+import interfaces.ICompanyValidation;
 
 /**
  * @author	Gajovski Maxime
@@ -51,7 +52,9 @@ public class Company implements ICompany{
 		}
 		
 		public ICompany build(){
-			return new Company(this);
+			ICompany company = new Company(this);
+			ICompanyValidation.checkCompany(company);
+			return company;
 		}
 		
 	}

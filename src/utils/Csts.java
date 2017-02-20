@@ -6,6 +6,8 @@ package utils;
  */
 public final class Csts {
 	
-	public final static String UNDEFINED = "Undefined";
+	public final static String UNDEFINED 			= "Undefined";
+	public final static String COMPANY_NAME_REGEX 	= "[A-Z][a-zA-Z]*";
+	public final static String COMPUTER_NAME_REGEX 	= "[A-Z][a-zA-Z]*";
 	
 }
