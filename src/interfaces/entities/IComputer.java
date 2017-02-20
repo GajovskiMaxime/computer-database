@@ -1,4 +1,4 @@
-package interfaces;
+package interfaces.entities;
 
 import java.util.Date;
 
@@ -23,7 +23,7 @@ public interface IComputer {
 	public ICompany getCompany();
 	public void 	setCompany(ICompany company);
 	
-	public default String toSring(){
+	public default String display(){
 		return 	"Class : " + this.getClass().getSimpleName() + "\n" + 
 				"\t" + "id : " 					+ getId() 				+ "\n" + 
 				"\t" + "name : " 				+ getName() 			+ "\n" + 

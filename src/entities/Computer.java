@@ -2,9 +2,9 @@ package entities;
 
 import java.util.Date;
 
-import interfaces.ICompany;
-import interfaces.IComputer;
-import interfaces.IComputerValidation;
+import interfaces.entities.ICompany;
+import interfaces.entities.IComputer;
+import interfaces.validations.IComputerValidation;
 
 
 /**
@@ -79,6 +79,12 @@ public class Computer implements IComputer{
 		this.company = company;
 	}
 
+	
+	@Override
+	public String toString() {
+		return display();
+	}
+
 
 	/**
 	 * Inner Builder for the Computer Class.
@@ -86,6 +92,8 @@ public class Computer implements IComputer{
 	 * @see Computer
 	 */
 	public static class Builder{
+		
+		private int			id;
 		private String 		name;
 		private Date		introduced;
 		private Date		discontinued;
@@ -93,6 +101,11 @@ public class Computer implements IComputer{
 		
 		public Builder(){
 			
+		}
+		
+		public Builder id(int id){
+			this.id = id;
+			return this;
 		}
 		
 		public Builder name(String name){

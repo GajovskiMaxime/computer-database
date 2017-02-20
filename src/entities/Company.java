@@ -1,7 +1,7 @@
 package entities;
 
-import interfaces.ICompany;
-import interfaces.ICompanyValidation;
+import interfaces.entities.ICompany;
+import interfaces.validations.ICompanyValidation;
 
 /**
  * @author	Gajovski Maxime
@@ -18,7 +18,8 @@ public class Company implements ICompany{
 	 * @param builder
 	 */
 	public Company(Company.Builder builder){
-		this.name = builder.name;
+		this.id 	= builder.id;
+		this.name 	= builder.name;
 	}
 	
 	@Override
@@ -31,6 +32,16 @@ public class Company implements ICompany{
 		return name;
 	}
 	
+	@Override
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	
+	@Override
+	public String toString() {
+		return display();
+	}
 
 	/**
 	 * Inner Builder for the Company Class.
@@ -41,9 +52,16 @@ public class Company implements ICompany{
 	public static class Builder{
 		
 		private String 	name;
+		private int 	id;
 		
 		public Builder(){
 			
+		}
+		
+
+		public Builder id(int id) {
+			this.id = id;
+			return this;
 		}
 		
 		public Builder name(String name) {

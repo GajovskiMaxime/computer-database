@@ -2,6 +2,7 @@ package validations;
 
 import java.time.DateTimeException;
 import java.util.Date;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -10,14 +11,10 @@ import java.util.logging.Logger;
  */
 public final class DateValidation {
 	
-	private static final Logger logger = Logger.getLogger("DateValidation");
+	private static final Logger logger = Logger.getLogger(DateValidation.class.getName());
 	
-	public static void isNotNullErr (Date date) throws NullPointerException{
-		if(date == null) throw new NullPointerException();
-	}
-	
-	public static void isNotNullWarn (Date date) throws NullPointerException{
-		if(date == null) logger.warning("null argument.\n");
+	public static void isNotNull(Date date, Level level){
+		if(date == null) logger.log(level,date + "", new NullPointerException());
 	}
 	
 	public static void compare(Date date1, Date date2) throws DateTimeException{

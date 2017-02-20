@@ -1,4 +1,4 @@
-package interfaces;
+package interfaces.entities;
 
 /**
  * @author	Gajovski Maxime
@@ -8,8 +8,9 @@ public interface ICompany {
 
 	public int 		getId();
 	public String 	getName();
+	public void		setName(String name);
 	
-	public default String toSring(){
+	public default String display(){
 		return 	"Class : " + this.getClass().getSimpleName()+ "\n" + 
 				"\t" + "id : " 					+ getId() 	+ "\n" + 
 				"\t" + "name : " 				+ getName()	+ "\n";

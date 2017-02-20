@@ -1,5 +1,6 @@
 package validations;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -8,19 +9,14 @@ import java.util.logging.Logger;
  */
 public final class StringValidation {
 	
-	private final static Logger logger = Logger.getLogger("StringValidation");
+	private final static Logger logger = Logger.getLogger(StringValidation.class.getName());
 	
-	public static void isNotNullErr (String string) throws NullPointerException{
-		if(string == null) throw new NullPointerException();
+	public static void isNotNull(String string, Level level) throws NullPointerException{
+		if(string == null) logger.log(level,"", new NullPointerException());
 	}
 	
-	public static void matchesRegexErr(String name, String regex) throws IllegalArgumentException{
+	public static void matchesRegex(String name, String regex, Level level) {
 		if(!name.matches(regex)) 
-			throw new IllegalArgumentException(name + " doesn't match the regex : " + regex + ".\n");
-	}
-	
-	public static void matchesRegexWarn(String name, String regex) throws IllegalArgumentException{
-		if(!name.matches(regex)) 
-			logger.warning(name + " doesn't match the regex : " + regex + ".\n");
+			logger.log(level, "", new IllegalArgumentException());
 	}
 }
