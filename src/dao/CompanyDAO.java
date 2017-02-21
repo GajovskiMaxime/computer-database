@@ -3,20 +3,21 @@ package dao;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import entities.Company;
+import interfaces.dao.ICompanyDAO;
 import interfaces.entities.ICompany;
-import utils.Csts;
 
 /**
  * @author	Gajovski Maxime
  * @date	20 févr. 2017
  */
-public class CompanyDAO implements ICrud<ICompany>{
+public class CompanyDAO implements ICompanyDAO{
 	
 	
-	
+	@Override
 	public ICompany create(ICompany company) throws SQLException {
 		ICompany _company = null;
 		PreparedStatement prepare = databaseConnection.prepareStatement(CompanyDAOQueries.CREATE_COMPANY);
@@ -25,6 +26,7 @@ public class CompanyDAO implements ICrud<ICompany>{
 	    return _company;
 	}
 	
+	@Override
 	public ICompany find(int id) throws SQLException  {
 		ICompany company = null;
 		ResultSet result = databaseConnection.createStatement(
@@ -39,28 +41,73 @@ public class CompanyDAO implements ICrud<ICompany>{
 
 	}
 	
-
-//	public List<ICompany> findAll() {
-//		List<ICompany> companies = null;
-//		
-//		try {
-//            ResultSet result = ICrud.databaseConnection.createStatement(
-//            				ResultSet.TYPE_SCROLL_INSENSITIVE, 
-//                            ResultSet.CONCUR_UPDATABLE)
-//                            .executeQuery(Csts.SELECT_ALL_COMPANIES);
-//            
-//            if(result.)
-//            		company = new Company.Builder()
-//            		.name(result.getString("name"))
-//            		.id(id)
-//            		.build();
-//            
-//		    } catch (SQLException e) {
-//		            e.printStackTrace();
-//		    }
-//		   return company;
-//
-//	}
+	@Override
+	public List<ICompany> findAll() throws SQLException {
+		List<ICompany> companies = new ArrayList<ICompany>();
+		
+		ResultSet result = databaseConnection.createStatement(
+				ResultSet.TYPE_SCROLL_INSENSITIVE,
+				ResultSet.CONCUR_UPDATABLE)
+			.executeQuery(CompanyDAOQueries.SELECT_ALL_COMPANIES);
+            
+        while(result.next()){
+        	companies.add(new Company.Builder()
+        			.name(result.getString("name"))
+        			.id(result.getInt("id"))
+        			.build());
+        }
+        return companies;
+	}
+	
+	@Override
+	public List<String> findAllNames() throws SQLException {
+		List<String> companies = new ArrayList<String>();
+		
+		ResultSet result = databaseConnection.createStatement(
+				ResultSet.TYPE_SCROLL_INSENSITIVE,
+				ResultSet.CONCUR_UPDATABLE)
+			.executeQuery(CompanyDAOQueries.SELECT_ALL_COMPANIES_NAMES);
+            
+        while(result.next()){
+        	companies.add(result.getString("name"));
+        }
+        return companies;
+	}
+	
+	@Override
+	public List<String> findNamesByPage(int page) throws SQLException {
+		List<String> companies = new ArrayList<String>();
+		
+		ResultSet result = databaseConnection.createStatement(
+				ResultSet.TYPE_SCROLL_INSENSITIVE,
+				ResultSet.CONCUR_UPDATABLE)
+			.executeQuery(CompanyDAOQueries.SELECT_NAMES_BY_PAGE + page * CompanyDAOQueries.COMPANIES_PER_PAGE);
+            
+        while(result.next()){
+        	companies.add(result.getString("name"));
+        }
+        return companies;
+	}
+	
+	@Override
+	public List<ICompany> findByPage(int page) throws SQLException {
+		List<ICompany> companies = new ArrayList<ICompany>();
+		
+		ResultSet result = databaseConnection.createStatement(
+				ResultSet.TYPE_SCROLL_INSENSITIVE,
+				ResultSet.CONCUR_UPDATABLE)
+			.executeQuery(CompanyDAOQueries.SELECT_ALL_BY_PAGE + page * CompanyDAOQueries.COMPANIES_PER_PAGE);
+            
+        while(result.next()){
+        	companies.add(new Company.Builder()
+        			.name(result.getString("name"))
+        			.id(result.getInt("id"))
+        			.build());
+        }
+        return companies;
+	}
+	
+	@Override
 	public void delete(Integer id) throws SQLException  {
 		databaseConnection.createStatement(
 				ResultSet.TYPE_SCROLL_INSENSITIVE, 
@@ -70,6 +117,7 @@ public class CompanyDAO implements ICrud<ICompany>{
 	}
 
 
+	@Override
 	public void delete(ICompany company) throws SQLException {
 		databaseConnection.createStatement(
 				ResultSet.TYPE_SCROLL_INSENSITIVE, 
@@ -79,6 +127,7 @@ public class CompanyDAO implements ICrud<ICompany>{
 
 	
 	
+	@Override
 	public ICompany update(ICompany company) throws SQLException {
 		ICompany _company = null;
 		

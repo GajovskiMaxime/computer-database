@@ -17,8 +17,9 @@ public final class DateValidation {
 		if(date == null) logger.log(level,date + "", new NullPointerException());
 	}
 	
-	public static void compare(Date date1, Date date2) throws DateTimeException{
+	public static void compare(Date date1, Date date2, Level level) {
 		if(date1 == null || date2 == null) return;
-		if(!date1.before(date2)) throw new DateTimeException("Future can't be the past!\n"); 
+		if(!date1.before(date2)) 
+			logger.log(level, "", new DateTimeException("Future cant be the past!"));
 	}
 }

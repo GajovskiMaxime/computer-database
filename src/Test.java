@@ -1,17 +1,17 @@
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+
 import java.util.List;
-import java.util.Scanner;
 
 import dao.CompanyDAO;
 import dao.ComputerDAO;
-import database.MySQLConnection;
 import entities.Company;
+import entities.CompanyFactory;
 import entities.Computer;
 import interfaces.entities.ICompany;
 import interfaces.entities.IComputer;
-import views.MainView;
 
 /**
  * @author	Gajovski Maxime
@@ -45,18 +45,33 @@ public class Test {
 		
 //		System.out.println(computerDAO.find(1));
 //		computerDAO.create(null);
-		ICompany companyTruc = new Company.Builder().name("Nope").build();
+//		ICompany companyTruc = new Company.Builder().name("Nope").build();
 //		System.out.println(companyTruc);
 //		ICompany company = companyDAO.create(new Company.Builder().name("Steph pue du cul !").build());
 		
 		ICompany company = companyDAO.find(22);
-		System.out.println(company); 
+//		System.out.println(company); 
 //		
 		company.setName("MaGloire!");
 		companyDAO.update(company);
-		System.out.println(company); 
+//		System.out.println(company); 
 		
-		companyDAO.create(companyTruc);
+		List<String> mylist = companyDAO.findNamesByPage(3);
+		System.out.println(mylist);
+		
+		ICompany company00 = companyDAO.find(5);
+		
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		Date date = new Date();
+		System.out.println(dateFormat.format(date));
+		
+		IComputer computers = new Computer.Builder().name("Bobby").company(company00).introduced(date)
+				.discontinued(date).build();
+		
+		computerDAO.create(computers);
+		System.out.println(computers);
+		
+//		ICompany comp =   CompanyFactory.create().name("Bobbt").id(1).build();
 		
 //		ICompany company1 = companyDAO.find(22);
 //		System.out.println(company1);

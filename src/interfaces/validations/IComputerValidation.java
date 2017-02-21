@@ -28,7 +28,7 @@ public interface IComputerValidation {
 	static void checkDates(IComputer computer){
 		DateValidation.isNotNull(computer.getIntroducedDate(), VALIDATION_LEVEL);
 		DateValidation.isNotNull(computer.getDiscontinuedDate(), VALIDATION_LEVEL);
-		DateValidation.compare(computer.getIntroducedDate(), computer.getDiscontinuedDate());
+		DateValidation.compare(computer.getIntroducedDate(), computer.getDiscontinuedDate(), VALIDATION_LEVEL);
 	}
 
 }

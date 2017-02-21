@@ -13,10 +13,13 @@ public final class DatabaseCsts {
 
 	public static final String USER 	= "admincdb";
 	public static final String USER_PWD = "qwerty1234";
+	
+	public static final String FIRST_ARG= "zeroDateTimeBehavior=convertToNull";
 
 	public static final String DB_LINK = 
 			"jdbc:" + SGBD + 
 			"://" + HOST + ":" + PORT + "/" + DB_NAME + "?"  +
-			"user=" + USER + "&password=" + USER_PWD ;
+			"user=" + USER + "&password=" + USER_PWD 
+			+ "&" + FIRST_ARG ;
 
 }

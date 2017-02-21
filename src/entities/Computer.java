@@ -28,6 +28,7 @@ public class Computer implements IComputer{
 	 * @param builder
 	 */
 	public Computer(Computer.Builder builder){
+		this.id				= builder.id;
 		this.name 			= builder.name;
 		this.company 		= builder.company;
 		this.introducedDate = builder.introduced;
@@ -118,7 +119,7 @@ public class Computer implements IComputer{
 			return this;
 		}
 		
-		public Builder introced(Date introduced){
+		public Builder introduced(Date introduced){
 			this.introduced = introduced;
 			return this;
 		}
@@ -133,6 +134,7 @@ public class Computer implements IComputer{
 			IComputerValidation.checkComputer(computer);
 			return computer;
 		}
+
 
 	}
 }

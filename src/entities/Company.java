@@ -1,5 +1,6 @@
 package entities;
 
+import interfaces.builders.ICompanyBuilder;
 import interfaces.entities.ICompany;
 import interfaces.validations.ICompanyValidation;
 
@@ -22,6 +23,8 @@ public class Company implements ICompany{
 		this.name 	= builder.name;
 	}
 	
+
+
 	@Override
 	public int getId() {
 		return id;
@@ -49,15 +52,15 @@ public class Company implements ICompany{
 	 * @see Company
 	 */
 	
-	public static class Builder{
+	public static class Builder implements ICompanyBuilder<Builder>{
 		
-		private String 	name;
 		private int 	id;
+		private String 	name;
+		
 		
 		public Builder(){
 			
 		}
-		
 
 		public Builder id(int id) {
 			this.id = id;
@@ -74,6 +77,7 @@ public class Company implements ICompany{
 			ICompanyValidation.checkCompany(company);
 			return company;
 		}
+
 		
 	}
 }
