@@ -16,7 +16,7 @@ public interface ICrud<T> {
 	
 	T 				find(int id) 		throws SQLException;
 	List<T> 		findAll() 			throws SQLException;
-	T 				create(T obj) 		throws SQLException;
+	void 			create(T obj) 		throws SQLException;
 	T 				update(T obj)		throws SQLException;
 	void 			delete(T obj) 		throws SQLException;
 	void 			delete(Integer id) 	throws SQLException;

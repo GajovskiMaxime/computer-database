@@ -3,6 +3,7 @@ package interfaces.mvc;
 import java.sql.SQLException;
 
 import controllers.CompanyListCtrl;
+import controllers.ComputerDetailCtrl;
 import controllers.ComputerListCtrl;
 import controllers.MainCtrl;
 
@@ -24,5 +25,8 @@ public interface IController {
 		return CompanyListCtrl.getInstance();
 	}
 
+	public static ComputerDetailCtrl computerDetailCtrl() throws SQLException{
+		return ComputerDetailCtrl.getInstance();
+	}
 
 }

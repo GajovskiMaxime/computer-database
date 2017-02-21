@@ -30,4 +30,9 @@ public class ComputerDAOQueries {
 	
 	public final static String 	SELECT_ALL_BY_PAGE
 				= "SELECT * FROM " + COMPUTER_TABLE + " LIMIT " + COMPUTERS_PER_PAGE + " OFFSET ";
+	
+	public final static String UPDATE_COMPUTER
+				= "UPDATE " + COMPUTER_TABLE + " SET "
+						+ "name = ?, introduced = ?, discontinued = ?, company_id = ? "
+						+ " WHERE id= ";
 }

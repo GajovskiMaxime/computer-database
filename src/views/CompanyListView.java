@@ -27,7 +27,7 @@ public class CompanyListView {
 	public static void printCompanyHeaderWithPage(int page) {
 		System.out.println	();
 		System.out.println	();
-		System.out.println	("-------------------------------------------------------------------");
+		System.out.println	("--------------------------------------------------------------------------------------------");
 		System.out.println	("COMPANIES : Current page : " + page);
 		ViewUtils.printCompanyHeader();
 	}
@@ -47,8 +47,6 @@ public class CompanyListView {
 
 	}
 	
-	
-
 	public void printFirstPage() throws SQLException {
 		printCurrentPage(
 				IController.companyListCtrl().getCurrentPage(), 

@@ -50,10 +50,10 @@ public class ComputerListCtrl {
             		IView.mainMenu().displayMenu();
             	}break;
 //            	case "d":break;
-//            	case "id":{
-//            		currentPage = 0;
-//            		ComputerSearchByIdView.main();break;
-//            	}          
+            	case "id":{
+            		currentPage = 0;
+            		IView.computerDetail().printComputerSearchByIdHeader();break;
+            	}          
             	default:
             		logger.warning(CtrlUtils.USER_BAD_INPUT);
             		break;

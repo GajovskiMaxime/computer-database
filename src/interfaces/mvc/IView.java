@@ -4,6 +4,7 @@ import java.sql.SQLException;
 
 import views.CompanyListView;
 import views.ComputerListView;
+import views.ComputerDetailView;
 import views.MainView;
 
 /**
@@ -22,5 +23,9 @@ public interface IView {
 	
 	public static CompanyListView companyList() throws SQLException{
 		return CompanyListView.getInstance();
+	}
+	
+	public static ComputerDetailView computerDetail() throws SQLException{
+		return ComputerDetailView.getInstance();
 	}
 }

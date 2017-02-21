@@ -18,12 +18,9 @@ public class CompanyDAO implements ICompanyDAO{
 	
 	
 	@Override
-	public ICompany create(ICompany company) throws SQLException {
-		ICompany _company = null;
+	public void create(ICompany company) throws SQLException {
 		PreparedStatement prepare = databaseConnection.prepareStatement(CompanyDAOQueries.CREATE_COMPANY);
-		prepare.setString(1, company.getName());
-		prepare.execute();
-	    return _company;
+		preparedStatementToCompany(prepare,company);
 	}
 	
 	@Override
@@ -34,10 +31,9 @@ public class CompanyDAO implements ICompanyDAO{
                             ResultSet.CONCUR_UPDATABLE)
                             .executeQuery(CompanyDAOQueries.SELECT_COMPANY_WITH_ID + id);
             
-            if(result.first())
-            		company = new Company.Builder().name(result.getString("name")).id(id).build();
-           
-		   return company;
+        if(result.first())
+        		company = createCompanyFromResultSet(result);
+        return company;
 
 	}
 	
@@ -50,12 +46,8 @@ public class CompanyDAO implements ICompanyDAO{
 				ResultSet.CONCUR_UPDATABLE)
 			.executeQuery(CompanyDAOQueries.SELECT_ALL_COMPANIES);
             
-        while(result.next()){
-        	companies.add(new Company.Builder()
-        			.name(result.getString("name"))
-        			.id(result.getInt("id"))
-        			.build());
-        }
+        while(result.next())
+        	companies.add(createCompanyFromResultSet(result));
         return companies;
 	}
 	
@@ -68,9 +60,8 @@ public class CompanyDAO implements ICompanyDAO{
 				ResultSet.CONCUR_UPDATABLE)
 			.executeQuery(CompanyDAOQueries.SELECT_ALL_COMPANIES_NAMES);
             
-        while(result.next()){
+        while(result.next())
         	companies.add(result.getString("name"));
-        }
         return companies;
 	}
 	
@@ -83,9 +74,8 @@ public class CompanyDAO implements ICompanyDAO{
 				ResultSet.CONCUR_UPDATABLE)
 			.executeQuery(CompanyDAOQueries.SELECT_NAMES_BY_PAGE + page * CompanyDAOQueries.COMPANIES_PER_PAGE);
             
-        while(result.next()){
+        while(result.next())
         	companies.add(result.getString("name"));
-        }
         return companies;
 	}
 	
@@ -98,12 +88,8 @@ public class CompanyDAO implements ICompanyDAO{
 				ResultSet.CONCUR_UPDATABLE)
 			.executeQuery(CompanyDAOQueries.SELECT_ALL_BY_PAGE + page * CompanyDAOQueries.COMPANIES_PER_PAGE);
             
-        while(result.next()){
-        	companies.add(new Company.Builder()
-        			.name(result.getString("name"))
-        			.id(result.getInt("id"))
-        			.build());
-        }
+        while(result.next())
+        	companies.add(createCompanyFromResultSet(result));
         return companies;
 	}
 	
@@ -141,4 +127,16 @@ public class CompanyDAO implements ICompanyDAO{
 	    return _company;
 	}
 	
+	private ICompany createCompanyFromResultSet(ResultSet result) throws SQLException{
+		ICompany company = new Company.Builder()
+    			.id(result.getInt("id"))
+    			.name(result.getString("name"))
+    			.build();
+		return company;
+	}
+
+	private void preparedStatementToCompany(PreparedStatement prepare, ICompany company) throws SQLException{
+		prepare.setString(1, company.getName());
+		prepare.execute();
+	}
 }

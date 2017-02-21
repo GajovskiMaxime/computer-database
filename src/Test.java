@@ -1,5 +1,6 @@
 import java.sql.SQLException;
-import views.MainView;
+
+import interfaces.mvc.IView;
 
 /**
  * @author	Gajovski Maxime
@@ -7,8 +8,8 @@ import views.MainView;
  */
 public class Test {
 	public static void main(String[] args) throws SQLException {
-		
-		MainView.getInstance().displayMenu();
+		IView.mainMenu().displayMenu();
+
 	}
 
 }

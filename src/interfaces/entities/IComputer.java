@@ -13,6 +13,7 @@ public interface IComputer {
 
 	public int 		getId();
 	public String 	getName();
+	public void 	setName(String name);
 	
 	public Date 	getIntroducedDate();
 	public void 	setIntroducedDate(Date introduced);

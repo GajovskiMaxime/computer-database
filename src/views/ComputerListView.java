@@ -39,16 +39,15 @@ public class ComputerListView {
 	}
 
 	public void printCurrentPage(int page, List<IComputer> computers) throws SQLException {
-		
 		printComputerHeaderWithPage(page);
 		
 		for (IComputer computer : computers) {
 			System.out.printf(ViewUtils.COMPUTER_FORMAT_LINE, 
 					computer.getId(), 
 					computer.getName(), 
-					computer.getIntroducedDate() == null ?  "" : computer.getIntroducedDate(), 
+					computer.getIntroducedDate() == null ?  "" : computer.getIntroducedDate() , 
 					computer.getDiscontinuedDate() == null ?"" : computer.getDiscontinuedDate(), 
-					computer.getCompany() == null ? 		"" : computer.getCompany().getName());
+					computer.getCompany() == null ? "" : computer.getCompany().getName());
 		}
 		
 		ViewUtils.footer(Arrays.toString(FOOTER_LABELS));

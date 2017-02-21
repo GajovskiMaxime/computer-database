@@ -2,7 +2,6 @@ package views;
 
 import java.sql.SQLException;
 import java.util.Scanner;
-import java.util.logging.Logger;
 import interfaces.mvc.IController;
 
 /**
@@ -11,7 +10,6 @@ import interfaces.mvc.IController;
  */
 public class MainView {
 	
-	private static final Logger 	logger 		= Logger.getLogger(MainView.class.getName());
 	private static final Scanner 	scan 		= new Scanner(System.in);
 	private static MainView			_instance 	= null;
 
@@ -21,8 +19,13 @@ public class MainView {
 			"Create a computer",
 			"Quit"
 	};
-	
-	private static void displayHeaderMenu(){
+
+	public void closeMenu() {
+		System.out.println("\n\n-------------------------------------------------------------------");
+		System.out.print("FIN DU PROGRAMME");
+	}
+
+	private void displayHeaderMenu(){
 		System.out.println("*******************************************************************");
 		System.out.println("***                                                             ***");
 		System.out.println("***                  Gestionaire d'ordinateurs                  ***");
@@ -31,21 +34,20 @@ public class MainView {
 	}
 	
 
-	private static void printBread(String pLink) {
+	private void printBread(String pLink) {
 		System.out.println("");
 		System.out.println(" > " + pLink);
 		System.out.println("-------------------------------------------------------------------");
 		
 	}
 	
-	private static void displayMenuItems(){
+	private void displayMenuItems(){
 		for (int i = 0; i < MAIN_MENU_LABELS.length; i++)
 			System.out.printf("%3d > %s\n", i, MAIN_MENU_LABELS[i]);
 	}
 	
 	
 	private MainView() throws SQLException {
-		logger.info("Lancement du programme");
 	}
 	
 	public void displayMenu() throws SQLException{
