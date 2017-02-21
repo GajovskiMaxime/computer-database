@@ -152,7 +152,7 @@ public class ComputerDAO implements IComputerDAO {
 		ResultSet result = databaseConnection.createStatement(
 				ResultSet.TYPE_SCROLL_INSENSITIVE,
 				ResultSet.CONCUR_UPDATABLE)
-			.executeQuery(CompanyDAOQueries.SELECT_ALL_BY_PAGE + page * CompanyDAOQueries.COMPANIES_PER_PAGE);
+			.executeQuery(ComputerDAOQueries.SELECT_ALL_BY_PAGE + page * ComputerDAOQueries.COMPUTERS_PER_PAGE);
             
         while(result.next()){
 
