@@ -4,12 +4,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+import java.util.logging.Logger;
 
 import dao.ComputerDAOQueries;
 import dao.ICompanyDAO;
 import dao.IComputerDAO;
+import dao.Utils;
 import entities.Computer;
 
 
@@ -19,49 +21,67 @@ import entities.Computer;
  */
 public class ComputerDAO implements IComputerDAO {
 	
+	private static final Logger LOGGER = Logger.getLogger(ComputerDAO.class.getName());
+
 	
 	public void create(Computer computer) throws SQLException {
 		PreparedStatement prepare = databaseConnection.prepareStatement(ComputerDAOQueries.CREATE_COMPUTER);
 		preparedStatementToComputer(prepare,computer);
 	}
 	
-	public Computer find(int id) throws SQLException  {
+	public Optional<Computer> find(int id) {
 		
-		Computer computer = null;
+		Computer computer 		= null;
+		ResultSet result 		= null;
+		boolean resultIsEmpty 	= true;
 		
-		ResultSet result = databaseConnection.createStatement(
-				ResultSet.TYPE_SCROLL_INSENSITIVE, 
-				ResultSet.CONCUR_UPDATABLE)
-				.executeQuery(ComputerDAOQueries.SELECT_COMPUTER_WITH_ID + id);
-            
-        if(result.first())
-    		computer = createComputerFromResultSet(result);
-        return computer;
+		try {
+			result = databaseConnection.createStatement(
+					ResultSet.TYPE_SCROLL_INSENSITIVE, 
+					ResultSet.CONCUR_UPDATABLE)
+					.executeQuery(ComputerDAOQueries.SELECT_COMPUTER_WITH_ID + id);
+			resultIsEmpty = result.first();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		if(resultIsEmpty){
+			computer = createComputerFromResultSet(result);
+		}else{
+			LOGGER.info(Utils.entityWithIdNotFound(id));
+		}
+		
+   
+        
+        return Optional.ofNullable(computer);
 	}
 	
-	public void delete(Integer id) throws SQLException  {
-		databaseConnection.createStatement(
-				ResultSet.TYPE_SCROLL_INSENSITIVE, 
-                ResultSet.CONCUR_UPDATABLE)
-		.execute(ComputerDAOQueries.DELETE_COMPUTER_WITH_ID + id);
+	public void delete(Integer id) {
+		try {
+			databaseConnection.createStatement(
+					ResultSet.TYPE_SCROLL_INSENSITIVE, 
+			        ResultSet.CONCUR_UPDATABLE)
+			.execute(ComputerDAOQueries.DELETE_COMPUTER_WITH_ID + id);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 
-
-	public void delete(Computer computer) throws SQLException {
-		databaseConnection.createStatement(
-				ResultSet.TYPE_SCROLL_INSENSITIVE, 
-                ResultSet.CONCUR_UPDATABLE)
-		.execute(ComputerDAOQueries.DELETE_COMPUTER_WITH_ID + computer.getId());
+	public void delete(Computer computer) {
+		this.delete(computer.getId());
 	}
 
 	
 	
 	public Computer update(Computer computer) throws SQLException {	
-		PreparedStatement prepare = databaseConnection.prepareStatement(
-				ComputerDAOQueries.UPDATE_COMPUTER + computer.getId());
-		preparedStatementToComputer(prepare,computer); 
-	    return this.find(computer.getId());
+//		PreparedStatement prepare = databaseConnection.prepareStatement(
+//				ComputerDAOQueries.UPDATE_COMPUTER + computer.getId());
+//		preparedStatementToComputer(prepare,computer); 
+//	    return this.find(computer.getId());
+		return null;
 	}
 
 	@Override
@@ -125,15 +145,21 @@ public class ComputerDAO implements IComputerDAO {
         return computers;
 	}
 	
-	private Computer createComputerFromResultSet(ResultSet result) throws SQLException{
+	private Computer createComputerFromResultSet(ResultSet result) {
 		ICompanyDAO companyDAO = new CompanyDAO();
-		Computer computer = new Computer.Builder()
-    			.id				(result.getInt("id"))
-    			.name			(result.getString("name"))
-    			.introduced		((Date)result.getObject("introduced"))
-    			.discontinued	((Date)result.getObject("discontinued"))
-    			.company		(companyDAO.find(result.getInt("company_id")))
-    			.build			();
+		Computer computer = null;
+		try {
+			computer = Computer.builder()
+					.id				(result.getInt("id"))
+					.name			(result.getString("name"))
+					.introduced		(result.getDate("introduced") == null ? null : result.getDate("introduced").toLocalDate())
+					.discontinued	(result.getDate("discontinued") == null ? null : result.getDate("introduced").toLocalDate())
+					.company		(companyDAO.find(result.getInt("company_id")).orElse(null))
+					.build			();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		return computer;
 	}

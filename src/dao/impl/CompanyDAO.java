@@ -5,9 +5,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.logging.Logger;
 
 import dao.CompanyDAOQueries;
 import dao.ICompanyDAO;
+import dao.Utils;
 import entities.Company;
 
 /**
@@ -16,29 +19,38 @@ import entities.Company;
  */
 public class CompanyDAO implements ICompanyDAO{
 	
+
+	private static final Logger LOGGER = Logger.getLogger(ComputerDAO.class.getName());		
+	
 	@Override
 	public void create(Company company) throws SQLException {
 		PreparedStatement prepare = databaseConnection.prepareStatement(CompanyDAOQueries.CREATE_COMPANY);
 		preparedStatementToCompany(prepare,company);
 	}
 	
+	
+	//DONE
 	@Override
-	public Company find(int id) throws SQLException  {
+	public Optional<Company> find(int id) {
+		
 		Company company = null;
-		ResultSet result = databaseConnection.createStatement(
-            				ResultSet.TYPE_SCROLL_INSENSITIVE, 
-                            ResultSet.CONCUR_UPDATABLE)
-				.executeQuery(CompanyDAOQueries.SELECT_COMPANY_WITH_ID + id);
-            
-        if(result.first()){
+		ResultSet result;
+		try {
+			result = databaseConnection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE)
+					.executeQuery(CompanyDAOQueries.SELECT_COMPANY_WITH_ID + id);
+			if(result.first()){
         		company = createCompanyFromResultSet(result);
-        }
-        return company;
-
+			}else{
+				LOGGER.info(Utils.entityWithIdNotFound(id));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+        return Optional.ofNullable(company);
 	}
 	
 	@Override
-	public List<Company> findAll() throws SQLException {
+	public Optional<List<Company>> findAll() throws SQLException {
 		List<Company> companies = new ArrayList<>();
 		
 		ResultSet result = databaseConnection.createStatement(
@@ -122,13 +134,13 @@ public class CompanyDAO implements ICompanyDAO{
                 ResultSet.CONCUR_UPDATABLE)
 		.execute(	"UPDATE company SET name = '" + company.getName() + "'"+
                 	" WHERE id= " + company.getId());
-		_company = this.find(company.getId());
+		_company = this.find(company.getId()).get();
 	    
 	    return _company;
 	}
 	
 	private Company createCompanyFromResultSet(ResultSet result) throws SQLException{
-		Company company = new Company.Builder()
+		Company company = Company.builder()
     			.id(result.getInt("id"))
     			.name(result.getString("name"))
     			.build();

@@ -1,6 +1,6 @@
 package entities;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 /**
  * 
@@ -13,8 +13,8 @@ public class Computer{
 	
 	private int 		id;
 	private String 		name;
-	private Date		introducedDate;
-	private Date		discontinuedDate;
+	private LocalDate	introducedDate;
+	private LocalDate	discontinuedDate;
 	private Company		company;
 	
 	private Computer(){
@@ -33,19 +33,19 @@ public class Computer{
 		this.name = name;
 	}
 	
-	public Date getIntroducedDate() {
+	public LocalDate getIntroducedDate() {
 		return introducedDate;
 	}
 
-	public void setIntroducedDate(Date introduced) {
-		this.introducedDate = introduced;
+	public void setIntroducedDate(LocalDate introducedDate) {
+		this.introducedDate = introducedDate;
 	}
 
-	public Date getDiscontinuedDate() {
+	public LocalDate getDiscontinuedDate() {
 		return discontinuedDate;
 	}
 	
-	public void setDiscontinuedDate(Date discontinued) {
+	public void setDiscontinuedDate(LocalDate discontinued) {
 		this.discontinuedDate = discontinued;
 	}
 	
@@ -63,7 +63,10 @@ public class Computer{
 		//TODO 
 	}
 
-
+	public static Builder builder(){
+		return new Builder();
+	}
+	
 	/**
 	 * Inner Builder for the Computer Class.
 	 * @return a IComputer obj. with the Computer impl. class.
@@ -92,12 +95,12 @@ public class Computer{
 			return this;
 		}
 		
-		public Builder introduced(Date introducedDate){
+		public Builder introduced(LocalDate introducedDate){
 			computer.introducedDate = introducedDate;
 			return this;
 		}
 		
-		public Builder discontinued(Date discontinuedDate){
+		public Builder discontinued(LocalDate discontinuedDate){
 			computer.discontinuedDate = discontinuedDate;
 			return this;
 		}

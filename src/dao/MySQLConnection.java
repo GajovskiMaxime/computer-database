@@ -17,7 +17,6 @@ public enum MySQLConnection{
     INSTANCE;
 	
 	private final Logger LOGGER = Logger.getLogger(MySQLConnection.class.getName());
-	
 	private static final String DATABASE_CONNECTED = "You're now connected to the database\n";
 	private static final String DATABASE_ERR = "An error occurred. Maybe user/password is invalid\n";
 	

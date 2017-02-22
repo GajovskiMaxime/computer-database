@@ -28,13 +28,13 @@ public class ComputerDetailCtrl {
 		String userChoice = null;
 		userChoice = scan.nextLine();
     	if(userChoice.matches("^[0-9]+$"))
-    		computer = computerDAO.find(Integer.parseInt(userChoice));
+    		computer = computerDAO.find(Integer.parseInt(userChoice)).get();
 		
     	while(computer == null){
         	IView.computerDetail().printComputerSearchByIdHeader();
     		userChoice = scan.nextLine();
         	if(userChoice.matches("^[0-9]+$"))
-        		computer = computerDAO.find(Integer.parseInt(userChoice));
+        		computer = computerDAO.find(Integer.parseInt(userChoice)).get();
         } 
     	
 		IView.computerDetail().printComputerDetail(computer);

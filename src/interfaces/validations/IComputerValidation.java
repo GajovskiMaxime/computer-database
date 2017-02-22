@@ -25,10 +25,11 @@ public interface IComputerValidation {
 		StringValidation.matchesRegex(computer.getName(),"", VALIDATION_LEVEL);
 	}
 
+	@Deprecated
 	static void checkDates(Computer computer){
-		DateValidation.isNotNull(computer.getIntroducedDate(), VALIDATION_LEVEL);
-		DateValidation.isNotNull(computer.getDiscontinuedDate(), VALIDATION_LEVEL);
-		DateValidation.compare(computer.getIntroducedDate(), computer.getDiscontinuedDate(), VALIDATION_LEVEL);
+//		DateValidation.isNotNull(computer.getIntroducedDate(), VALIDATION_LEVEL);
+//		DateValidation.isNotNull(computer.getDiscontinuedDate(), VALIDATION_LEVEL);
+//		DateValidation.compare(computer.getIntroducedDate(), computer.getDiscontinuedDate(), VALIDATION_LEVEL);
 	}
 
 }
