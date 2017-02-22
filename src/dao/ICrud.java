@@ -1,10 +1,8 @@
-package interfaces.dao;
+package dao;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
-
-import database.MySQLConnection;
 
 /**
  * @author	Gajovski Maxime
@@ -12,7 +10,7 @@ import database.MySQLConnection;
  */
 public interface ICrud<T> {
 
-	public Connection databaseConnection = MySQLConnection.getInstance();
+	public Connection databaseConnection = MySQLConnection.INSTANCE.getDatabaseConnection();
 	
 	T 				find(int id) 		throws SQLException;
 	List<T> 		findAll() 			throws SQLException;

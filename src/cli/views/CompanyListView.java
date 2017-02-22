@@ -1,17 +1,20 @@
-package views;
+package cli.views;
 
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
-import interfaces.entities.ICompany;
+
+import entities.Company;
 import interfaces.mvc.IController;
 
 
 /**
+ * Vue sur la liste des compagnies (singleton).
  * @author	Gajovski Maxime
  * @date	21 févr. 2017
  */
+
 public class CompanyListView {
 	
 	private static final 	Scanner				scan 		= new Scanner(System.in);
@@ -32,11 +35,18 @@ public class CompanyListView {
 		ViewUtils.printCompanyHeader();
 	}
 
-	
-	public void printCurrentPage(int page, List<ICompany> companies) throws SQLException {
+	/**
+	 * Méthode permettant d'afficher les compagnies de pages en pages.
+	 * Affiche, puis fait appel au controlleur correspondant pour intéragir 
+	 * avec les entrées utilisateur.
+	 * @param page
+	 * @param companies
+	 * @throws SQLException
+	 */
+	public void printCurrentPage(int page, List<Company> companies) throws SQLException {
 		
 		printCompanyHeaderWithPage(page);
-		for (ICompany company : companies) {
+		for (Company company : companies) {
 			System.out.printf(ViewUtils.COMPANY_FORMAT_LINE, 
 					company.getId(), 
 					company.getName());
@@ -47,6 +57,11 @@ public class CompanyListView {
 
 	}
 	
+	/**
+	 * Méthode permettant d'afficher les compagnies de la première page.
+	 * @throws SQLException
+	 * @see printCurrentPage
+	 */
 	public void printFirstPage() throws SQLException {
 		printCurrentPage(
 				IController.companyListCtrl().getCurrentPage(), 

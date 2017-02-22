@@ -2,10 +2,10 @@ package interfaces.mvc;
 
 import java.sql.SQLException;
 
-import views.CompanyListView;
-import views.ComputerListView;
-import views.ComputerDetailView;
-import views.MainView;
+import cli.views.CompanyListView;
+import cli.views.ComputerDetailView;
+import cli.views.ComputerListView;
+import cli.views.MainView;
 
 /**
  * @author	Gajovski Maxime

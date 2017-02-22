@@ -1,13 +1,15 @@
-package views;
+package cli.views;
 
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
-import interfaces.entities.IComputer;
+
+import entities.Computer;
 import interfaces.mvc.IController;
 
 /**
+ * Vue sur la liste des ordinateurs(singleton).
  * @author	Gajovski Maxime
  * @date	21 févr. 2017
  */
@@ -38,10 +40,19 @@ public class ComputerListView {
 	private ComputerListView() throws SQLException{
 	}
 
-	public void printCurrentPage(int page, List<IComputer> computers) throws SQLException {
+	/**
+	 * Méthode permettant d'afficher les ordinateurs de pages en pages.
+	 * Affiche, puis fait appel au controlleur correspondant pour intéragir 
+	 * avec les entrées utilisateur.
+	 * @param page
+	 * @param computers
+	 * @throws SQLException
+	 * @see ComputerListCtrl
+	 */
+	public void printCurrentPage(int page, List<Computer> computers) throws SQLException {
 		printComputerHeaderWithPage(page);
 		
-		for (IComputer computer : computers) {
+		for (Computer computer : computers) {
 			System.out.printf(ViewUtils.COMPUTER_FORMAT_LINE, 
 					computer.getId(), 
 					computer.getName(), 
@@ -54,6 +65,10 @@ public class ComputerListView {
 		IController.computerListCtrl().switchMenu(scan);
 	}
 	
+	/**
+	 * Méthode permettant d'afficher les ordinateurs de la première page.
+	 * @throws SQLException
+	 */
 	public void printFirstPage() throws SQLException {
 		printCurrentPage(
 				IController.computerListCtrl().getCurrentPage(), 

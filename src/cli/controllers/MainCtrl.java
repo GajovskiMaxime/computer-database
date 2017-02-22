@@ -1,4 +1,4 @@
-package controllers;
+package cli.controllers;
 
 import java.sql.SQLException;
 import java.util.Scanner;

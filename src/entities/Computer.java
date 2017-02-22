@@ -2,11 +2,6 @@ package entities;
 
 import java.util.Date;
 
-import interfaces.entities.ICompany;
-import interfaces.entities.IComputer;
-import interfaces.validations.IComputerValidation;
-
-
 /**
  * 
  * Computer impl. class implements IComputer
@@ -14,81 +9,58 @@ import interfaces.validations.IComputerValidation;
  * @date	20 févr. 2017
  * @see 	IComputer
  */
-public class Computer implements IComputer{
+public class Computer{
 	
 	private int 		id;
 	private String 		name;
 	private Date		introducedDate;
-	private Date		discontinued;
-	private ICompany	company;
+	private Date		discontinuedDate;
+	private Company		company;
 	
-
-	/**
-	 * Computer constructor with inner builder param.
-	 * @param builder
-	 */
-	public Computer(Computer.Builder builder){
-		this.id				= builder.id;
-		this.name 			= builder.name;
-		this.company 		= builder.company;
-		this.introducedDate = builder.introduced;
-		this.discontinued	= builder.discontinued;
+	private Computer(){
+		
 	}
 	
-	
-	@Override
 	public int getId() {
 		return id;
 	}
 	
-	@Override
 	public String getName() {
 		return name;
 	}
 	
-	@Override
 	public void setName(String name) {
 		this.name = name;
 	}
 	
-	@Override
 	public Date getIntroducedDate() {
 		return introducedDate;
 	}
 
-
-	@Override
 	public void setIntroducedDate(Date introduced) {
 		this.introducedDate = introduced;
 	}
 
-
-	@Override
 	public Date getDiscontinuedDate() {
-		return discontinued;
+		return discontinuedDate;
 	}
-
-
-	@Override
+	
 	public void setDiscontinuedDate(Date discontinued) {
-		this.discontinued = discontinued;
+		this.discontinuedDate = discontinued;
 	}
-
-
-	@Override
-	public ICompany getCompany() {
+	
+	public Company getCompany() {
 		return company;
 	}
 
-	@Override
-	public void setCompany(ICompany company) {
+	public void setCompany(Company company) {
 		this.company = company;
 	}
 
-	
 	@Override
 	public String toString() {
-		return display();
+		return null;
+		//TODO 
 	}
 
 
@@ -99,44 +71,38 @@ public class Computer implements IComputer{
 	 */
 	public static class Builder{
 		
-		private int			id;
-		private String 		name;
-		private Date		introduced;
-		private Date		discontinued;
-		private ICompany	company;
+		private Computer computer = new Computer();
 		
 		public Builder(){
 			
 		}
 		
 		public Builder id(int id){
-			this.id = id;
+			computer.id = id;
 			return this;
 		}
 		
 		public Builder name(String name){
-			this.name = name;
+			computer.name = name;
 			return this;
 		}
 
-		public Builder company(ICompany company){
-			this.company = company;
+		public Builder company(Company company){
+			computer.company = company;
 			return this;
 		}
 		
-		public Builder introduced(Date introduced){
-			this.introduced = introduced;
+		public Builder introduced(Date introducedDate){
+			computer.introducedDate = introducedDate;
 			return this;
 		}
 		
-		public Builder discontinued(Date discontinued){
-			this.discontinued = discontinued;
+		public Builder discontinued(Date discontinuedDate){
+			computer.discontinuedDate = discontinuedDate;
 			return this;
 		}
 		
-		public IComputer build(){
-			IComputer computer = new Computer(this);
-			IComputerValidation.checkComputer(computer);
+		public Computer build(){
 			return computer;
 		}
 

@@ -1,4 +1,4 @@
-package views;
+package cli.views;
 
 /**
  * @author	Gajovski Maxime

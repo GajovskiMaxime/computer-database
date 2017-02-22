@@ -1,4 +1,4 @@
-package dao;
+package dao.impl;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -6,9 +6,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import dao.CompanyDAOQueries;
+import dao.ICompanyDAO;
 import entities.Company;
-import interfaces.dao.ICompanyDAO;
-import interfaces.entities.ICompany;
 
 /**
  * @author	Gajovski Maxime
@@ -16,30 +16,30 @@ import interfaces.entities.ICompany;
  */
 public class CompanyDAO implements ICompanyDAO{
 	
-	
 	@Override
-	public void create(ICompany company) throws SQLException {
+	public void create(Company company) throws SQLException {
 		PreparedStatement prepare = databaseConnection.prepareStatement(CompanyDAOQueries.CREATE_COMPANY);
 		preparedStatementToCompany(prepare,company);
 	}
 	
 	@Override
-	public ICompany find(int id) throws SQLException  {
-		ICompany company = null;
+	public Company find(int id) throws SQLException  {
+		Company company = null;
 		ResultSet result = databaseConnection.createStatement(
             				ResultSet.TYPE_SCROLL_INSENSITIVE, 
                             ResultSet.CONCUR_UPDATABLE)
-                            .executeQuery(CompanyDAOQueries.SELECT_COMPANY_WITH_ID + id);
+				.executeQuery(CompanyDAOQueries.SELECT_COMPANY_WITH_ID + id);
             
-        if(result.first())
+        if(result.first()){
         		company = createCompanyFromResultSet(result);
+        }
         return company;
 
 	}
 	
 	@Override
-	public List<ICompany> findAll() throws SQLException {
-		List<ICompany> companies = new ArrayList<ICompany>();
+	public List<Company> findAll() throws SQLException {
+		List<Company> companies = new ArrayList<>();
 		
 		ResultSet result = databaseConnection.createStatement(
 				ResultSet.TYPE_SCROLL_INSENSITIVE,
@@ -80,8 +80,8 @@ public class CompanyDAO implements ICompanyDAO{
 	}
 	
 	@Override
-	public List<ICompany> findByPage(int page) throws SQLException {
-		List<ICompany> companies = new ArrayList<ICompany>();
+	public List<Company> findByPage(int page) throws SQLException {
+		List<Company> companies = new ArrayList<>();
 		
 		ResultSet result = databaseConnection.createStatement(
 				ResultSet.TYPE_SCROLL_INSENSITIVE,
@@ -104,7 +104,7 @@ public class CompanyDAO implements ICompanyDAO{
 
 
 	@Override
-	public void delete(ICompany company) throws SQLException {
+	public void delete(Company company) throws SQLException {
 		databaseConnection.createStatement(
 				ResultSet.TYPE_SCROLL_INSENSITIVE, 
                 ResultSet.CONCUR_UPDATABLE)
@@ -114,8 +114,8 @@ public class CompanyDAO implements ICompanyDAO{
 	
 	
 	@Override
-	public ICompany update(ICompany company) throws SQLException {
-		ICompany _company = null;
+	public Company update(Company company) throws SQLException {
+		Company _company = null;
 		
 		databaseConnection.createStatement(
 				ResultSet.TYPE_SCROLL_INSENSITIVE, 
@@ -127,15 +127,15 @@ public class CompanyDAO implements ICompanyDAO{
 	    return _company;
 	}
 	
-	private ICompany createCompanyFromResultSet(ResultSet result) throws SQLException{
-		ICompany company = new Company.Builder()
+	private Company createCompanyFromResultSet(ResultSet result) throws SQLException{
+		Company company = new Company.Builder()
     			.id(result.getInt("id"))
     			.name(result.getString("name"))
     			.build();
 		return company;
 	}
 
-	private void preparedStatementToCompany(PreparedStatement prepare, ICompany company) throws SQLException{
+	private void preparedStatementToCompany(PreparedStatement prepare, Company company) throws SQLException{
 		prepare.setString(1, company.getName());
 		prepare.execute();
 	}

@@ -1,4 +1,4 @@
-package views;
+package cli.views;
 
 import java.sql.SQLException;
 import java.util.Scanner;

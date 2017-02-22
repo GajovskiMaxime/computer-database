@@ -1,12 +1,12 @@
-package controllers;
+package cli.controllers;
 
 import java.sql.SQLException;
 import java.util.Scanner;
 import java.util.logging.Logger;
 
-import dao.ComputerDAO;
-import interfaces.dao.IComputerDAO;
-import interfaces.entities.IComputer;
+import dao.IComputerDAO;
+import dao.impl.ComputerDAO;
+import entities.Computer;
 import interfaces.mvc.IView;
 
 /**
@@ -18,7 +18,7 @@ public class ComputerDetailCtrl {
 	private static final 	Logger 				logger 		= Logger.getLogger(ComputerDetailCtrl.class.getName());
 	private static 			IComputerDAO 		computerDAO = new ComputerDAO();
 	private static 			ComputerDetailCtrl	_instance 	= null;
-	private static 			IComputer 			computer 	= null;
+	private static 			Computer 			computer 	= null;
 			
 	private ComputerDetailCtrl(){
 	}
@@ -41,7 +41,10 @@ public class ComputerDetailCtrl {
 		
 		do {
 			switch (userChoice = scan.nextLine()) {
-	        	case "r":IView.computerList().printFirstPage();break;
+	        	case "r":{
+	        		computer = null;
+	        		IView.computerList().printFirstPage();break;
+	        	}
 		        case "u":break; //update
 				case "d":deleteComputerSwitchMenu(scan);break;
 	            case "m":IView.mainMenu().displayMenu();break;

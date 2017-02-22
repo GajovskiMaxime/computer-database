@@ -6,26 +6,27 @@ package dao;
  */
 public final class CompanyDAOQueries {
 	
-	public static final int COMPANIES_PER_PAGE = 10;
+	public static final int 	COMPANIES_PER_PAGE 	= 10;
+	public static final String 	COMPANY_TABLE 		= "company";
 	
 	public static final String CREATE_COMPANY
-				= "INSERT INTO company(name) VALUES(?)";
+				= "INSERT INTO " + COMPANY_TABLE + "(name) VALUES(?)";
 	
 	public final static String SELECT_ALL_COMPANIES	
-				= "SELECT * FROM company";
+				= "SELECT * FROM "+ COMPANY_TABLE;
 	
 	public final static String SELECT_ALL_COMPANIES_NAMES	
-				= "SELECT name FROM company";
+				= "SELECT name FROM " + COMPANY_TABLE;
 
 	public final static String SELECT_COMPANY_WITH_ID
-				= "SELECT * FROM company WHERE id= ";
+				= "SELECT * FROM " + COMPANY_TABLE + " WHERE id= ";
 
 	public final static String DELETE_COMPANY_WITH_ID
-				= "DELETE FROM company WHERE id= ";
+				= "DELETE FROM " +COMPANY_TABLE + " WHERE id= ";
 	
 	public final static String SELECT_NAMES_BY_PAGE
-				= "SELECT name FROM company LIMIT " + COMPANIES_PER_PAGE + " OFFSET ";
+				= "SELECT name FROM "+ COMPANY_TABLE + " LIMIT " + COMPANIES_PER_PAGE + " OFFSET ";
 	
 	public final static String SELECT_ALL_BY_PAGE
-				= "SELECT * FROM company LIMIT " + COMPANIES_PER_PAGE + " OFFSET ";
+				= "SELECT * FROM " + COMPANY_TABLE + " LIMIT " + COMPANIES_PER_PAGE + " OFFSET ";
 }

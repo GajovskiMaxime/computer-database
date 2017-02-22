@@ -1,4 +1,4 @@
-package dao;
+package dao.impl;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,10 +7,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import dao.ComputerDAOQueries;
+import dao.ICompanyDAO;
+import dao.IComputerDAO;
 import entities.Computer;
-import interfaces.dao.ICompanyDAO;
-import interfaces.dao.IComputerDAO;
-import interfaces.entities.IComputer;
 
 
 /**
@@ -20,14 +20,14 @@ import interfaces.entities.IComputer;
 public class ComputerDAO implements IComputerDAO {
 	
 	
-	public void create(IComputer computer) throws SQLException {
+	public void create(Computer computer) throws SQLException {
 		PreparedStatement prepare = databaseConnection.prepareStatement(ComputerDAOQueries.CREATE_COMPUTER);
 		preparedStatementToComputer(prepare,computer);
 	}
 	
-	public IComputer find(int id) throws SQLException  {
+	public Computer find(int id) throws SQLException  {
 		
-		IComputer computer = null;
+		Computer computer = null;
 		
 		ResultSet result = databaseConnection.createStatement(
 				ResultSet.TYPE_SCROLL_INSENSITIVE, 
@@ -48,7 +48,7 @@ public class ComputerDAO implements IComputerDAO {
 	}
 
 
-	public void delete(IComputer computer) throws SQLException {
+	public void delete(Computer computer) throws SQLException {
 		databaseConnection.createStatement(
 				ResultSet.TYPE_SCROLL_INSENSITIVE, 
                 ResultSet.CONCUR_UPDATABLE)
@@ -57,7 +57,7 @@ public class ComputerDAO implements IComputerDAO {
 
 	
 	
-	public IComputer update(IComputer computer) throws SQLException {	
+	public Computer update(Computer computer) throws SQLException {	
 		PreparedStatement prepare = databaseConnection.prepareStatement(
 				ComputerDAOQueries.UPDATE_COMPUTER + computer.getId());
 		preparedStatementToComputer(prepare,computer); 
@@ -65,9 +65,9 @@ public class ComputerDAO implements IComputerDAO {
 	}
 
 	@Override
-	public List<IComputer> findAll() throws SQLException {
+	public List<Computer> findAll() throws SQLException {
 		
-		List<IComputer> computers = new ArrayList<IComputer>();
+		List<Computer> computers = new ArrayList<Computer>();
 		ResultSet result = databaseConnection.createStatement(
 				ResultSet.TYPE_SCROLL_INSENSITIVE,
 				ResultSet.CONCUR_UPDATABLE)
@@ -112,8 +112,8 @@ public class ComputerDAO implements IComputerDAO {
 	
 
 	@Override
-	public List<IComputer> findByPage(int page) throws SQLException {
-		List<IComputer> computers 	= new ArrayList<IComputer>();
+	public List<Computer> findByPage(int page) throws SQLException {
+		List<Computer> computers 	= new ArrayList<Computer>();
 		ResultSet result = databaseConnection.createStatement(
 				ResultSet.TYPE_SCROLL_INSENSITIVE,
 				ResultSet.CONCUR_UPDATABLE)
@@ -125,9 +125,9 @@ public class ComputerDAO implements IComputerDAO {
         return computers;
 	}
 	
-	private IComputer createComputerFromResultSet(ResultSet result) throws SQLException{
+	private Computer createComputerFromResultSet(ResultSet result) throws SQLException{
 		ICompanyDAO companyDAO = new CompanyDAO();
-		IComputer computer = new Computer.Builder()
+		Computer computer = new Computer.Builder()
     			.id				(result.getInt("id"))
     			.name			(result.getString("name"))
     			.introduced		((Date)result.getObject("introduced"))
@@ -138,7 +138,7 @@ public class ComputerDAO implements IComputerDAO {
 		return computer;
 	}
 	
-	private void preparedStatementToComputer(PreparedStatement prepare, IComputer computer) throws SQLException{
+	private void preparedStatementToComputer(PreparedStatement prepare, Computer computer) throws SQLException{
 		prepare.setString	(1, computer.getName());
 		prepare.setObject	(2, computer.getIntroducedDate());
 		prepare.setObject	(3, computer.getDiscontinuedDate());

@@ -1,19 +1,20 @@
-package views;
+package cli.views;
 
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Scanner;
 
-import interfaces.entities.IComputer;
+import entities.Computer;
 import interfaces.mvc.IController;
 
 /**
+ * 
  * @author	Gajovski Maxime
  * @date	21 févr. 2017
  */
 public class ComputerDetailView {
 	
-	private static final 	Scanner 				scan 		= new Scanner(System.in);
+	private static final 	Scanner				scan 		= new Scanner(System.in);
 	private static 			ComputerDetailView	_instance 	= null;
 
 	final static String[] FOOTER_LABELS = {
@@ -45,7 +46,7 @@ public class ComputerDetailView {
 		ViewUtils.header(ViewUtils.CONFIRMATION_DEL_COMPUTER + id);
 	}
 	
-	public void printComputerDetail(IComputer computer){
+	public void printComputerDetail(Computer computer){
 		ViewUtils.printComputerHeader();
         System.out.printf(ViewUtils.COMPUTER_FORMAT_LINE, 
 					computer.getId(), 

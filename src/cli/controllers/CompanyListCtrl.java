@@ -1,13 +1,13 @@
-package controllers;
+package cli.controllers;
 
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Logger;
 
-import dao.CompanyDAO;
-import interfaces.dao.ICompanyDAO;
-import interfaces.entities.ICompany;
+import dao.ICompanyDAO;
+import dao.impl.CompanyDAO;
+import entities.Company;
 import interfaces.mvc.IView;
 
 /**
@@ -20,7 +20,7 @@ public class CompanyListCtrl {
 	private static 			CompanyListCtrl		_instance 	= null;
 	private static 			ICompanyDAO 		companyDAO 	= new CompanyDAO();
 	private static 			int 				currentPage = 0;
-	private static 			List<ICompany> 		companies	= null;
+	private static 			List<Company> 		companies	= null;
 
 	
 	private CompanyListCtrl(){
@@ -57,7 +57,7 @@ public class CompanyListCtrl {
         } while (!userChoice.equals("m"));    
 	}
 
-	public List<ICompany> getFirstCompanies() throws SQLException{
+	public List<Company> getFirstCompanies() throws SQLException{
 		return companyDAO.findByPage(currentPage);
 	}
 	

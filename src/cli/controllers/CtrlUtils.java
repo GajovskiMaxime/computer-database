@@ -1,4 +1,4 @@
-package controllers;
+package cli.controllers;
 
 /**
  * @author	Gajovski Maxime

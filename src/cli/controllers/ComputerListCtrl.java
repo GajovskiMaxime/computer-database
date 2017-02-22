@@ -1,13 +1,13 @@
-package controllers;
+package cli.controllers;
 
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Logger;
 
-import dao.ComputerDAO;
-import interfaces.dao.IComputerDAO;
-import interfaces.entities.IComputer;
+import dao.IComputerDAO;
+import dao.impl.ComputerDAO;
+import entities.Computer;
 import interfaces.mvc.IView;
 
 /**
@@ -20,7 +20,7 @@ public class ComputerListCtrl {
 	private static 			IComputerDAO 		computerDAO = new ComputerDAO();
 	private static 			ComputerListCtrl	_instance 	= null;
 	private static 			int 				currentPage = 0;
-	private static 			List<IComputer> 	computers 	= null;
+	private static 			List<Computer> 	computers 	= null;
 	
 	private ComputerListCtrl(){
 	}
@@ -61,7 +61,7 @@ public class ComputerListCtrl {
         } while (!userChoice.equals("q"));    
 	}
 	
-	public List<IComputer> getFirstComputers() throws SQLException{
+	public List<Computer> getFirstComputers() throws SQLException{
 		return computerDAO.findByPage(currentPage);
 
 	}

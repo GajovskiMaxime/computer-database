@@ -2,10 +2,10 @@ package interfaces.mvc;
 
 import java.sql.SQLException;
 
-import controllers.CompanyListCtrl;
-import controllers.ComputerDetailCtrl;
-import controllers.ComputerListCtrl;
-import controllers.MainCtrl;
+import cli.controllers.CompanyListCtrl;
+import cli.controllers.ComputerDetailCtrl;
+import cli.controllers.ComputerListCtrl;
+import cli.controllers.MainCtrl;
 
 /**
  * @author	Gajovski Maxime
