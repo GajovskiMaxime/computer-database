@@ -23,7 +23,7 @@ public interface ICrud<T> {
 	Optional<T>				create(T obj) 						throws SQLException;
 	Optional<T>				update(T obj)						throws SQLException;
 	void 					delete(T obj) 						throws SQLException;
-	void 					delete(Integer id) 					throws SQLException;
+	void 					delete(Long id) 					throws SQLException;
 	
 }
 

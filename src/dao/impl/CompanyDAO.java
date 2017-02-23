@@ -131,15 +131,15 @@ public class CompanyDAO implements ICompanyDAO{
 	}
 	
 	@Override
-	public void delete(Integer id) throws SQLException  {
-		deletePS.setInt(1, id);
+	public void delete(Long id) throws SQLException  {
+		deletePS.setLong(1, id);
 		deletePS.executeQuery();
 	}
 
 
 	@Override
 	public void delete(Company company) throws SQLException {
-//		this.delete(company.getId());
+		this.delete(company.getId());
 	}
 
 	

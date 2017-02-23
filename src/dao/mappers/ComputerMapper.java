@@ -45,10 +45,7 @@ public class ComputerMapper {
 	}
 	
 
-	public static void insertComputerIntoDatabase(Computer computer) throws SQLException{
-		
-		Connection databaseConnection = MySQLConnection.INSTANCE.getDatabaseConnection();
-		PreparedStatement createPS = databaseConnection.prepareStatement(ComputerDAOQueries.CREATE_COMPUTER);
+	public static void insertComputerIntoDatabase(PreparedStatement createPS , Computer computer) throws SQLException{
 		
 		createPS .setString	(1, computer.getName());
 		

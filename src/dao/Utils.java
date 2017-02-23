@@ -16,13 +16,13 @@ import java.util.logging.Logger;
 public class Utils {
 	
 	public static final Logger LOGGER 					= Logger.getLogger(Utils.class.getName());
-	public static final String ENTITY_NOT_FOUND 		= "Entity not found on the database.\n";
-	public static final String EMPTY_TABLE 				= "Table seems to be empty.\n";
-	public static final String REACH_LAST_PAGE 			= "It seems that you already reach the last page.\n";
-	public static final String PREPARED_STATEMENT_ERR 	= "Prepared Statement err. Mistakes into queries ?!\n";
-	public static final String CREATE_STATEMENT_ERR 	= "Impossible to create statement!\n";
-	public static final String RESULT_SET_TO_LIST_ERR 	= "Mapping : ResultSet to List err!\n";
-	public static final String BAD_QUERY 				= "BAD QUERY!\n";
+	public static final String ENTITY_NOT_FOUND 		= "\nEntity not found on the database.\n";
+	public static final String EMPTY_TABLE 				= "\nTable seems to be empty.\n";
+	public static final String REACH_LAST_PAGE 			= "\nIt seems that you already reach the last page.\n";
+	public static final String PREPARED_STATEMENT_ERR 	= "\nPrepared Statement err. Mistakes into queries ?!\n";
+	public static final String CREATE_STATEMENT_ERR 	= "\nImpossible to create statement!\n";
+	public static final String RESULT_SET_TO_LIST_ERR 	= "\nMapping : ResultSet to List err!\n";
+	public static final String BAD_QUERY 				= "\nBAD QUERY!\n";
 	
 
 	public static List<HashMap<String,Object>> convertResultSetToList(ResultSet rs) throws SQLException {

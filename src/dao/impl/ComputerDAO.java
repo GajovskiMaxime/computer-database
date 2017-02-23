@@ -11,7 +11,7 @@ import dao.ComputerDAOQueries;
 import dao.IComputerDAO;
 import dao.Utils;
 import dao.mappers.ComputerMapper;
-
+import entities.Company;
 import entities.Computer;
 
 
@@ -57,7 +57,7 @@ public class ComputerDAO implements IComputerDAO {
 	@Override
 	public Optional<Computer> create(Computer computer) throws SQLException {
 		ResultSet result = null;
-		ComputerMapper.insertComputerIntoDatabase(computer);
+		ComputerMapper.insertComputerIntoDatabase(createPS, computer);
 		result = lastRowPS.executeQuery();
 		result.first();
 		return find(Long.parseLong(result.getString("id")));
@@ -133,24 +133,18 @@ public class ComputerDAO implements IComputerDAO {
 		return Optional.of(computers);
 	}
 	
-	
-	public void delete(Integer id) {
-		try {
-			databaseConnection.createStatement(
-					ResultSet.TYPE_SCROLL_INSENSITIVE, 
-			        ResultSet.CONCUR_UPDATABLE)
-			.execute(ComputerDAOQueries.DELETE_COMPUTER_WITH_ID + id);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+
+	@Override
+	public void delete(Long id) throws SQLException  {
+		deletePS.setLong(1, id);
+		deletePS.executeQuery();
 	}
 
-	public void delete(Computer computer) {
-//		this.delete(computer.getId());
-	}
 
+	@Override
+	public void delete(Computer computer) throws SQLException {
+		this.delete(computer.getId());
+	}
 	
 	
 	public Optional<Computer> update(Computer computer) throws SQLException {	

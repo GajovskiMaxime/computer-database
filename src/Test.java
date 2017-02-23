@@ -18,7 +18,6 @@ public class Test {
 	public static void main(String[] args) throws SQLException {
 		IView.mainMenu().displayMenu();
 		
-		
 //		ICompanyDAO companyDAO = new CompanyDAO();
 //		IComputerDAO computerDAO = new ComputerDAO();
 //		
