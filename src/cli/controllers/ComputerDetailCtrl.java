@@ -16,11 +16,12 @@ import interfaces.mvc.IView;
 public class ComputerDetailCtrl {
 
 	private static final 	Logger 				logger 		= Logger.getLogger(ComputerDetailCtrl.class.getName());
-	private static 			IComputerDAO 		computerDAO = new ComputerDAO();
+	private static 			IComputerDAO 		computerDAO;
 	private static 			ComputerDetailCtrl	_instance 	= null;
 	private static 			Computer 			computer 	= null;
 			
-	private ComputerDetailCtrl(){
+	private ComputerDetailCtrl() throws SQLException{
+		computerDAO = new ComputerDAO();
 	}
 	
 	
@@ -28,13 +29,13 @@ public class ComputerDetailCtrl {
 		String userChoice = null;
 		userChoice = scan.nextLine();
     	if(userChoice.matches("^[0-9]+$"))
-    		computer = computerDAO.find(Integer.parseInt(userChoice)).get();
+    		computer = computerDAO.find(Long.parseLong(userChoice)).orElse(null);
 		
     	while(computer == null){
         	IView.computerDetail().printComputerSearchByIdHeader();
     		userChoice = scan.nextLine();
         	if(userChoice.matches("^[0-9]+$"))
-        		computer = computerDAO.find(Integer.parseInt(userChoice)).get();
+        		computer = computerDAO.find(Long.parseLong(userChoice)).get();
         } 
     	
 		IView.computerDetail().printComputerDetail(computer);

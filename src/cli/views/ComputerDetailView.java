@@ -42,7 +42,7 @@ public class ComputerDetailView {
 		IController.computerDetailCtrl().searchByIdSwitchMenu(scan);
 	}
 	
-	public void printComputerDeleteConfirmationHeader(int id){
+	public void printComputerDeleteConfirmationHeader(Long id){
 		ViewUtils.header(ViewUtils.CONFIRMATION_DEL_COMPUTER + id);
 	}
 	

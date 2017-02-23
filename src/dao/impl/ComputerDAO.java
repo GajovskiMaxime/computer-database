@@ -3,15 +3,15 @@ package dao.impl;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
 
 import dao.ComputerDAOQueries;
-import dao.ICompanyDAO;
 import dao.IComputerDAO;
 import dao.Utils;
+import dao.mappers.ComputerMapper;
+
 import entities.Computer;
 
 
@@ -22,40 +22,117 @@ import entities.Computer;
 public class ComputerDAO implements IComputerDAO {
 	
 	private static final Logger LOGGER = Logger.getLogger(ComputerDAO.class.getName());
+	
 
+	private static PreparedStatement findByIdPS;
+	private static PreparedStatement findAllPS;
+	private static PreparedStatement findAllNamesPS;
+	private static PreparedStatement findNamesByPagePS;
+	private static PreparedStatement deletePS;
+	private static PreparedStatement findByPagePS;
+	private static PreparedStatement updatePS;
+	private static PreparedStatement createPS;
+	private static PreparedStatement lastRowPS;
 	
-	public void create(Computer computer) throws SQLException {
-		PreparedStatement prepare = databaseConnection.prepareStatement(ComputerDAOQueries.CREATE_COMPUTER);
-		preparedStatementToComputer(prepare,computer);
-	}
-	
-	public Optional<Computer> find(int id) {
+	public ComputerDAO() throws SQLException{
 		
-		Computer computer 		= null;
-		ResultSet result 		= null;
-		boolean resultIsEmpty 	= true;
-		
-		try {
-			result = databaseConnection.createStatement(
-					ResultSet.TYPE_SCROLL_INSENSITIVE, 
-					ResultSet.CONCUR_UPDATABLE)
-					.executeQuery(ComputerDAOQueries.SELECT_COMPUTER_WITH_ID + id);
-			resultIsEmpty = result.first();
+		try {		
+			findByIdPS 			= databaseConnection.prepareStatement(ComputerDAOQueries.RIGHT_JOIN_WITH_ID );
+			findAllPS 			= databaseConnection.prepareStatement(ComputerDAOQueries.RIGHT_JOIN);
+			findAllNamesPS 		= databaseConnection.prepareStatement(ComputerDAOQueries.SELECT_ALL_COMPUTERS_NAMES);
+			findNamesByPagePS 	= databaseConnection.prepareStatement(ComputerDAOQueries.SELECT_NAMES_BY_PAGE);
+			findByPagePS		= databaseConnection.prepareStatement(ComputerDAOQueries.SELECT_ALL_BY_PAGE);
+			deletePS			= databaseConnection.prepareStatement(ComputerDAOQueries.DELETE_COMPUTER_WITH_ID);
+//			updatePS			= databaseConnection.prepareStatement(ComputerDAOQueries.UPDATE_WITH_ID);
+			createPS			= databaseConnection.prepareStatement(ComputerDAOQueries.CREATE_COMPUTER);
+			lastRowPS			= databaseConnection.prepareStatement(ComputerDAOQueries.LAST_ROW_INDEX);
+			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.warning(Utils.PREPARED_STATEMENT_ERR);
+			throw e;
 		}
-		
-		if(resultIsEmpty){
-			computer = createComputerFromResultSet(result);
-		}else{
-			LOGGER.info(Utils.entityWithIdNotFound(id));
-		}
-		
-   
-        
-        return Optional.ofNullable(computer);
 	}
+	
+
+	@Override
+	public Optional<Computer> create(Computer computer) throws SQLException {
+		ResultSet result = null;
+		ComputerMapper.insertComputerIntoDatabase(computer);
+		result = lastRowPS.executeQuery();
+		result.first();
+		return find(Long.parseLong(result.getString("id")));
+	}
+
+	@Override
+	public Optional<Computer> find(Long id) throws SQLException {
+		
+		List<Computer> computers;
+ 		ResultSet result = null;
+		findByIdPS.setLong(1, id);
+		result = findByIdPS.executeQuery();
+		
+		if((computers = ComputerMapper.getComputerListFromResultSet(
+				Utils.convertResultSetToList(result))).isEmpty()){
+			LOGGER.warning(Utils.ENTITY_NOT_FOUND);
+		}
+        return Optional.ofNullable(computers.get(0));
+	}
+	
+
+	@Override
+	public Optional<List<Computer>> findAll() throws SQLException {		
+		
+		List<Computer> computers;
+		ResultSet result = null; 	
+		result 	= findAllPS.executeQuery();
+		if((computers = ComputerMapper.getComputerListFromResultSet(
+			Utils.convertResultSetToList(result))).isEmpty()){
+			LOGGER.warning(Utils.EMPTY_TABLE);	
+		}
+        return Optional.ofNullable(computers);
+	}
+	
+	
+	@Override
+	public Optional<List<String>> findAllNames() throws SQLException {
+		List<String> computers;
+		ResultSet result = null;
+		result 	= findAllNamesPS.executeQuery();
+		if((computers= Utils.getNamesFromResultSet(
+				Utils.convertResultSetToList(result))).isEmpty()){
+			LOGGER.warning(Utils.EMPTY_TABLE);	
+		}
+        return Optional.ofNullable(computers);
+	}
+
+	@Override
+	public Optional<List<String>> findNamesByPage(int page, int rows) throws SQLException {
+		List<String> computers;
+		ResultSet result = null;
+		findNamesByPagePS.setInt(1, rows);
+		findNamesByPagePS.setInt(2, rows * page);
+		result = findNamesByPagePS.executeQuery();
+		if((computers = Utils.getNamesFromResultSet(
+				Utils.convertResultSetToList(result))).isEmpty()){
+			LOGGER.warning(Utils.REACH_LAST_PAGE);	
+		}
+        return Optional.ofNullable(computers);
+	}
+	
+	@Override
+	public Optional<List<Computer>> findByPage(int page, int rows) throws SQLException {
+		List<Computer> computers;
+		ResultSet result = null;
+		findByPagePS.setInt(1, rows);
+		findByPagePS.setInt(2, rows * page);
+		result = findByPagePS.executeQuery();
+		if((computers = ComputerMapper.getComputerListFromResultSet(
+				Utils.convertResultSetToList(result))).isEmpty()){
+			LOGGER.warning(Utils.REACH_LAST_PAGE);	
+		}
+		return Optional.of(computers);
+	}
+	
 	
 	public void delete(Integer id) {
 		try {
@@ -71,104 +148,17 @@ public class ComputerDAO implements IComputerDAO {
 	}
 
 	public void delete(Computer computer) {
-		this.delete(computer.getId());
+//		this.delete(computer.getId());
 	}
 
 	
 	
-	public Computer update(Computer computer) throws SQLException {	
+	public Optional<Computer> update(Computer computer) throws SQLException {	
 //		PreparedStatement prepare = databaseConnection.prepareStatement(
 //				ComputerDAOQueries.UPDATE_COMPUTER + computer.getId());
 //		preparedStatementToComputer(prepare,computer); 
 //	    return this.find(computer.getId());
 		return null;
 	}
-
-	@Override
-	public List<Computer> findAll() throws SQLException {
-		
-		List<Computer> computers = new ArrayList<Computer>();
-		ResultSet result = databaseConnection.createStatement(
-				ResultSet.TYPE_SCROLL_INSENSITIVE,
-				ResultSet.CONCUR_UPDATABLE)
-			.executeQuery(ComputerDAOQueries.SELECT_ALL_COMPUTERS);
-            
-        while(result.next()){
-        	computers.add(createComputerFromResultSet(result));
-        }
-        return computers;
-	}
 	
-	@Override
-	public List<String> findAllNames() throws SQLException {
-		
-		List<String> computers = new ArrayList<String>();
-		
-		ResultSet result = databaseConnection.createStatement(
-				ResultSet.TYPE_SCROLL_INSENSITIVE,
-				ResultSet.CONCUR_UPDATABLE)
-			.executeQuery(ComputerDAOQueries.SELECT_ALL_COMPUTERS_NAMES);
-            
-        while(result.next()){
-        	computers.add(result.getString("name"));
-        }
-        return computers;
-	}
-	
-	@Override
-	public List<String> findNamesByPage(int page) throws SQLException {
-		List<String> companies = new ArrayList<String>();
-		
-		ResultSet result = databaseConnection.createStatement(
-				ResultSet.TYPE_SCROLL_INSENSITIVE,
-				ResultSet.CONCUR_UPDATABLE)
-			.executeQuery(ComputerDAOQueries.SELECT_NAMES_BY_PAGE + page * ComputerDAOQueries.COMPUTERS_PER_PAGE);
-            
-        while(result.next()){
-        	companies.add(result.getString("name"));
-        }
-        return companies;
-	}
-	
-
-	@Override
-	public List<Computer> findByPage(int page) throws SQLException {
-		List<Computer> computers 	= new ArrayList<Computer>();
-		ResultSet result = databaseConnection.createStatement(
-				ResultSet.TYPE_SCROLL_INSENSITIVE,
-				ResultSet.CONCUR_UPDATABLE)
-			.executeQuery(ComputerDAOQueries.SELECT_ALL_BY_PAGE + page * ComputerDAOQueries.COMPUTERS_PER_PAGE);
-            
-        while(result.next()){
-        	computers.add(createComputerFromResultSet(result));
-        }
-        return computers;
-	}
-	
-	private Computer createComputerFromResultSet(ResultSet result) {
-		ICompanyDAO companyDAO = new CompanyDAO();
-		Computer computer = null;
-		try {
-			computer = Computer.builder()
-					.id				(result.getInt("id"))
-					.name			(result.getString("name"))
-					.introduced		(result.getDate("introduced") == null ? null : result.getDate("introduced").toLocalDate())
-					.discontinued	(result.getDate("discontinued") == null ? null : result.getDate("introduced").toLocalDate())
-					.company		(companyDAO.find(result.getInt("company_id")).orElse(null))
-					.build			();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		return computer;
-	}
-	
-	private void preparedStatementToComputer(PreparedStatement prepare, Computer computer) throws SQLException{
-		prepare.setString	(1, computer.getName());
-		prepare.setObject	(2, computer.getIntroducedDate());
-		prepare.setObject	(3, computer.getDiscontinuedDate());
-		prepare.setInt		(4, computer.getCompany().getId());
-		prepare.execute();
-	}
 }

@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 import dao.ICompanyDAO;
 import dao.impl.CompanyDAO;
 import entities.Company;
+import exceptions.LastPageException;
 import interfaces.mvc.IView;
 
 /**
@@ -18,13 +19,13 @@ public class CompanyListCtrl {
 
 	private static final 	Logger 				logger 		= Logger.getLogger(CompanyListCtrl.class.getName());
 	private static 			CompanyListCtrl		_instance 	= null;
-	private static 			ICompanyDAO 		companyDAO 	= new CompanyDAO();
+	private static 			ICompanyDAO 		companyDAO;
 	private static 			int 				currentPage = 0;
 	private static 			List<Company> 		companies	= null;
-
+	private final static int number = 10;
 	
-	private CompanyListCtrl(){
-		
+	private CompanyListCtrl() throws SQLException{
+		companyDAO 	= new CompanyDAO();
 	}
 	
 	public void switchMenu(Scanner scan) throws SQLException{
@@ -34,7 +35,12 @@ public class CompanyListCtrl {
             switch (userChoice) {
 	            case "n":{	
 	            	currentPage++;
-	            	companies = companyDAO.findByPage(currentPage);
+	            	try{
+	            	companies = companyDAO.findByPage(currentPage, number).get();
+	            	}catch(LastPageException l){
+	            		System.out.println(l.getMessage());
+	            		currentPage--;
+	            	}
 	            	IView.companyList().printCurrentPage(currentPage, companies);
 	            }break;
 	            case "p":{
@@ -43,7 +49,7 @@ public class CompanyListCtrl {
 						logger.warning(CtrlUtils.NEGATIVE_NUMBER_PAGE);
 					}
 					currentPage--;
-					companies = companyDAO.findByPage(currentPage);
+					companies = companyDAO.findByPage(currentPage, number).get();
 					IView.companyList().printCurrentPage(currentPage, companies);
 				}break;
             	case "m":{
@@ -58,7 +64,7 @@ public class CompanyListCtrl {
 	}
 
 	public List<Company> getFirstCompanies() throws SQLException{
-		return companyDAO.findByPage(currentPage);
+		return companyDAO.findByPage(currentPage, number).get();
 	}
 	
 	public int getCurrentPage(){

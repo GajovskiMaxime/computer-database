@@ -7,14 +7,14 @@ package entities;
  */
 public class Company {
 	
-	private int 	id;
+	private Long 	id;
 	private String 	name;
 	
 	private Company(){
 		
 	}
 
-	public int getId() {
+	public Long getId() {
 		return id;
 	}
 	
@@ -32,9 +32,11 @@ public class Company {
 	
 	@Override
 	public String toString() {
-		//TODO
-		return null;
+		return 	"Class : " + this.getClass().getSimpleName() + "\n" + 
+					"\t" + "id : " + getId() + "\n" + 
+					"\t" + "name : " + getName() + "\n";
 	}
+	
 	
 	/**
 	 * Inner Builder for the Company Class.
@@ -50,7 +52,7 @@ public class Company {
 			
 		}
 
-		public Builder id(int id) {
+		public Builder id(Long id) {
 			company.id = id;
 			return this;
 		}

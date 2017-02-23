@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 import dao.IComputerDAO;
 import dao.impl.ComputerDAO;
 import entities.Computer;
+import exceptions.LastPageException;
 import interfaces.mvc.IView;
 
 /**
@@ -17,12 +18,14 @@ import interfaces.mvc.IView;
 public class ComputerListCtrl {
 	
 	private static final 	Logger 				logger 		= Logger.getLogger(ComputerListCtrl.class.getName());
-	private static 			IComputerDAO 		computerDAO = new ComputerDAO();
-	private static 			ComputerListCtrl	_instance 	= null;
+	private static 			IComputerDAO 		computerDAO;
+	private static 			ComputerListCtrl	instance 	= null;
 	private static 			int 				currentPage = 0;
 	private static 			List<Computer> 	computers 	= null;
-	
-	private ComputerListCtrl(){
+	private static final int number = 10;
+	private ComputerListCtrl() throws SQLException{
+		computerDAO = new ComputerDAO();
+		
 	}
 	
 	public void switchMenu(Scanner scan) throws SQLException{
@@ -33,7 +36,11 @@ public class ComputerListCtrl {
             switch (userChoice) {
 	            case "n":{	
 	            	currentPage++;
-	            	computers = computerDAO.findByPage(currentPage);
+	            	try{
+	            	computers = computerDAO.findByPage(currentPage, number).get();
+	            	}catch(LastPageException l){
+	            		currentPage--;	
+	            	}
 	            	IView.computerList().printCurrentPage(currentPage, computers);
 	            }break;
 				case "p":{
@@ -42,7 +49,8 @@ public class ComputerListCtrl {
 						logger.warning(CtrlUtils.NEGATIVE_NUMBER_PAGE);
 					}
 					currentPage--;
-					computers = computerDAO.findByPage(currentPage);
+				
+					computers = computerDAO.findByPage(currentPage, number).get();
 					IView.computerList().printCurrentPage(currentPage, computers);
 				}break;
             	case "m":{
@@ -62,7 +70,7 @@ public class ComputerListCtrl {
 	}
 	
 	public List<Computer> getFirstComputers() throws SQLException{
-		return computerDAO.findByPage(currentPage);
+		return computerDAO.findByPage(currentPage, number).get();
 
 	}
 	public int getCurrentPage(){
@@ -71,9 +79,9 @@ public class ComputerListCtrl {
 	
 	public static ComputerListCtrl getInstance() throws SQLException
 	{			
-		if (_instance == null){ 	
-			_instance = new ComputerListCtrl();	
+		if (instance == null){ 	
+			instance = new ComputerListCtrl();	
 		}
-		return _instance;
+		return instance;
 	}
 }

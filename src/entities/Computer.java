@@ -2,6 +2,8 @@ package entities;
 
 import java.time.LocalDate;
 
+import utils.Utils;
+
 /**
  * 
  * Computer impl. class implements IComputer
@@ -11,7 +13,7 @@ import java.time.LocalDate;
  */
 public class Computer{
 	
-	private int 		id;
+	private Long 		id;
 	private String 		name;
 	private LocalDate	introducedDate;
 	private LocalDate	discontinuedDate;
@@ -21,7 +23,7 @@ public class Computer{
 		
 	}
 	
-	public int getId() {
+	public Long getId() {
 		return id;
 	}
 	
@@ -59,8 +61,12 @@ public class Computer{
 
 	@Override
 	public String toString() {
-		return null;
-		//TODO 
+		return 	"Class : " + this.getClass().getSimpleName() + "\n" + 
+					"\t" + "id : " 					+ getId() 				+ "\n" + 
+					"\t" + "name : " 				+ getName() 			+ "\n" + 
+					"\t" + "introduced date : " 	+ (getIntroducedDate() == null ? Utils.UNDEFINED : getIntroducedDate()) + "\n" + 
+					"\t" + "discontinued date : " 	+ (getDiscontinuedDate() == null ? Utils.UNDEFINED : getDiscontinuedDate()) + "\n" + 
+					"\t" + "company name : " 		+ (getCompany() == null ? Utils.UNDEFINED : getCompany().getName()) + "\n";
 	}
 
 	public static Builder builder(){
@@ -80,7 +86,7 @@ public class Computer{
 			
 		}
 		
-		public Builder id(int id){
+		public Builder id(Long id){
 			computer.id = id;
 			return this;
 		}
