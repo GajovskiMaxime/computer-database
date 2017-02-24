@@ -1,23 +1,22 @@
 package com.excilys.mgajovski.computer_database.exceptions;
 
-
 /**
- * @author	Gajovski Maxime
- * @date	23 févr. 2017
+ * @author Gajovski Maxime
+ * @date 23 févr. 2017
  */
-public class LastPageException extends RuntimeException{
-		
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+public class LastPageException extends RuntimeException {
 
-	public LastPageException(){
-		super();
-	}
-	
-	public LastPageException(String msg){
-		super(msg);
-	}
-	
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * 
+     */
+    public LastPageException() {
+        super();
+    }
+
+    public LastPageException(String msg) {
+        super(msg);
+    }
+
 }
