@@ -1,8 +1,8 @@
 package com.excilys.mgajovski.computer_database.exceptions;
 
 /**
- * @author	Gajovski Maxime
- * @date	24 févr. 2017
+ * @author Gajovski Maxime
+ * @date 24 févr. 2017
  */
 public class DAOException extends RuntimeException {
 
@@ -11,7 +11,7 @@ public class DAOException extends RuntimeException {
      */
     private static final long serialVersionUID = 1L;
 
-    public DAOException() {
+    public DAOException(){
         super();
     }
 

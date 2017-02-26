@@ -3,24 +3,28 @@ package com.excilys.mgajovski.computer_database.dao.impl;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.excilys.mgajovski.computer_database.dao.CompanyDAOQueries;
 import com.excilys.mgajovski.computer_database.dao.ICompanyDAO;
 import com.excilys.mgajovski.computer_database.dao.Utils;
 import com.excilys.mgajovski.computer_database.dao.mappers.CompanyMapper;
 import com.excilys.mgajovski.computer_database.entities.Company;
-import com.excilys.mgajovski.computer_database.exceptions.LastPageException;
+import com.excilys.mgajovski.computer_database.exceptions.DAOException;
 
 /**
  * @author Gajovski Maxime
  * @date 20 févr. 2017
  */
-public class CompanyDAO implements ICompanyDAO {
+public enum CompanyDAO implements ICompanyDAO {
+    INSTANCE;
 
-    private static final Logger LOGGER = Logger.getLogger(ComputerDAO.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(CompanyDAO.class);
 
     private static PreparedStatement findByIdPS;
     private static PreparedStatement findAllPS;
@@ -28,129 +32,251 @@ public class CompanyDAO implements ICompanyDAO {
     private static PreparedStatement findNamesByPagePS;
     private static PreparedStatement deletePS;
     private static PreparedStatement findByPagePS;
-    private static PreparedStatement updatePS;
+    //private static PreparedStatement updatePS;
     private static PreparedStatement createPS;
-    private static PreparedStatement lastRowPS;
 
     /**
-     * CompanyDAO constructor.
-     * This method initialize all the prepared statements
-     * @throws SQLException if there's something wrong with the prepared statements
+     * Private constructor for CompanyDAO singleton.
      */
-    public CompanyDAO() throws SQLException {
+    CompanyDAO() {
+    }
+
+    @Override
+    public Optional<Company> create(Optional<Company> optCompany) {
+
+        if (!optCompany.isPresent() || optCompany.get().getId() > 0) {
+            LOGGER.error(Utils.ENTITY_NULL_OR_ALREADY_EXIST);
+            return optCompany;
+        }
+
+        if (createPS == null) {
+            try {
+                createPS = databaseConnection.prepareStatement(CompanyDAOQueries.CREATE_COMPANY,
+                        Statement.RETURN_GENERATED_KEYS);
+            } catch (SQLException e) {
+                LOGGER.error(e.getMessage(), e);
+                throw new DAOException(e);
+            }
+        }
 
         try {
+            if (CompanyMapper.insertCompanyIntoDatabase(createPS, optCompany) == Statement.RETURN_GENERATED_KEYS) {
+                ResultSet result = createPS.getGeneratedKeys();
+                result.next();
+                optCompany.get().setId(result.getLong(1));
+                if (LOGGER.isInfoEnabled()) {
+                    LOGGER.info(Utils.ENTITY_SUCCESS);
+                }
+            }
+            return optCompany;
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage(), e);
+            throw new DAOException(e);
+        } finally {
+            try {
+                if (createPS != null && !createPS.isClosed()) {
+                    LOGGER.info(Utils.CONNECTION_CLOSED);
+                    createPS.close();
+                }
+            } catch (SQLException closeCreate) {
+                LOGGER.error(closeCreate.getMessage(), closeCreate);
+                throw new DAOException(closeCreate);
+            }
+        }
+    }
 
-            findByIdPS = databaseConnection.prepareStatement(CompanyDAOQueries.SELECT_COMPANY_WITH_ID);
-            findAllPS = databaseConnection.prepareStatement(CompanyDAOQueries.SELECT_ALL_COMPANIES);
-            findAllNamesPS = databaseConnection.prepareStatement(CompanyDAOQueries.SELECT_ALL_COMPANIES_NAMES);
-            findNamesByPagePS = databaseConnection.prepareStatement(CompanyDAOQueries.SELECT_NAMES_BY_PAGE);
-            findByPagePS = databaseConnection.prepareStatement(CompanyDAOQueries.SELECT_ALL_BY_PAGE);
-            deletePS = databaseConnection.prepareStatement(CompanyDAOQueries.DELETE_COMPANY_WITH_ID);
-            updatePS = databaseConnection.prepareStatement(CompanyDAOQueries.UPDATE_WITH_ID);
-            createPS = databaseConnection.prepareStatement(CompanyDAOQueries.CREATE_COMPANY);
-            lastRowPS = databaseConnection.prepareStatement(CompanyDAOQueries.LAST_ROW_INDEX);
+    @Override
+    public Optional<Company> find(long id) {
+
+        if (id <= 0) {
+            LOGGER.error(Utils.NEGATIVE_OR_NULL_ID);
+            return Optional.empty();
+        }
+
+        if (findByIdPS == null) {
+            try {
+                findByIdPS = databaseConnection.prepareStatement(CompanyDAOQueries.SELECT_COMPANY_WITH_ID);
+            } catch (SQLException e) {
+                LOGGER.error(e.getMessage(), e);
+                throw new DAOException(e);
+            }
+        }
+
+        try {
+            findByIdPS.setLong(1, id);
+            ResultSet result = findByIdPS.executeQuery();
+            List<Company> companies = CompanyMapper.getCompanyListFromResultSet(Utils.convertResultSetToList(result));
+
+            if (companies.isEmpty()) {
+                LOGGER.info(Utils.ENTITY_NOT_FOUND);
+                return Optional.empty();
+            }
+            return Optional.ofNullable(companies.get(0));
 
         } catch (SQLException e) {
-            LOGGER.warning(Utils.PREPARED_STATEMENT_ERR);
-            throw new RuntimeException(e);
+
+            LOGGER.error(e.getMessage(), e);
+            throw new DAOException(e);
         }
     }
 
     @Override
-    public Optional<Company> create(Company company) throws SQLException {
-        ResultSet result = null;
-        createPS.setString(1, company.getName());
-        createPS.execute();
-        result = lastRowPS.executeQuery();
-        result.first();
-        return find(Long.parseLong(result.getString("id")));
-    }
+    public Optional<List<Company>> findAll() {
 
-    @Override
-    public Optional<Company> find(Long id) throws SQLException {
-
-        List<Company> companies;
-        ResultSet result = null;
-        findByIdPS.setLong(1, id);
-        result = findByIdPS.executeQuery();
-        if ((companies = CompanyMapper.getCompanyListFromResultSet(Utils.convertResultSetToList(result))).isEmpty()) {
-            LOGGER.warning(Utils.ENTITY_NOT_FOUND);
+        if (findAllPS == null) {
+            try {
+                findAllPS = databaseConnection.prepareStatement(CompanyDAOQueries.SELECT_ALL_COMPANIES);
+            } catch (SQLException e) {
+                LOGGER.error(e.getMessage(), e);
+                throw new DAOException(e);
+            }
         }
-        return Optional.ofNullable(companies.get(0));
-    }
 
-    @Override
-    public Optional<List<Company>> findAll() throws SQLException {
-
-        List<Company> companies;
-        ResultSet result = null;
-        result = findAllPS.executeQuery();
-        if ((companies = CompanyMapper.getCompanyListFromResultSet(Utils.convertResultSetToList(result))).isEmpty()) {
-            LOGGER.warning(Utils.EMPTY_TABLE);
+        try {
+            ResultSet result = findAllPS.executeQuery();
+            List<Company> companies = CompanyMapper.getCompanyListFromResultSet(Utils.convertResultSetToList(result));
+            if (companies.isEmpty()) {
+                LOGGER.info(Utils.EMPTY_TABLE);
+                return Optional.empty();
+            }
+            return Optional.ofNullable(companies);
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage(), e);
+            throw new DAOException(e);
         }
-        return Optional.ofNullable(companies);
     }
 
     @Override
-    public Optional<List<String>> findAllNames() throws SQLException {
-        List<String> companies;
-        ResultSet result = null;
-        result = findAllNamesPS.executeQuery();
-        if ((companies = Utils.getNamesFromResultSet(Utils.convertResultSetToList(result))).isEmpty()) {
-            LOGGER.warning(Utils.EMPTY_TABLE);
+    public Optional<List<String>> findAllNames() {
+
+        if (findAllNamesPS == null) {
+            try {
+                findAllNamesPS = databaseConnection.prepareStatement(CompanyDAOQueries.SELECT_ALL_COMPANIES_NAMES);
+            } catch (SQLException e) {
+                LOGGER.error(e.getMessage(), e);
+                throw new DAOException(e);
+            }
         }
-        return Optional.ofNullable(companies);
-    }
 
-    @Override
-    public Optional<List<String>> findNamesByPage(int page, int rows) throws SQLException {
-        List<String> companies;
-        ResultSet result = null;
-        findNamesByPagePS.setInt(1, rows);
-        findNamesByPagePS.setInt(2, rows * page);
-        result = findNamesByPagePS.executeQuery();
-        if ((companies = Utils.getNamesFromResultSet(Utils.convertResultSetToList(result))).isEmpty()) {
-            LOGGER.warning(Utils.REACH_LAST_PAGE);
+        try {
+            ResultSet result = findAllNamesPS.executeQuery();
+            List<String> companies = Utils.getNamesFromResultSet(Utils.convertResultSetToList(result));
+
+            if (companies.isEmpty()) {
+                LOGGER.info(Utils.EMPTY_TABLE);
+                return Optional.empty();
+            }
+            return Optional.ofNullable(companies);
+
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage(), e);
+            throw new DAOException(e);
         }
-        return Optional.ofNullable(companies);
     }
 
     @Override
-    public Optional<List<Company>> findByPage(int page, int rows) throws SQLException, LastPageException {
-        List<Company> companies;
-        ResultSet result = null;
-        findByPagePS.setInt(1, rows);
-        findByPagePS.setInt(2, rows * page);
-        result = findByPagePS.executeQuery();
-        if ((companies = CompanyMapper.getCompanyListFromResultSet(Utils.convertResultSetToList(result))).isEmpty()) {
-            throw new LastPageException(Utils.REACH_LAST_PAGE);
+    public Optional<List<String>> findNamesByPage(int page, int rows) {
+
+        if (findNamesByPagePS == null) {
+            try {
+                findNamesByPagePS = databaseConnection.prepareStatement(CompanyDAOQueries.SELECT_NAMES_BY_PAGE);
+            } catch (SQLException e) {
+                LOGGER.error(e.getMessage(), e);
+                throw new DAOException(e);
+            }
         }
-        return Optional.of(companies);
+
+        try {
+            findNamesByPagePS.setInt(1, rows);
+            findNamesByPagePS.setInt(2, rows * page);
+            ResultSet result = findNamesByPagePS.executeQuery();
+            List<String> companies = Utils.getNamesFromResultSet(Utils.convertResultSetToList(result));
+            if (companies.isEmpty()) {
+                LOGGER.warn(Utils.REACH_LAST_PAGE);
+                return Optional.empty();
+            }
+            return Optional.ofNullable(companies);
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+            throw new DAOException(e);
+        }
     }
 
     @Override
-    public void delete(Long id) throws SQLException {
-        deletePS.setLong(1, id);
-        deletePS.executeQuery();
+    public Optional<List<Company>> findByPage(int page, int rows) {
+
+        if (findByPagePS == null) {
+            try {
+                findByPagePS = databaseConnection.prepareStatement(CompanyDAOQueries.SELECT_ALL_BY_PAGE);
+            } catch (SQLException e) {
+                LOGGER.error(e.getMessage(), e);
+                throw new DAOException(e);
+            }
+        }
+
+        try {
+            findByPagePS.setInt(1, rows);
+            findByPagePS.setInt(2, rows * page);
+            ResultSet result = findByPagePS.executeQuery();
+            List<Company> companies = CompanyMapper.getCompanyListFromResultSet(Utils.convertResultSetToList(result));
+            if (companies.isEmpty()) {
+                LOGGER.warn(Utils.REACH_LAST_PAGE);
+                return Optional.empty();
+            }
+            return Optional.of(companies);
+
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage(), e);
+            throw new DAOException(e);
+        }
     }
 
     @Override
-    public void delete(Company company) throws SQLException {
-        this.delete(company.getId());
+    public boolean delete(long id) {
+        if (id <= 0) {
+            throw new IllegalArgumentException(Utils.NEGATIVE_OR_NULL_ID);
+        }
+
+        if (deletePS == null) {
+            try {
+                deletePS = databaseConnection.prepareStatement(CompanyDAOQueries.DELETE_COMPANY_WITH_ID);
+            } catch (SQLException e) {
+                LOGGER.error(e.getMessage(), e);
+                throw new DAOException(e);
+            }
+        }
+
+        try {
+            deletePS.setLong(1, id);
+            boolean rowIsDeleted = deletePS.executeUpdate() == 1;
+
+            if (LOGGER.isInfoEnabled()) {
+                LOGGER.info("Row with " + id + " deleted " + (rowIsDeleted ? " successfully" : " failed"));
+            }
+            return rowIsDeleted;
+
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage(), e);
+            throw new DAOException(e);
+        }
     }
 
     @Override
-    public Optional<Company> update(Company company) throws SQLException {
-        Optional<Company> optionalCompany = Optional.empty();
+    public boolean delete(Company company) {
+        return this.delete(company.getId());
+    }
 
-        updatePS.setString(1, company.getName());
-        updatePS.setLong(2, company.getId());
-        updatePS.executeQuery();
+    @Override
+    public Optional<Company> update(Optional<Company> company) throws SQLException {
+        /*
+         * Optional<Company> optionalCompany = Optional.empty();
+         * updatePS.setString(1, company.getName()); updatePS.setLong(2,
+         * company.getId()); updatePS.executeQuery();
+         */
 
         // _company = this.find(company.getId());
 
-        return optionalCompany;
+        return company;
     }
 
 }

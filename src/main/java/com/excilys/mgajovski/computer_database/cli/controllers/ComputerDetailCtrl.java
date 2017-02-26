@@ -1,113 +1,72 @@
 package com.excilys.mgajovski.computer_database.cli.controllers;
 
-import java.sql.SQLException;
 import java.util.Scanner;
-import java.util.logging.Logger;
 
-import com.excilys.mgajovski.computer_database.dao.IComputerDAO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.excilys.mgajovski.computer_database.cli.views.ComputerDetailView;
+import com.excilys.mgajovski.computer_database.cli.views.ComputerListView;
+import com.excilys.mgajovski.computer_database.cli.views.MainView;
 import com.excilys.mgajovski.computer_database.dao.impl.ComputerDAO;
 import com.excilys.mgajovski.computer_database.entities.Computer;
-import com.excilys.mgajovski.computer_database.interfaces.mvc.IView;
 
 /**
  * @author Gajovski Maxime
  * @date 21 févr. 2017
  */
-public class ComputerDetailCtrl {
+public enum ComputerDetailCtrl {
+    INSTANCE;
 
-    private static final Logger logger = Logger.getLogger(ComputerDetailCtrl.class.getName());
-    private static IComputerDAO computerDAO;
-    private static ComputerDetailCtrl _instance = null;
+    private static final Logger LOGGER = LoggerFactory.getLogger(ComputerDetailCtrl.class);
     private static Computer computer = null;
 
-    private ComputerDetailCtrl() throws SQLException {
-        computerDAO = new ComputerDAO();
+    /**
+     * Private constructor for ComputerDetailCtrl singleton.
+     */
+    ComputerDetailCtrl() {
     }
 
-    public void searchByIdSwitchMenu(Scanner scan) throws SQLException {
-        String userChoice = null;
-        userChoice = scan.nextLine();
-        if (userChoice.matches("^[0-9]+$"))
-            computer = computerDAO.find(Long.parseLong(userChoice)).orElse(null);
+   
 
-        while (computer == null) {
-            IView.computerDetail().printComputerSearchByIdHeader();
-            userChoice = scan.nextLine();
-            if (userChoice.matches("^[0-9]+$"))
-                computer = computerDAO.find(Long.parseLong(userChoice)).get();
-        }
-
-        IView.computerDetail().printComputerDetail(computer);
-
-        do {
-            switch (userChoice = scan.nextLine()) {
-            case "r": {
-                computer = null;
-                IView.computerList().printFirstPage();
-                break;
-            }
-            case "u":
-                break; // update
-            case "d":
-                deleteComputerSwitchMenu(scan);
-                break;
-            case "m":
-                IView.mainMenu().displayMenu();
-                break;
-            default:
-                logger.warning(CtrlUtils.USER_BAD_INPUT);
-                break;
-            }
-        } while (!userChoice.equals("m"));
-    }
-
-    public void deleteComputerSwitchMenu(Scanner scan) throws SQLException {
+    public void deleteComputerSwitchMenu(Scanner scan) {
         String userChoice = null;
         do {
-            IView.computerDetail().printComputerDeleteConfirmationHeader(computer.getId());
+            ComputerDetailView.INSTANCE.printComputerDeleteConfirmationHeader(computer.getId());
             switch (userChoice = scan.nextLine()) {
-            case "yes": {
-                computerDAO.delete(computer);
-                IView.computerList().printFirstPage();
-            }
+            case "yes":
+                ComputerDAO.INSTANCE.delete(computer);
+                ComputerListView.INSTANCE.printFirstPage();
                 break;
-            case "no": {
-                logger.warning(CtrlUtils.COMPUTER_NOT_DELETED);
-                IView.computerList().printFirstPage();
-            }
+            case "no":
+                LOGGER.warn(ControllerUtils.COMPUTER_NOT_DELETED);
+                ComputerListView.INSTANCE.printFirstPage();
                 break;
             default:
-                logger.warning(CtrlUtils.USER_BAD_INPUT);
+                LOGGER.warn(ControllerUtils.USER_BAD_INPUT);
                 break;
             }
         } while (!userChoice.equals("no") || !userChoice.equals("yes"));
     }
-
 
     /*public void updateComputerSwitchMenu(Scanner scan) throws SQLException{
-        String userChoice   = null;
-        do {
-            IView.computerDetail().printComputerDeleteConfirmationHeader(computer.getId());
-            switch (userChoice = scan.nextLine()) {
-                case "yes":{
-                    computerDAO.delete(computer);
-                    IView.computerList().printFirstPage();
-                }break;
-                case "no":{
-                    logger.warning(CtrlUtils.COMPUTER_NOT_DELETED);
-                    IView.computerList().printFirstPage();
-                }break; 
-                default:
-                    logger.warning(CtrlUtils.USER_BAD_INPUT);
-                    break;
-            }
-        } while (!userChoice.equals("no") || !userChoice.equals("yes"));
-    }*/
-    
-    public static ComputerDetailCtrl getInstance() throws SQLException {
-        if (_instance == null) {
-            _instance = new ComputerDetailCtrl();
+    String userChoice   = null;
+    do {
+        IView.computerDetail().printComputerDeleteConfirmationHeader(computer.getId());
+        switch (userChoice = scan.nextLine()) {
+            case "yes":{
+                computerDAO.delete(computer);
+                IView.computerList().printFirstPage();
+            }break;
+            case "no":{
+                logger.warning(CtrlUtils.COMPUTER_NOT_DELETED);
+                IView.computerList().printFirstPage();
+            }break; 
+            default:
+                logger.warning(CtrlUtils.USER_BAD_INPUT);
+                break;
         }
-        return _instance;
-    }
+    } while (!userChoice.equals("no") || !userChoice.equals("yes"));
+}*/
+    
 }

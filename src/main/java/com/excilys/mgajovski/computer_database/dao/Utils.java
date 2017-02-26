@@ -15,18 +15,20 @@ import java.util.logging.Logger;
 public class Utils {
 
     public static final Logger LOGGER = Logger.getLogger(Utils.class.getName());
-    public static final String ENTITY_NOT_FOUND = "\nEntity not found on the database.\n";
-    public static final String EMPTY_TABLE = "\nTable seems to be empty.\n";
-    public static final String REACH_LAST_PAGE = "\nIt seems that you already reach the last page.\n";
-    public static final String PREPARED_STATEMENT_ERR = "\nPrepared Statement err. Mistakes into queries ?!\n";
-    public static final String CREATE_STATEMENT_ERR = "\nImpossible to create statement!\n";
-    public static final String RESULT_SET_TO_LIST_ERR = "\nMapping : ResultSet to List err!\n";
-    public static final String INIT_DAO = "\nDAO Initialization.\n";
-    public static final String ENTITY_NULL = "\nentity must not be null\n";
-    public static final String NEGATIVE_OR_NULL_ID = "\nWrong given id (negative or zero).\n";
-    public static final String ENTITY_SUCCESS = "\nEntity created successfully.\n";
-    public static final String ENTITY_NULL_OR_ALREADY_EXIST = "\nnull or already persisted object\n";
-    public static final String BAD_QUERY = "\nBAD QUERY!\n";
+    public static final String ENTITY_NOT_FOUND = "Entity not found on the database.";
+    public static final String EMPTY_TABLE = "Table seems to be empty.";
+    public static final String REACH_LAST_PAGE = "It seems that you already reach the last page.";
+    public static final String PREPARED_STATEMENT_ERR = "Prepared Statement err. Mistakes into queries ?!";
+    public static final String CREATE_STATEMENT_ERR = "Impossible to create statement!";
+    public static final String RESULT_SET_TO_LIST_ERR = "Mapping : ResultSet to List err!";
+    public static final String INIT_DAO = "DAO Initialization.";
+    public static final String ENTITY_NULL = "Entity must not be null";
+    public static final String NEGATIVE_OR_NULL_ID = "Wrong given id (negative or zero).";
+    public static final String ENTITY_SUCCESS = "Entity created successfully.";
+    public static final String ENTITY_NULL_OR_ALREADY_EXIST = "Null or already persisted object";
+    public static final String BAD_QUERY = "BAD QUERY!";
+    public static final String CONNECTION_CLOSED = "Connection closed succesfully!";
+
 
     /**
      * This method convert a ResultSet into a List<HashMap<String, Object>>.

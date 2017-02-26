@@ -26,13 +26,21 @@ public class ComputerMapper {
 
         for (int i = 0; i < rows.size(); i++) {
             HashMap<String, Object> row = rows.get(i);
+            Company company = null;
+            if (row.get("company_id") != null) {
+                company = Company.builder()
+                        .id((Long) row.get("company_id"))
+                        .name((String) row.get("company_name"))
+                        .build();
+            }
 
-            Company company = Company.builder().id((Long) row.get("company_id")).name((String) row.get("company_name"))
-                    .build();
+            Timestamp discontinuedDate = ((Timestamp) row.get("discontinued"));
+            Timestamp introducedDate = ((Timestamp) row.get("introduced"));
+            String name = (String) row.get("name");
 
-            Computer computer = Computer.builder().id((Long) row.get("id")).name((String) row.get("name"))
-                    .introduced(((Timestamp) row.get("introduced")).toLocalDateTime().toLocalDate())
-                    .discontinued(((Timestamp) row.get("discontinued")).toLocalDateTime().toLocalDate())
+            Computer computer = Computer.builder().id((Long) row.get("id")).name(name)
+                    .introduced(introducedDate == null ? null : introducedDate.toLocalDateTime().toLocalDate())
+                    .discontinued(discontinuedDate == null ? null : discontinuedDate.toLocalDateTime().toLocalDate())
                     .company(company).build();
             computers.add(computer);
         }
@@ -46,7 +54,8 @@ public class ComputerMapper {
      * @return the result of statement.executeUpdate()
      * @throws SQLException if there's something wrong.
      */
-    public static int insertComputerIntoDatabase(PreparedStatement createPS, Optional<Computer> optComputer) throws SQLException {
+    public static int insertComputerIntoDatabase(PreparedStatement createPS, Optional<Computer> optComputer)
+            throws SQLException {
 
         if (!optComputer.isPresent()) {
             throw new IllegalArgumentException(Utils.ENTITY_NULL);

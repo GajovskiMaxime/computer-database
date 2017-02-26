@@ -8,7 +8,7 @@ package com.excilys.mgajovski.computer_database.entities;
  */
 public class Company {
 
-    private Long id;
+    private long id;
     private String name;
 
     /**
@@ -17,6 +17,10 @@ public class Company {
      */
     private Company() {
 
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public Long getId() {
@@ -67,7 +71,7 @@ public class Company {
          * @param id : the id of the company.
          * @return Company.Builder
          */
-        public Builder id(Long id) {
+        public Builder id(long id) {
             company.id = id;
             return this;
         }

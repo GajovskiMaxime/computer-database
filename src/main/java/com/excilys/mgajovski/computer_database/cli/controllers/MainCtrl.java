@@ -2,49 +2,54 @@ package com.excilys.mgajovski.computer_database.cli.controllers;
 
 import java.sql.SQLException;
 import java.util.Scanner;
-import java.util.logging.Logger;
 
-import com.excilys.mgajovski.computer_database.interfaces.mvc.IView;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.excilys.mgajovski.computer_database.cli.views.CompanyListView;
+import com.excilys.mgajovski.computer_database.cli.views.ComputerListView;
+import com.excilys.mgajovski.computer_database.cli.views.MainView;
 
 /**
  * @author Gajovski Maxime
  * @date 21 févr. 2017
  */
-public class MainCtrl {
+public enum MainCtrl {
+    INSTANCE;
 
-    private static final Logger logger = Logger.getLogger(MainCtrl.class.getName());
-    private static MainCtrl _instance = null;
+    private static final Logger LOGGER = LoggerFactory.getLogger(MainCtrl.class);
 
-    private MainCtrl() throws SQLException {
-        logger.info("Lancement du programme");
+    /**
+     * Private constructor for MainCtrl singleton.
+     */
+    MainCtrl() {
     }
 
-    public void switchMenu(Scanner scan) throws SQLException {
+    /**
+     * Main loop for mainView.
+     * @param scan : the user's input.
+     * @throws SQLException
+     */
+    public void switchMenu(Scanner scan) {
         String userChoice = null;
         do {
             switch (userChoice = scan.nextLine()) {
             case "0":
-                IView.computerList().printFirstPage();
+                ComputerListView.INSTANCE.printFirstPage();
                 break;
             case "1":
-                IView.companyList().printFirstPage();
+                CompanyListView.INSTANCE.printFirstPage();
                 break;
             case "2":
                 break;
             case "3":
-                IView.mainMenu().closeMenu();
+                MainView.INSTANCE.closeMenu();
                 System.exit(0);
             default:
-                logger.warning(CtrlUtils.USER_BAD_INPUT);
+                LOGGER.warn(ControllerUtils.USER_BAD_INPUT);
                 break;
             }
         } while (!userChoice.equals("3"));
     }
 
-    public static synchronized MainCtrl getInstance() throws SQLException {
-        if (_instance == null) {
-            _instance = new MainCtrl();
-        }
-        return _instance;
-    }
 }

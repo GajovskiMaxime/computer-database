@@ -70,18 +70,18 @@ public interface ICrud<T> {
  * @return
  * @throws SQLException
  */
-    Optional<T> update(T obj) throws SQLException;
+    Optional<T> update(Optional<T> obj) throws SQLException;
 /**
  * 
  * @param obj
  * @throws SQLException
  */
-    void delete(T obj) throws SQLException;
+    boolean delete(T obj) throws SQLException;
 /**
  * 
  * @param id
  * @throws SQLException
  */
-    void delete(long id) ;
+    boolean delete(long id) ;
 
 }

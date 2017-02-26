@@ -34,7 +34,7 @@ public enum MySQLConnection {
         FileInputStream in;
 
         try {
-            in = new FileInputStream("/home/excilys/workspace/Computer-Database/src/db.properties");
+            in = new FileInputStream("/home/maxime/workspace/computer-database/src/main/java/com/excilys/mgajovski/computer_database/db.properties");
             try {
                 databaseProps.load(in);
             } catch (IOException e) {

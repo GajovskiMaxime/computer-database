@@ -1,10 +1,15 @@
 package com.excilys.mgajovski.computer_database.dao.mappers;
 
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
+import com.excilys.mgajovski.computer_database.dao.Utils;
 import com.excilys.mgajovski.computer_database.entities.Company;
 
 /**
@@ -16,8 +21,8 @@ public class CompanyMapper {
     /**.
      * Mapping companies from a List<HashMap<String, Object>> rows
      * into a list of companies objects.
-     * @param rows
-     * @return List<Company>
+     * @param rows : the result of the transformation from database.
+     * @return List<Company> companies.
      */
     public static List<Company> getCompanyListFromResultSet(List<HashMap<String, Object>> rows) {
 
@@ -34,4 +39,20 @@ public class CompanyMapper {
         return companies;
     }
 
+    /**
+     * This method insert a company entity into database.
+     * @param createPS : the prepared statement for the creation of a company row.
+     * @param optCompany : the Optional<Company> to insert into the database.
+     * @return the result of statement.executeUpdate()
+     * @throws SQLException if there's something wrong.
+     */
+    public static int insertCompanyIntoDatabase(PreparedStatement createPS, Optional<Company> optCompany) throws SQLException {
+
+        if (!optCompany.isPresent()) {
+            throw new IllegalArgumentException(Utils.ENTITY_NULL);
+        }
+        Company company = optCompany.get();
+        createPS.setString(1, company.getName());
+        return createPS.executeUpdate();
+    }
 }

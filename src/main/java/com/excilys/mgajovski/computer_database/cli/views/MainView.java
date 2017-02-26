@@ -1,27 +1,31 @@
 package com.excilys.mgajovski.computer_database.cli.views;
 
-import java.sql.SQLException;
-import java.util.Scanner;
-
-import com.excilys.mgajovski.computer_database.interfaces.mvc.IController;
+import com.excilys.mgajovski.computer_database.cli.controllers.MainCtrl;
 
 /**
  * @author Gajovski Maxime
  * @date 20 févr. 2017
  */
-public class MainView {
+public enum MainView {
+    INSTANCE;
 
-    private static final Scanner scanner = new Scanner(System.in);
-    private static MainView _instance = null;
-
-    private final static String[] MAIN_MENU_LABELS = { "List computers", "List companies", "Create a computer",
+    private static final  String[] MAIN_MENU_LABELS = {
+            "List computers",
+            "List companies",
+            "Create a computer",
             "Quit" };
 
+    /**
+     * Display closed program footer.
+     */
     public void closeMenu() {
         System.out.println("\n\n-------------------------------------------------------------------");
         System.out.print("FIN DU PROGRAMME");
     }
 
+    /**
+     * Display the main menu header.
+     */
     private void displayHeaderMenu() {
         System.out.println("*******************************************************************");
         System.out.println("***                                                             ***");
@@ -30,32 +34,29 @@ public class MainView {
         System.out.println("*******************************************************************");
     }
 
-    private void printBread(String pLink) {
-        System.out.println("");
-        System.out.println(" > " + pLink);
-        System.out.println("-------------------------------------------------------------------");
-
-    }
-
+    /**
+     * Display the main menu items.
+     */
     private void displayMenuItems() {
-        for (int i = 0; i < MAIN_MENU_LABELS.length; i++)
+        for (int i = 0; i < MAIN_MENU_LABELS.length; i++) {
             System.out.printf("%3d > %s\n", i, MAIN_MENU_LABELS[i]);
-    }
-
-    private MainView() throws SQLException {
-    }
-
-    public void displayMenu() throws SQLException {
-        displayHeaderMenu();
-        printBread("MainMenu");
-        displayMenuItems();
-        IController.mainMenuCtrl().switchMenu(scanner);
-    }
-
-    public static MainView getInstance() throws SQLException {
-        if (_instance == null) {
-            _instance = new MainView();
         }
-        return _instance;
+    }
+
+    /**
+     * Private constructor for MainView singleton.
+     */
+    MainView() {
+    }
+
+    /**
+     * Display the main menu with header, painBread and items
+     * then give the hand to controller.
+     */
+    public void displayMenu() {
+        displayHeaderMenu();
+        ViewUtils.displayBread("Main Menu");
+        displayMenuItems();
+        MainCtrl.INSTANCE.switchMenu(ViewUtils.SCANNER);
     }
 }

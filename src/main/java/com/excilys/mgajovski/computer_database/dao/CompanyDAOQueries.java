@@ -14,15 +14,14 @@ public final class CompanyDAOQueries {
 
     public static final String SELECT_ALL_COMPANIES_NAMES = "SELECT name FROM " + COMPANY_TABLE;
 
-    public static final String SELECT_COMPANY_WITH_ID = "SELECT * FROM " + COMPANY_TABLE + " WHERE id=?";
+    public static final String SELECT_COMPANY_WITH_ID = "SELECT * FROM " + COMPANY_TABLE + " WHERE id = ?";
 
-    public static final String DELETE_COMPANY_WITH_ID = "DELETE FROM " + COMPANY_TABLE + " WHERE id=?";
+    public static final String DELETE_COMPANY_WITH_ID = "DELETE FROM " + COMPANY_TABLE + " WHERE id = ?";
 
     public static final String SELECT_NAMES_BY_PAGE = "SELECT name FROM " + COMPANY_TABLE + " LIMIT ? OFFSET ?";
 
     public static final String SELECT_ALL_BY_PAGE = "SELECT * FROM " + COMPANY_TABLE + " LIMIT ? OFFSET ?";
 
-    public static final String UPDATE_WITH_ID = "UPDATE " + COMPANY_TABLE + "SET name =? WHERE id=?";
+    public static final String UPDATE_WITH_ID = "UPDATE " + COMPANY_TABLE + "SET name = ? WHERE id = ?";
 
-    public static final String LAST_ROW_INDEX = "SELECT id FROM " + COMPANY_TABLE + " ORDER BY id DESC LIMIT 1";
 }
