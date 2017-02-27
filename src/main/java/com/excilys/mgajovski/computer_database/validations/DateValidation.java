@@ -1,26 +1,45 @@
 package com.excilys.mgajovski.computer_database.validations;
 
+import java.time.LocalDate;
+import java.util.Optional;
 
-import java.time.DateTimeException;
-import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * @author	Gajovski Maxime
- * @date	20 févr. 2017
+ * @author Gajovski Maxime
+ * @date 20 févr. 2017
  */
-public final class DateValidation {
-	
-	private static final Logger logger = Logger.getLogger(DateValidation.class.getName());
-	
-	public static void isNotNull(Date date, Level level){
-		if(date == null) logger.log(level,date + "", new NullPointerException());
-	}
-	
-	public static void compare(Date date1, Date date2, Level level) {
-		if(date1 == null || date2 == null) return;
-		if(!date1.before(date2)) 
-			logger.log(level, "", new DateTimeException("Future cant be the past!"));
-	}
+public class DateValidation {
+  
+  private static final Logger LOGGER = LoggerFactory.getLogger(DateValidation.class);
+
+  public static boolean formatIsValid(Optional<String> optDate) {
+      if (optDate != null && optDate.isPresent()) {
+          String date = optDate.get();
+          if (hasGoodDateRegex(date)) {
+              return true;
+          }
+          LOGGER.warn(ValidationUtils.INVALID_DATE_FORMAT);
+      }
+      return false;
+  }
+
+  private static boolean hasGoodDateRegex(String date){
+    return date.matches(ValidationUtils.DATE_FORMAT_REGEX);
+  }
+  
+  public static boolean dateIsValid(Optional<LocalDate> optionalDateBefore, Optional<LocalDate> optionalDateAfter) {
+      if (optionalDateBefore != null && optionalDateAfter != null && 
+          optionalDateBefore.isPresent() && optionalDateAfter.isPresent()) {
+          LocalDate dateBefore = optionalDateBefore.get();
+          LocalDate dateAfter = optionalDateAfter.get();
+
+          if (dateBefore.isBefore(dateAfter)) {
+              return true;
+          }
+          LOGGER.info(ValidationUtils.BEFORE_DATE_ERR);
+      }
+      return false;
+  }
 }

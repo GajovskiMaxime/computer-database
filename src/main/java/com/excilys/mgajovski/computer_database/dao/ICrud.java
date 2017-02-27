@@ -76,7 +76,7 @@ public interface ICrud<T> {
  * @param obj
  * @throws SQLException
  */
-    boolean delete(T obj) throws SQLException;
+    boolean delete(Optional<T> obj) throws SQLException;
 /**
  * 
  * @param id

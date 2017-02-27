@@ -6,23 +6,24 @@ import java.util.Scanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.excilys.mgajovski.computer_database.cli.views.CompanyListView;
-import com.excilys.mgajovski.computer_database.cli.views.ComputerListView;
+import com.excilys.mgajovski.computer_database.cli.controllers.utils.ControllerUtils;
+import com.excilys.mgajovski.computer_database.cli.views.CompanyView;
+import com.excilys.mgajovski.computer_database.cli.views.ComputerView;
 import com.excilys.mgajovski.computer_database.cli.views.MainView;
 
 /**
  * @author Gajovski Maxime
  * @date 21 févr. 2017
  */
-public enum MainCtrl {
+public enum MainController {
     INSTANCE;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MainCtrl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MainController.class);
 
     /**
      * Private constructor for MainCtrl singleton.
      */
-    MainCtrl() {
+    MainController() {
     }
 
     /**
@@ -35,10 +36,10 @@ public enum MainCtrl {
         do {
             switch (userChoice = scan.nextLine()) {
             case "0":
-                ComputerListView.INSTANCE.printFirstPage();
+                ComputerView.INSTANCE.printFirstPage();
                 break;
             case "1":
-                CompanyListView.INSTANCE.printFirstPage();
+                CompanyView.INSTANCE.printFirstPage();
                 break;
             case "2":
                 break;

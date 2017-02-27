@@ -43,9 +43,9 @@ public enum ComputerDAO implements IComputerDAO {
     @Override
     public Optional<Computer> create(Optional<Computer> optComputer) {
 
-        if (!optComputer.isPresent() || optComputer.get().getId() > 0) {
+        if (optComputer == null || !optComputer.isPresent() || optComputer.get().getId() > 0) {
             LOGGER.error(Utils.ENTITY_NULL_OR_ALREADY_EXIST);
-            return optComputer;
+            return Optional.empty();
         }
 
         if (createPS == null) {
@@ -264,8 +264,14 @@ public enum ComputerDAO implements IComputerDAO {
     }
 
     @Override
-    public boolean delete(Computer computer) {
-        return this.delete(computer.getId());
+    public boolean delete(Optional<Computer> optComputer) {
+        if (optComputer == null || !optComputer.isPresent()) {
+            //TODO
+            LOGGER.error(Utils.ENTITY_NULL_OR_ALREADY_EXIST);
+            return false;
+        }
+        
+        return this.delete(optComputer.get().getId());
     }
 
     @Override

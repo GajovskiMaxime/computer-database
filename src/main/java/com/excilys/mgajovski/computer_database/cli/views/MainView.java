@@ -1,6 +1,7 @@
 package com.excilys.mgajovski.computer_database.cli.views;
 
-import com.excilys.mgajovski.computer_database.cli.controllers.MainCtrl;
+import com.excilys.mgajovski.computer_database.cli.controllers.MainController;
+import com.excilys.mgajovski.computer_database.cli.views.utils.ViewUtils;
 
 /**
  * @author Gajovski Maxime
@@ -57,6 +58,6 @@ public enum MainView {
         displayHeaderMenu();
         ViewUtils.displayBread("Main Menu");
         displayMenuItems();
-        MainCtrl.INSTANCE.switchMenu(ViewUtils.SCANNER);
+        MainController.INSTANCE.switchMenu(ViewUtils.SCANNER);
     }
 }

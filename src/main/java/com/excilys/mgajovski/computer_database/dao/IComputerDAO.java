@@ -7,5 +7,6 @@ import com.excilys.mgajovski.computer_database.entities.Computer;
  * @date 21 févr. 2017
  */
 public interface IComputerDAO extends ICrud<Computer> {
+
 }
 

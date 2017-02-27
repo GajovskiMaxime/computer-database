@@ -7,7 +7,8 @@ import java.util.Scanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.excilys.mgajovski.computer_database.cli.views.CompanyListView;
+import com.excilys.mgajovski.computer_database.cli.controllers.utils.ControllerUtils;
+import com.excilys.mgajovski.computer_database.cli.views.CompanyView;
 import com.excilys.mgajovski.computer_database.cli.views.MainView;
 import com.excilys.mgajovski.computer_database.dao.impl.CompanyDAO;
 import com.excilys.mgajovski.computer_database.entities.Company;
@@ -45,7 +46,7 @@ public enum CompanyController {
                     currentPage--;
                 }
                 companies = CompanyDAO.INSTANCE.findByPage(currentPage, NUMBER).get();
-                CompanyListView.INSTANCE.displayCurrentPage(currentPage, companies);
+                CompanyView.INSTANCE.displayCurrentPage(currentPage, companies);
                 break;
             case "p":
                 if (currentPage <= 0) {
@@ -54,7 +55,7 @@ public enum CompanyController {
                 }
                 currentPage--;
                 companies = CompanyDAO.INSTANCE.findByPage(currentPage, NUMBER).get();
-                CompanyListView.INSTANCE.displayCurrentPage(currentPage, companies);
+                CompanyView.INSTANCE.displayCurrentPage(currentPage, companies);
                 break;
             case "m":
                 currentPage = 0;

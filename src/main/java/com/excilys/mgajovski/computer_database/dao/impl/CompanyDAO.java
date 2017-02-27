@@ -44,9 +44,9 @@ public enum CompanyDAO implements ICompanyDAO {
     @Override
     public Optional<Company> create(Optional<Company> optCompany) {
 
-        if (!optCompany.isPresent() || optCompany.get().getId() > 0) {
+        if (optCompany == null || !optCompany.isPresent() || optCompany.get().getId() > 0) {
             LOGGER.error(Utils.ENTITY_NULL_OR_ALREADY_EXIST);
-            return optCompany;
+            return Optional.empty();
         }
 
         if (createPS == null) {
@@ -262,8 +262,13 @@ public enum CompanyDAO implements ICompanyDAO {
     }
 
     @Override
-    public boolean delete(Company company) {
-        return this.delete(company.getId());
+    public boolean delete(Optional<Company> optCompany) {
+        if (optCompany == null || !optCompany.isPresent()) {
+            //TODO
+            LOGGER.error(Utils.ENTITY_NULL_OR_ALREADY_EXIST);
+            return false;
+        }
+        return this.delete(optCompany.get().getId());
     }
 
     @Override

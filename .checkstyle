@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<fileset-config file-format-version="1.2.0" simple-config="false" sync-formatter="true">
-  <local-check-config name="checkstyle" location="internal_config_1487968536546.xml" type="internal" description=""/>
-  <fileset name="all" enabled="true" check-config-name="checkstyle" local="true">
+<fileset-config file-format-version="1.2.0" simple-config="false" sync-formatter="false">
+  <local-check-config name="GangNamStyle" location="internal_config_1488208719575.xml" type="internal" description=""/>
+  <fileset name="all" enabled="true" check-config-name="GangNamStyle" local="true">
     <file-match-pattern match-pattern="." include-pattern="true"/>
   </fileset>
 </fileset-config>

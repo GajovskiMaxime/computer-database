@@ -75,7 +75,7 @@ public class ComputerMapper {
         } else {
             createPS.setDate(3, Date.valueOf(computer.getDiscontinuedDate()));
         }
-        if (computer.getCompany() == null || computer.getCompany().getId() == null) {
+        if (computer.getCompany() == null) {
             createPS.setNull(4, Types.BIGINT);
         } else {
             createPS.setLong(4, computer.getCompany().getId());
