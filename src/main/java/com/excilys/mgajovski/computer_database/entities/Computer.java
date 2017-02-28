@@ -66,8 +66,7 @@ public class Computer {
     public void setCompany(Company company) {
         this.company = company;
     }
-    
-    
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -78,15 +77,19 @@ public class Computer {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
+        if (this == obj) {
+          return true;
+        }
+        if (obj == null) {
+          return false;
+        }
+        if (getClass() != obj.getClass()) {
+          return false;
+        }
         Computer other = (Computer) obj;
-        if (id != other.id)
-            return false;
+        if (id != other.id) {
+          return false;
+        }
         return true;
     }
 

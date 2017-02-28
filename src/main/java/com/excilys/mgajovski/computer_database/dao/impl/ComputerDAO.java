@@ -26,6 +26,8 @@ public enum ComputerDAO implements IComputerDAO {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ComputerDAO.class);
 
+    private static PreparedStatement findWhereNameContainsSequencePS;
+    private static PreparedStatement findWhereNameContainsSequenceWithPaginationPS;
     private static PreparedStatement findByIdPS;
     private static PreparedStatement findAllPS;
     private static PreparedStatement findAllNamesPS;
@@ -33,6 +35,7 @@ public enum ComputerDAO implements IComputerDAO {
     private static PreparedStatement deletePS;
     private static PreparedStatement findByPagePS;
     private static PreparedStatement createPS;
+    private static PreparedStatement findFilteredCountPS;
 
     /**
      * Private constructor for ComputerDAO singleton.
@@ -176,6 +179,67 @@ public enum ComputerDAO implements IComputerDAO {
         }
     }
 
+
+    @Override
+    public Optional<List<Computer>> findWhereNameContainsSequence(String sequence) {
+        if (findWhereNameContainsSequencePS == null) {
+            try {
+              findWhereNameContainsSequencePS = databaseConnection.prepareStatement(ComputerDAOQueries.SELECT_WHERE_NAME_CONTAINS_SEQUENCE);
+            } catch (SQLException e) {
+                LOGGER.error(e.getMessage(), e);
+                throw new DAOException(e);
+            }
+        }
+        try {
+
+          findWhereNameContainsSequencePS.setString(1, '%' + sequence + '%');
+            ResultSet result = findWhereNameContainsSequencePS.executeQuery();
+            List<Computer> computers = ComputerMapper.getComputerListFromResultSet(
+                Utils.convertResultSetToList(result));
+            if (computers.isEmpty()) {
+                LOGGER.warn(Utils.REACH_LAST_PAGE);
+                return Optional.empty();
+            }
+            return Optional.ofNullable(computers);
+
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+            throw new DAOException(e);
+        }
+    }
+
+    @Override
+    public Optional<List<Computer>> findWhereNameContainsSequenceWithPagination(String sequence, int page, int rows) {
+        if (findWhereNameContainsSequenceWithPaginationPS == null) {
+            try {
+              findWhereNameContainsSequenceWithPaginationPS = databaseConnection.prepareStatement(
+                  ComputerDAOQueries.SELECT_WHERE_NAME_CONTAINS_SEQUENCE_BY_PAGE);
+            } catch (SQLException e) {
+                LOGGER.error(e.getMessage(), e);
+                throw new DAOException(e);
+            }
+        }
+        try {
+
+          findWhereNameContainsSequenceWithPaginationPS.setString(1, '%' + sequence + '%');
+          findWhereNameContainsSequenceWithPaginationPS.setInt(2, rows);
+          findWhereNameContainsSequenceWithPaginationPS.setInt(3, rows * page);
+            ResultSet result = findWhereNameContainsSequenceWithPaginationPS.executeQuery();
+            List<Computer> computers = ComputerMapper.getComputerListFromResultSet(
+                Utils.convertResultSetToList(result));
+            if (computers.isEmpty()) {
+                LOGGER.warn(Utils.REACH_LAST_PAGE);
+                return Optional.empty();
+            }
+            return Optional.ofNullable(computers);
+
+        } catch (SQLException e) {
+            LOGGER.error(e.getMessage());
+            throw new DAOException(e);
+        }
+    }
+
+    
     @Override
     public Optional<List<String>> findNamesByPage(int page, int rows) {
 
@@ -270,7 +334,6 @@ public enum ComputerDAO implements IComputerDAO {
             LOGGER.error(Utils.ENTITY_NULL_OR_ALREADY_EXIST);
             return false;
         }
-        
         return this.delete(optComputer.get().getId());
     }
 
@@ -294,5 +357,41 @@ public enum ComputerDAO implements IComputerDAO {
         }
     }
 
+    //TODO A améliorer
+    @Override
+    public int size(String sequence) {
+
+      if (findFilteredCountPS == null) {
+          try {
+            findFilteredCountPS = databaseConnection.prepareStatement(ComputerDAOQueries.COUNT_FILTERED_ROWS);
+          } catch (SQLException e) {
+              LOGGER.error(e.getMessage(), e);
+              throw new DAOException(e);
+          }
+      }
+      ResultSet rs = null;
+      try {
+        findFilteredCountPS.setString(1, '%' + sequence + '%');
+        rs = findFilteredCountPS.executeQuery();
+        if (!rs.isBeforeFirst()) {
+          throw new DAOException();
+        }
+        rs.next();
+        return rs.getInt(1);
+      } catch (SQLException e) {
+        LOGGER.error(e.getMessage(), e);
+        throw new DAOException(e);
+      } finally {
+        try {
+          rs.close();
+          findFilteredCountPS.close();
+          findFilteredCountPS = null;
+        } catch (SQLException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        }
+      }
+
+    }
 
 }

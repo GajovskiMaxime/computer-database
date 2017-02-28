@@ -21,14 +21,14 @@
     </error-page>
 
 
-    <servlet-mapping>
-        <servlet-name>EditionComputerServlet</servlet-name>
-        <url-pattern>/views/addComputer.html</url-pattern>
-    </servlet-mapping>
+<!--     <servlet-mapping> -->
+<!--         <servlet-name>EditionComputerServlet</servlet-name> -->
+<!--         <url-pattern>/views/addComputer.html</url-pattern> -->
+<!--     </servlet-mapping> -->
 
-    <servlet-mapping>
-        <servlet-name>EditionComputerServlet</servlet-name>
-        <url-pattern>/views/editComputer.html</url-pattern>
-    </servlet-mapping>
+<!--     <servlet-mapping> -->
+<!--         <servlet-name>EditionComputerServlet</servlet-name> -->
+<!--         <url-pattern>/views/editComputer.html</url-pattern> -->
+<!--     </servlet-mapping> -->
 
 </web-app>

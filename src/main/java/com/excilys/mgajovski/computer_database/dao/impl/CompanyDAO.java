@@ -15,6 +15,7 @@ import com.excilys.mgajovski.computer_database.dao.ICompanyDAO;
 import com.excilys.mgajovski.computer_database.dao.Utils;
 import com.excilys.mgajovski.computer_database.dao.mappers.CompanyMapper;
 import com.excilys.mgajovski.computer_database.entities.Company;
+import com.excilys.mgajovski.computer_database.entities.Computer;
 import com.excilys.mgajovski.computer_database.exceptions.DAOException;
 
 /**
@@ -264,15 +265,35 @@ public enum CompanyDAO implements ICompanyDAO {
     @Override
     public boolean delete(Optional<Company> optCompany) {
         if (optCompany == null || !optCompany.isPresent()) {
-            //TODO
             LOGGER.error(Utils.ENTITY_NULL_OR_ALREADY_EXIST);
             return false;
         }
         return this.delete(optCompany.get().getId());
     }
 
+    //TODO Améliorer
     @Override
-    public Optional<Company> update(Optional<Company> company) throws SQLException {
+    public int size() {
+
+      Statement statement;
+      try {
+        statement = databaseConnection.createStatement();
+
+        ResultSet resultSet = statement.executeQuery("SELECT COUNT(*) FROM company");
+
+        if (!resultSet.isBeforeFirst()) {
+          throw new DAOException();
+        }
+        resultSet.next();
+        return resultSet.getInt(1);
+      } catch (SQLException e) {
+        LOGGER.error(e.getMessage(), e);
+        throw new DAOException(e);
+      }
+    }
+
+    @Override
+    public Optional<Company> update(Optional<Company> company) {
         /*
          * Optional<Company> optionalCompany = Optional.empty();
          * updatePS.setString(1, company.getName()); updatePS.setLong(2,
@@ -282,6 +303,34 @@ public enum CompanyDAO implements ICompanyDAO {
         // _company = this.find(company.getId());
 
         return company;
+    }
+
+    /* (non-Javadoc)
+     * @see com.excilys.mgajovski.computer_database.dao.ICrud#findWhereNameContainsSequence(java.lang.String)
+     */
+    @Override
+    public Optional<List<Company>> findWhereNameContainsSequence(String sequence) {
+      // TODO Auto-generated method stub
+      return null;
+    }
+
+    /* (non-Javadoc)
+     * @see com.excilys.mgajovski.computer_database.dao.ICrud#findWhereNameContainsSequenceWithPagination(java.lang.String, int, int)
+     */
+    @Override
+    public Optional<List<Computer>> findWhereNameContainsSequenceWithPagination(String sequence,
+        int page, int rows) {
+      // TODO Auto-generated method stub
+      return null;
+    }
+
+    /* (non-Javadoc)
+     * @see com.excilys.mgajovski.computer_database.dao.ICrud#size(java.lang.String)
+     */
+    @Override
+    public int size(String sequence) {
+      // TODO Auto-generated method stub
+      return 0;
     }
 
 }

@@ -16,7 +16,7 @@ public interface IComputerValidation {
 	public final static Level VALIDATION_LEVEL= Level.FINE;
 	
 	static void checkComputer(Computer computer){
-		checkName	(computer);	
+	  checkName	(computer);	
 		checkDates	(computer);
 	}
 	
