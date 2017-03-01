@@ -272,8 +272,8 @@ public enum CompanyDAO implements ICompanyDAO {
     }
 
     //TODO Améliorer
-    @Override
-    public int size() {
+   // @Override
+    /*public int size() {
 
       Statement statement;
       try {
@@ -290,7 +290,7 @@ public enum CompanyDAO implements ICompanyDAO {
         LOGGER.error(e.getMessage(), e);
         throw new DAOException(e);
       }
-    }
+    }*/
 
     @Override
     public Optional<Company> update(Optional<Company> company) {

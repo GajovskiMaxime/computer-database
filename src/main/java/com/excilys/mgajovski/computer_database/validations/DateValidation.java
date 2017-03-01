@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
  * @date 20 févr. 2017
  */
 public class DateValidation {
-  
+
   private static final Logger LOGGER = LoggerFactory.getLogger(DateValidation.class);
 
   public static boolean formatIsValid(Optional<String> optDate) {

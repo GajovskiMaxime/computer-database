@@ -51,6 +51,12 @@ public enum MySQLConnection {
         String password = databaseProps.getProperty("jdbc.password");
 
         try {
+          try {
+            Class.forName("com.mysql.jdbc.Driver");
+          } catch (ClassNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+          }
             databaseConnection = (Connection) DriverManager.getConnection(url, username, password);
             if (databaseConnection != null) {
                 LOGGER.info(DATABASE_CONNECTED);

@@ -1,28 +1,11 @@
 <%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"  %>
-<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"  %>
+<%@page session="true"%> 
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 
-<jsp:useBean id="computerManager" scope="page"
-             class="com.excilys.mgajovski.computer_database.managers.ComputerManager">
+<jsp:useBean id="computerManager" scope="session" class="com.excilys.mgajovski.computer_database.managers.ComputerManager">
     <jsp:setProperty name="computerManager" property="*"/>
 </jsp:useBean>
-
-<%-- <c:choose> --%>
-<%--     <c:when test="${pageContext.request.method=='GET'}"> --%>
-<%--         <c:set var="idx" value="name" /> --%>
-<%--     <c:redirect url="${pageContext.request.requestURL}?currentPage=1&numberOfRows=50"></c:redirect> --%>
-<%--         <c:set property="${param.size}" value="10"/> --%>
-<%--         <c:set property="${param.page}" value="1"/> --%>
-
-<%--         <c:if test="${param.size != null}"> --%>
-<%--             <c:set property="size" target="${computerManager}" value="${param.size}"/> --%>
-<%--         </c:if> --%>
-        
-<%--         <c:if test="${param.page != null}"> --%>
-<%--             <c:set property="size" target="${computerManager}" value="${param.size}"/> --%>
-<%--         </c:if> --%>
-<%--     </c:when> --%>
-<%-- </c:choose> --%>
 
 <!DOCTYPE html>
 <html>
@@ -50,15 +33,15 @@
             </h1>
             <div id="actions" class="form-horizontal">
                 <div class="pull-left">
-                    <form id="searchForm" action="#" method="GET" class="form-inline">
+                    <form id="searchForm" action="size.jsp" method="POST" class="form-inline">
 
-                        <input type="search" id="searchbox" onname="sequence" class="form-control" placeholder="Search name" value="${param.sequence}"/>
+                        <input type="search" id="searchbox" name="sequence" class="form-control" placeholder="Search name" value="${param.sequence}"/>
                         <input type="submit" id="searchsubmit" value="Filter by name"
                         class="btn btn-primary" />
                     </form>
                 </div>
                 <div class="pull-right">
-                    <a class="btn btn-success" id="addComputer" href="addComputer.html">Add Computer</a> 
+                    <a class="btn btn-success" id="addComputer" href="addComputer.jsp">Add Computer</a> 
                     <a class="btn btn-default" id="editComputer" href="#" onclick="$.fn.toggleEditMode();">Edit</a>
                 </div>
             </div>
@@ -95,8 +78,8 @@
                 <tbody id="results">
                     <c:forEach items="${computerManager.displayedComputers}" var="computer">
 	                <tr>
-<!-- 	                    <td class="editMode"> -->
-<%-- 	                       <input type="checkbox" name="cb" class="cb" value="${computer.id}"></td> --%>
+	                    <td class="editMode">
+	                       <input type="checkbox" name="cb" class="cb" value="${computer.id}"></td>
 	                    <td>
 	                        <jsp:element name="a">
 	                            <jsp:attribute name="href">editComputer.html?id=${computer.id}</jsp:attribute>
@@ -127,8 +110,8 @@
               </li>
                 <c:forEach begin="1" end="10" varStatus="number">
                     <li>
-                    <a href="?currentPage=${number.count}&numberOfRows=${param.numberOfRows}">${number.count}</a>
-<%--                     <c:out value="number ${no.count}"/> --%>
+                    <a href="?currentPage=${number.count}">${number.count}</a>
+                    <c:out value="${no.count}"/>
                     </li>
                 </c:forEach>
 <%--               <li><a href="?currentPage=1&numberOfRows=${param.numberOfRows}">1</a></li> --%>
@@ -142,11 +125,27 @@
                 </a>
             </li>
         </ul>
-
+        
         <div class="btn-group btn-group-sm pull-right" role="group" >
-            <a type="button" class="btn btn-default ${param.numberOfRows== 10 ? 'active' : ''}"href="?currentPage=${param.currentPage}&numberOfRows=10">10</a>
-            <a type="button" class="btn btn-default ${param.numberOfRows == 50 ? 'active' : ''}" href="?currentPage=${param.currentPage}&numberOfRows=50">50</a>
-            <a type="button" class="btn btn-default ${param.numberOfRows == 100 ? 'active' : ''}"   href="?currentPage=${param.currentPage}&numberOfRows=100">100</a>
+            <a type="button"  
+                class="btn btn-default ${computerManager.numberOfRows== 10 ? 'active' : ''}"
+                href="?">10</a>
+                
+            <a type="button"
+                class="btn btn-default ${computerManager.numberOfRows== 50 ? 'active' : ''}"
+                href="?"> 50</a>
+            
+            <a type="button"
+                class="btn btn-default ${computerManager.numberOfRows== 100 ? 'active' : ''}"
+                href="?"> 100</a>
+            
+<!--             <a  type="button" -->
+<!--                 onclick="computerManager.setNumberOfRows(100)" -->
+<%--                 class="btn btn-default ${computerManager.numberOfRows== 100 ? 'active' : ''}" --%>
+<!--                 href="?"> -->
+<%--             <c:out value="${computerManager.numberOfRows}"></c:out></a> --%>
+<%--             <a type="button"  onclick="${computerManager.refresh()}" class="btn btn-default ${param.numberOfRows == 50 ? 'active' : ''}">50</a> --%>
+<%--             <a type="button"  onclick="${computerManager.refresh()}" class="btn btn-default ${param.numberOfRows == 100 ? 'active' : ''}">100</a> --%>
         </div>
     </div>
 
@@ -154,6 +153,11 @@
 <script src="../js/jquery.min.js"></script>
 <script src="../js/bootstrap.min.js"></script>
 <script src="../js/dashboard.js"></script>
-
+<script>
+function test(){
+	
+}
+	
+</script>
 </body>
 </html>

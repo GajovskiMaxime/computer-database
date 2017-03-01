@@ -28,7 +28,7 @@ public class ComputerDAOQueries {
     
     public static final String COUNT_FILTERED_ROWS = "SELECT COUNT(*) FROM computer c "
         + "LEFT JOIN company comp ON c.company_id = comp.id where c.name like ?";
-
+    
    //public static final String SELECT_ALL_BY_PAGE = "SELECT * FROM " + COMPUTER_TABLE + " LIMIT ? OFFSET ?";
 
     public static final String UPDATE_COMPUTER = "UPDATE " + COMPUTER_TABLE + " SET "

@@ -1,3 +1,11 @@
+<%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+
+<jsp:useBean id="computerDetail" scope="page" class="com.excilys.mgajovski.computer_database.managers.ComputerDetailManager">
+    <jsp:setProperty name="computerDetail" property="*" />
+<%--     <jsp:setProperty name="computerEditor" property="idCompany" param="companyId" /> --%>
+</jsp:useBean>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -24,7 +32,10 @@
                         <fieldset>
                             <div class="form-group">
                                 <label for="computerName">Computer name</label>
-                                <input type="text" class="form-control" id="computerName" placeholder="Computer name">
+                                <input type="text" class="form-control" id="name" value="${computerDetail.name}" placeholder="Computer name">
+                                <c:if test="${!computerDetail.hasValidName()}">
+                                    <span class="help-block">Computer's Name is compulsory.</span>
+                                </c:if>
                             </div>
                             <div class="form-group">
                                 <label for="introduced">Introduced date</label>

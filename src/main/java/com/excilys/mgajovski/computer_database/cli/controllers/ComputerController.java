@@ -36,7 +36,6 @@ public enum ComputerController {
 
   /**
    * Main loop for computer selection view.
-   * 
    * @param scanner
    *          : the user's input.
    */

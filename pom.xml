@@ -75,7 +75,11 @@
                 <artifactId>tomcat7-maven-plugin</artifactId>
                 <version>${tomcat7-maven-plugin.version}</version>
                 <configuration>
-                    <path>/yope</path>                
+                    <server>cdb-server</server>
+                    <url>http://localhost:8080/manager/text</url>
+                    <path>/${project.artifactId}</path>
+<!--                     <user>admin</user> -->
+<!--                     <password>admin</password> -->
                 </configuration>
             </plugin>
 		</plugins>
@@ -202,5 +206,12 @@
         </dependency>
         <!-- FIN - Tomcat Embarqué -->
         
+        <dependency>
+            <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
+            <version>1.2</version>
+            <scope>provided</scope>
+        </dependency>
+		
 	</dependencies>
 </project>
