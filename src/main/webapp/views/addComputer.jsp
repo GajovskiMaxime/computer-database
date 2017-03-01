@@ -30,27 +30,29 @@
                     <h1>Add Computer</h1>
                     <form action="addComputer" method="POST">
                         <fieldset>
+                            
                             <div class="form-group">
                                 <label for="computerName">Computer name</label>
-                                <input type="text" class="form-control" id="name" value="${computerDetail.name}" placeholder="Computer name">
-                                <c:if test="${!computerDetail.hasValidName()}">
-                                    <span class="help-block">Computer's Name is compulsory.</span>
-                                </c:if>
-                            </div>
+                                <input type="text" class="form-control" id="computerName" placeholder="Computer name">
+							</div>
+							
                             <div class="form-group">
                                 <label for="introduced">Introduced date</label>
                                 <input type="date" class="form-control" id="introduced" placeholder="Introduced date">
                             </div>
+                            
                             <div class="form-group">
                                 <label for="discontinued">Discontinued date</label>
                                 <input type="date" class="form-control" id="discontinued" placeholder="Discontinued date">
                             </div>
+                            
                             <div class="form-group">
                                 <label for="companyId">Company</label>
                                 <select class="form-control" id="companyId" >
                                     <option value="0">--</option>
                                 </select>
-                            </div>                  
+                            </div>
+                                              
                         </fieldset>
                         <div class="actions pull-right">
                             <input type="submit" value="Add" class="btn btn-primary">

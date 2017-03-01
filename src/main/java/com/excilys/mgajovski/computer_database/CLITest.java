@@ -14,9 +14,9 @@ import com.excilys.mgajovski.computer_database.entities.Computer;
  */
 public class CLITest {
     public static void main(String[] args) throws SQLException {
-//        MainView.INSTANCE.displayMenu();
-      Optional<List<Computer>> computers = ComputerDAO.INSTANCE.findWhereNameContainsSequence("lut");
-      System.out.println(computers);
+        MainView.INSTANCE.displayMenu();
+      /*Optional<List<Computer>> computers = ComputerDAO.INSTANCE.findWhereNameContainsSequence("lut");
+      System.out.println(computers);*/
 //      System.out.println(computers.get().get(0));
 //      System.out.println(computers.get().get(1));
 //      System.out.println(computers.get().get(2));
