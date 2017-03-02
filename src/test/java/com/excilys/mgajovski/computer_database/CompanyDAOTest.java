@@ -29,7 +29,7 @@ public class CompanyDAOTest {
     private static final long notInTheTableID = 5000;
     private static final long firstID = 1;
     
-    /*
+    
     @Test
     public void initDatabase() throws SQLException{
        
@@ -38,7 +38,7 @@ public class CompanyDAOTest {
         PowerMockito.when(companyDAO.find(-1)).thenReturn(Optional.of(companyDAO.findAll().get().get(-1)));
         
     }
-    */
+    
     
     @Test
     public void find() throws SQLException {

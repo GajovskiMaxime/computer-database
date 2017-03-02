@@ -12,6 +12,7 @@ import com.excilys.mgajovski.computer_database.validations.StringValidation;
 public class ComputerDetailManager {
   
   private String name;
+//  private DateLocal;
 
   public String getName() {
     return name;
@@ -21,8 +22,8 @@ public class ComputerDetailManager {
     this.name = name;
   }
   
-  public boolean hasValidName(){
-    return StringValidation.hasValidName(name);  
-  }
+//  public boolean hasValidName(){
+//    return StringValidation.hasValidName(name);  
+//  }
     
 }
