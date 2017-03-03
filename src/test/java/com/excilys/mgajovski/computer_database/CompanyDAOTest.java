@@ -3,8 +3,8 @@ package com.excilys.mgajovski.computer_database;
 import com.excilys.mgajovski.computer_database.dao.ICompanyDAO;
 import com.excilys.mgajovski.computer_database.dao.impl.CompanyDAO;
 import com.excilys.mgajovski.computer_database.entities.Company;
-import com.excilys.mgajovski.computer_database.entities.CompanyFactory;
 import com.excilys.mgajovski.computer_database.entities.Computer;
+import com.excilys.mgajovski.computer_database.factories.CompanyFactory;
 
 import java.sql.SQLException;
 import java.util.List;

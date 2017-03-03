@@ -9,9 +9,8 @@ import javax.annotation.PostConstruct;
 
 import com.excilys.mgajovski.computer_database.dao.DAO;
 import com.excilys.mgajovski.computer_database.dao.IComputerDAO;
+import com.excilys.mgajovski.computer_database.dto.page.FilteredPageDTO;
 import com.excilys.mgajovski.computer_database.entities.Computer;
-
-import dto.FilteredPageDTO;
 
 /**
  * @author Gajovski Maxime
@@ -56,7 +55,7 @@ public class ComputerListManager {
     }
 
     /**
-     * Public constructor for ComputerManager.
+     * Public constructor for ComputerListManager.
      * This method call the initialize method who set the default fields :
      * currentPage, elementsByPage, filter to their default values.
      */

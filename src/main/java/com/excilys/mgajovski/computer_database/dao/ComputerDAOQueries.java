@@ -14,6 +14,8 @@ public class ComputerDAOQueries {
     public static final String SELECT_ALL_COMPUTERS = "SELECT * FROM " + COMPUTER_TABLE;
 
     public static final String SELECT_ALL_COMPUTERS_NAMES = "SELECT name FROM " + COMPUTER_TABLE;
+    
+    public static final String SELECT_ALL_COMPUTERS_BY_COLUMN = "SELECT ? FROM computer";
 
     public static final String SELECT_COMPUTER_WITH_ID = "SELECT * FROM " + COMPUTER_TABLE + " WHERE id = ?";
 

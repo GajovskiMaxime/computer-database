@@ -1,9 +1,10 @@
-package com.excilys.mgajovski.computer_database.entities;
+package com.excilys.mgajovski.computer_database.factories;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.excilys.mgajovski.computer_database.entities.Company;
 import com.excilys.mgajovski.computer_database.utils.Utils;
 
 /**

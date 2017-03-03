@@ -309,7 +309,7 @@ public enum CompanyDAO implements ICompanyDAO {
      * @see com.excilys.mgajovski.computer_database.dao.ICrud#findWhereNameContainsSequence(java.lang.String)
      */
     @Override
-    public Optional<List<Company>> findWhereNameContainsSequence(String sequence) {
+    public Optional<List<Company>> findByFilter(String sequence) {
       // TODO Auto-generated method stub
       return null;
     }

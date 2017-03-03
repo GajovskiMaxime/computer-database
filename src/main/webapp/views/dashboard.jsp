@@ -38,7 +38,7 @@
 					<form id="searchForm" action="updateFilter.jsp" method="POST"
 						class="form-inline">
 
-						<input type="search" id="searchbox" name="filter" class="form-control" placeholder="${computerListManager.filter}" /> 
+						<input type="search" id="filterBox" name="filter" class="form-control" placeholder="${computerListManager.filter}" /> 
 						<input type="submit" id="searchsubmit" value="Filter by name" class="btn btn-primary" />
 					</form>
 				</div>

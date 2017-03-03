@@ -1,14 +1,14 @@
 package com.excilys.mgajovski.computer_database.dao;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.List;
 import java.util.Optional;
 
+import com.excilys.mgajovski.computer_database.dto.page.FilteredPageDTO;
+import com.excilys.mgajovski.computer_database.dto.page.PageDTO;
 import com.excilys.mgajovski.computer_database.entities.Computer;
-import com.excilys.mgajovski.computer_database.exceptions.DAOException;
+import com.excilys.mgajovski.computer_database.exceptions.PageException;
 
 /**
  * @author Gajovski Maxime
@@ -56,18 +56,11 @@ public interface ICrud<T> {
    */
   Optional<List<String>> findNamesByPage(int page, int row);
 
-  /**
-   * Find entities by page method. Can be used in order to find row entities of a specific table
-   * into a database.
-   * 
-   * @param page
-   *          : index of page = page * row.
-   * @param row
-   *          : the number of row per page.
-   * @return an Optional<List<T>> who can contain a list of entities.
-   */
-  Optional<List<T>> findByPage(int page, int row);
+  
+  Optional<List<T>> findByPage(PageDTO<T> k) throws PageException;
+  Optional<List<T>> findByPage(FilteredPageDTO<T> k) throws PageException;
 
+  
   /**
    * Create a specific entity.
    * 
@@ -77,10 +70,8 @@ public interface ICrud<T> {
    */
   Optional<T> create(Optional<T> obj);
 
-  Optional<List<Computer>> findWhereNameContainsSequenceWithPagination(String sequence, int page,
-      int rows);
 
-  Optional<List<T>> findWhereNameContainsSequence(String sequence);
+  Optional<List<T>> findByFilter(String sequence);
 
   /**
    * 

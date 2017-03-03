@@ -17,7 +17,6 @@ public class Utils {
     public static final Logger LOGGER = Logger.getLogger(Utils.class.getName());
     public static final String ENTITY_NOT_FOUND = "Entity not found on the database.";
     public static final String EMPTY_TABLE = "Table seems to be empty.";
-    public static final String REACH_LAST_PAGE = "It seems that you already reach the last page.";
     public static final String PREPARED_STATEMENT_ERR = "Prepared Statement err. Mistakes into queries ?!";
     public static final String CREATE_STATEMENT_ERR = "Impossible to create statement!";
     public static final String RESULT_SET_TO_LIST_ERR = "Mapping : ResultSet to List err!";
@@ -42,11 +41,13 @@ public class Utils {
         List<HashMap<String, Object>> list = new ArrayList<HashMap<String, Object>>();
         try {
             ResultSetMetaData md = rs.getMetaData();
+            System.out.println(md);
             int columns = md.getColumnCount();
             while (rs.next()) {
                 HashMap<String, Object> row = new HashMap<String, Object>(columns);
                 for (int i = 1; i <= columns; ++i) {
                     row.put(md.getColumnLabel(i), rs.getObject(i));
+                    System.out.println(md.getColumnLabel(i)+ " " + rs.getObject(i));
                 }
                 list.add(row);
             }

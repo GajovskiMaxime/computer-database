@@ -1,4 +1,5 @@
-package dto;
+package com.excilys.mgajovski.computer_database.dto.page;
+
 
 import java.util.List;
 import java.util.Optional;
@@ -16,7 +17,7 @@ public class PageDTO<K> {
   private static final String CURRENT_PAGE_UPDATED = "Current page set to : ";
   private static final String ELEMENTS_BY_PAGE_UPDATED = "Number of elements by page set to : ";
 
-  private Logger LOGGER = LoggerFactory.getLogger(PageDTO.class);
+  protected Logger LOGGER = LoggerFactory.getLogger(PageDTO.class);
   protected int currentPage;
   protected int elementsByPage;
   protected int maxPage;
