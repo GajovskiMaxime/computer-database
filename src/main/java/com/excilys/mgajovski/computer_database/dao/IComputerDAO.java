@@ -1,11 +1,13 @@
 package com.excilys.mgajovski.computer_database.dao;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
-import com.excilys.mgajovski.computer_database.dao.columns.ComputerColumns;
+import com.excilys.mgajovski.computer_database.dao.columns.ComputerColumn;
 import com.excilys.mgajovski.computer_database.dto.page.PageDTO;
 import com.excilys.mgajovski.computer_database.entities.Computer;
+import com.excilys.mgajovski.computer_database.exceptions.DAOException;
 
 
 /**
@@ -17,9 +19,15 @@ public interface IComputerDAO extends ICrud<Computer> {
   /**
    * @param computerColumn
    * @return
+ * @throws DAOException 
    */
-  Optional<List<String>> findAllByColumn(ComputerColumns computerColumn);
+  Optional<List<String>> findAllByColumn(ComputerColumn ...computerColumn) throws DAOException;
 
-
+/**
+ * @param computerColumns
+ * @return
+ *//*
+Optional<List<String>> findAllByColumn(ComputerColumn ...computerColumns);
+*/
 }
 

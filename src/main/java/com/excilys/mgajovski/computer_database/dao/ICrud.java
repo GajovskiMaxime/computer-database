@@ -5,9 +5,11 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
+import com.excilys.mgajovski.computer_database.dao.columns.ComputerColumn;
 import com.excilys.mgajovski.computer_database.dto.page.FilteredPageDTO;
 import com.excilys.mgajovski.computer_database.dto.page.PageDTO;
 import com.excilys.mgajovski.computer_database.entities.Computer;
+import com.excilys.mgajovski.computer_database.exceptions.DAOException;
 import com.excilys.mgajovski.computer_database.exceptions.PageException;
 
 /**
@@ -15,9 +17,6 @@ import com.excilys.mgajovski.computer_database.exceptions.PageException;
  * @date 20 févr. 2017
  */
 public interface ICrud<T> {
-
-  public Connection databaseConnection = MySQLConnection.INSTANCE.getDatabaseConnection();
-
   /**
    * Find a specific entity. Can be used in order to find an entity of a specific table into a
    * database.
@@ -25,40 +24,22 @@ public interface ICrud<T> {
    * @param id
    *          : the id of the entity.
    * @return an Optional<T> who can contain an entity.
+ * @throws DAOException 
    */
-  Optional<T> find(long id);
+  Optional<T> find(long id) throws DAOException;
 
   /**
    * Find all entities. Can be used in order to find all entities of a specific table into a
    * database.
    * 
    * @return an Optional<List<T>> who can contain a list of entities.
+ * @throws DAOException 
    */
-  Optional<List<T>> findAll();
+  Optional<List<T>> findAll() throws DAOException;
 
-  /**
-   * Find all entities names. Can be used in order to find all entities names of a specific table
-   * into a database.
-   * 
-   * @return an Optional<List<String>> who can contain a list of entities names.
-   */
-  Optional<List<String>> findAllNames();
 
-  /**
-   * Find all entities names by page method. Can be used in order to find row entities names of a
-   * specific table into a database.
-   * 
-   * @param page
-   *          : index of page = page * row.
-   * @param row
-   *          : the number of row per page.
-   * @return an Optional<List<String>> who can contain a list of entities names.
-   */
-  Optional<List<String>> findNamesByPage(int page, int row);
-
-  
-  Optional<List<T>> findByPage(PageDTO<T> k) throws PageException;
-  Optional<List<T>> findByPage(FilteredPageDTO<T> k) throws PageException;
+  Optional<List<T>> findByPage(PageDTO<T> k) throws PageException, DAOException;
+  Optional<List<T>> findByPage(FilteredPageDTO<T> k) throws PageException, DAOException;
 
   
   /**
@@ -67,32 +48,37 @@ public interface ICrud<T> {
    * @param obj
    *          : the optional object needed to be inserted into database.
    * @return the optional object with the generated id by the database.
+ * @throws DAOException 
    */
-  Optional<T> create(Optional<T> obj);
+  Optional<T> create(Optional<T> obj) throws DAOException;
 
 
-  Optional<List<T>> findByFilter(String sequence);
+  Optional<List<T>> findByFilter(String sequence) throws DAOException;
 
   /**
    * 
    * @param obj
    * @return
+ * @throws DAOException 
    */
-  Optional<T> update(Optional<T> obj);
+  Optional<T> update(Optional<T> obj) throws DAOException;
 
   /**
    * 
    * @param obj
    * @throws SQLException
+ * @throws DAOException 
    */
-  boolean delete(Optional<T> obj) throws SQLException;
+  boolean delete(Optional<T> obj) throws SQLException, DAOException;
 
   /**
    * 
    * @param id
+ * @throws DAOException 
    * @throws SQLException
    */
-  boolean delete(long id);
+  boolean delete(long id) throws DAOException;
 
-  public int size(String sequence);
+  public int size(String sequence) throws DAOException;
+
 }

@@ -4,8 +4,10 @@ package com.excilys.mgajovski.computer_database.exceptions;
  * @author Gajovski Maxime
  * @date 24 févr. 2017
  */
-public class DAOException extends RuntimeException {
+public class DAOException extends Exception {
 
+    public  static final String PREP_STATEMENT_FAILED = "PreparedStatement failed.";
+    
     /**
      * 
      */

@@ -58,18 +58,17 @@ public class Utils {
         return list;
     }
 
-    /**
-     * 
-     * @param rows
-     * @return
-     */
-    public static List<String> getNamesFromResultSet(List<HashMap<String, Object>> rows) {
+    public static List<String> hashMapListToString(List<HashMap<String, Object>> rows) {
 
         List<String> list = new ArrayList<String>();
 
         for (int i = 0; i < rows.size(); i++) {
             HashMap<String, Object> row = rows.get(i);
-            list.add((String) row.get("name"));
+            String string = "";
+            for(String currentKey : row.keySet()){
+                string += row.get(currentKey) + " - ";
+            }
+            list.add(string.substring(0, string.length() - 2));
         }
         return list;
     }

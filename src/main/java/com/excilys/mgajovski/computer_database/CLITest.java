@@ -7,9 +7,10 @@ import java.util.Optional;
 import com.excilys.mgajovski.computer_database.cli.views.MainView;
 import com.excilys.mgajovski.computer_database.dao.DAO;
 import com.excilys.mgajovski.computer_database.dao.IComputerDAO;
-import com.excilys.mgajovski.computer_database.dao.columns.ComputerColumns;
+import com.excilys.mgajovski.computer_database.dao.columns.ComputerColumn;
 import com.excilys.mgajovski.computer_database.dao.impl.ComputerDAO;
 import com.excilys.mgajovski.computer_database.entities.Computer;
+import com.excilys.mgajovski.computer_database.exceptions.DAOException;
 
 /**
  * @author Gajovski Maxime
@@ -20,8 +21,13 @@ public class CLITest {
 //        MainView.INSTANCE.displayMenu();
         
         IComputerDAO cDAO = DAO.COMPUTER;
-        System.out.println(cDAO.findAllByColumn(ComputerColumns.NAME));
-        
+        try {
+            System.out.println(cDAO.find(5));
+        } catch (DAOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+       
       /*Optional<List<Computer>> computers = ComputerDAO.INSTANCE.findWhereNameContainsSequence("lut");
       System.out.println(computers);*/
 //      System.out.println(computers.get().get(0));
