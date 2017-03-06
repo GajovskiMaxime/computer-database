@@ -8,11 +8,11 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 
-import com.excilys.mgajovski.computer_database.dao.Utils;
 import com.excilys.mgajovski.computer_database.entities.Company;
 import com.excilys.mgajovski.computer_database.entities.Computer;
+import com.excilys.mgajovski.computer_database.exceptions.DAOException;
+import com.excilys.mgajovski.computer_database.exceptions.SQLMappingException;
 
 /**
  * @author Gajovski Maxime
@@ -47,39 +47,47 @@ public class ComputerMapper {
         return computers;
     }
 
+    // TODO
     /**
      * This method insert a computer entity into database.
-     * @param createPS : the prepared statement for the creation of a computer row.
-     * @param optComputer : the Optional<Computer> to insert into the database.
+     * 
+     * @param createPS
+     *            : the prepared statement for the creation of a computer row.
+     * @param optComputer
+     *            : the Optional<Computer> to insert into the database.
      * @return the result of statement.executeUpdate()
-     * @throws SQLException if there's something wrong.
+     * @throws SQLMappingException
      */
-    public static int insertComputerIntoDatabase(PreparedStatement createPS, Optional<Computer> optComputer)
-            throws SQLException {
+    public static int insertComputerIntoDatabase(PreparedStatement createPS, Computer computer)
+            throws SQLMappingException {
 
-        if (!optComputer.isPresent()) {
-            throw new IllegalArgumentException(Utils.ENTITY_NULL);
+        if (computer == null) {
+            throw new IllegalArgumentException(DAOException.ENTITY_NULL);
         }
 
-        Computer computer = optComputer.get();
-        createPS.setString(1, computer.getName());
+        try {
+            createPS.setString(1, computer.getName());
 
-        if (computer.getIntroducedDate() == null) {
-            createPS.setNull(2, Types.DATE);
-        } else {
-            createPS.setDate(2, Date.valueOf(computer.getIntroducedDate()));
-        }
+            if (computer.getIntroducedDate() == null) {
+                createPS.setNull(2, Types.DATE);
+            } else {
+                createPS.setDate(2, Date.valueOf(computer.getIntroducedDate()));
+            }
 
-        if (computer.getDiscontinuedDate() == null) {
-            createPS.setNull(3, Types.DATE);
-        } else {
-            createPS.setDate(3, Date.valueOf(computer.getDiscontinuedDate()));
+            if (computer.getDiscontinuedDate() == null) {
+                createPS.setNull(3, Types.DATE);
+            } else {
+                createPS.setDate(3, Date.valueOf(computer.getDiscontinuedDate()));
+            }
+            if (computer.getCompany() == null) {
+                createPS.setNull(4, Types.BIGINT);
+            } else {
+                createPS.setLong(4, computer.getCompany().getId());
+            }
+            return createPS.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new SQLMappingException(e.getMessage(), e);
         }
-        if (computer.getCompany() == null) {
-            createPS.setNull(4, Types.BIGINT);
-        } else {
-            createPS.setLong(4, computer.getCompany().getId());
-        }
-        return createPS.executeUpdate();
     }
 }

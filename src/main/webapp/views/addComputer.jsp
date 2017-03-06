@@ -1,5 +1,9 @@
 <%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<jsp:useBean id="computerDetailManager" scope="session" class="com.excilys.mgajovski.computer_database.managers.ComputerDetailManager">
+    <jsp:setProperty name="computerDetailManager" property="*"/>
+</jsp:useBean>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,6 +13,10 @@
 <link href="../css/bootstrap.min.css" rel="stylesheet" media="screen">
 <link href="../css/font-awesome.css" rel="stylesheet" media="screen">
 <link href="../css/main.css" rel="stylesheet" media="screen">
+<script src="../js/jquery.min.js"></script>
+<script src="../js/jquery.validate.min.js"></script>
+<script src="../js/add-computer-validation.js"></script>
+    
 </head>
 <body>
     <header class="navbar navbar-inverse navbar-fixed-top">
@@ -43,12 +51,10 @@
                             
                             <div class="form-group">
                                 <label for="companyId">Company</label>
-                                <select class="form-control" id="companyId" >
-<%--                                         <c:forEach  var="i" begin="${(computerListManager.currentPage - 2 > 0) ? (computerListManager.currentPage - 2) : 1}"  --%>
-<%--                                 end="${(computerListManager.currentPage + 2 < computerListManager.maxPage) ? (computerListManager.currentPage + 2) : computerListManager.maxPage + 1}"> --%>
-<%--                           <button name="currentPageButton" type="submit" value="${i - 1}" class="btn btn-default ${computerListManager.currentPage == i - 1? 'active' : ''}">${i}</button> --%>
-<%--                   </c:forEach> --%>
-                                    <option value="0">--</option>
+                                <select class="form-control" name="companySelect" id="companySelect" >
+                                    <c:forEach items="${computerDetailManager.companies}" var="company">
+                                        <option value="${company.id}">${company.name}</option>
+                                    </c:forEach>
                                 </select>
                             </div>
                                               
@@ -63,5 +69,6 @@
             </div>
         </div>
     </section>
+
 </body>
 </html>

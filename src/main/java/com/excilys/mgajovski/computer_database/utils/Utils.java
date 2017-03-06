@@ -8,8 +8,13 @@ import java.util.Random;
  */
 public final class Utils {
     public static final String UNDEFINED = "undefined";
-    
-    public static final String generateRandomString(int size){
+
+    /**
+     * This method generate a random string of size size.
+     * @param size : the size of the generated string.
+     * @return a random string of size size.
+     */
+    public static String generateRandomString(int size) {
         char[] chars = "abcdefghijklmnopqrstuvwxyz".toCharArray();
         StringBuilder sb = new StringBuilder();
         Random random = new Random();

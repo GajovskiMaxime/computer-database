@@ -21,7 +21,7 @@ public class PageDTO<K> {
   protected int currentPage;
   protected int elementsByPage;
   protected int maxPage;
-  protected Optional<List<K>> elements;
+  protected List<K> elements;
 
   /**
    * Public constructor for PageDTO.
@@ -30,18 +30,29 @@ public class PageDTO<K> {
 
   }
 
-  public Optional<List<K>> getElements() {
+  public List<K> getElements() {
     return elements;
   }
 
 
-  public void setElements(Optional<List<K>> elements) {
+  public void setElements(List<K> elements) {
     this.elements = elements;
   }
 
   public int getCurrentPage() {
     return currentPage;
   }
+
+//  /**
+//   * t
+//   */
+//  public void nextPage() {
+//      currentPage++;
+//  }
+
+//  public void previousPage() {
+//      currentPage++;
+//  }
 
   /**
    * This method updates the currentPage.

@@ -11,6 +11,8 @@ import com.excilys.mgajovski.computer_database.dao.DAO;
 import com.excilys.mgajovski.computer_database.dao.IComputerDAO;
 import com.excilys.mgajovski.computer_database.dto.page.FilteredPageDTO;
 import com.excilys.mgajovski.computer_database.entities.Computer;
+import com.excilys.mgajovski.computer_database.exceptions.DAOException;
+import com.excilys.mgajovski.computer_database.exceptions.PageException;
 
 /**
  * @author Gajovski Maxime
@@ -70,13 +72,24 @@ public class ComputerListManager {
         computerFilteredPage.setCurrentPage(CURRENT_PAGE_INI);
         computerFilteredPage.setElementsByPage(ELEMENTS_BY_PAGE_INI);
         computerFilteredPage.setFilter(FILTER_INI);
-        numberOfElementsFromFilteredRequest = computerDAO.size(computerFilteredPage.getFilter());
+        try {
+            numberOfElementsFromFilteredRequest = computerDAO.sizeOfFilteredQuery(computerFilteredPage.getFilter());
+        } catch (DAOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         computerFilteredPage.refreshMaxPage(numberOfElementsFromFilteredRequest);
         updateElements();
     }
 
     public int getComputerRows() {
-        return computerDAO.size("");
+        try {
+            return computerDAO.sizeOfFilteredQuery("");
+        } catch (DAOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return numberOfElementsFromFilteredRequest;
     }
 
     public int getCurrentPage() {
@@ -111,7 +124,11 @@ public class ComputerListManager {
      * This method update the number of elements from the filtered request.
      */
     public void updateNumberOfElementsFromFilteredRequest() {
-        numberOfElementsFromFilteredRequest = computerDAO.size(computerFilteredPage.getFilter());
+        try {
+            numberOfElementsFromFilteredRequest = computerDAO.sizeOfFilteredQuery(computerFilteredPage.getFilter());
+        } catch (DAOException e) {
+            e.printStackTrace();
+        }
     }
 
     public int getNumberOfElementsFromFilteredRequest() {
@@ -120,28 +137,32 @@ public class ComputerListManager {
 
     /**
      * This method set the computers for the currentPage of the FilteredPageDTO.
+     * @throws DAOException 
+     * @throws PageException 
      */
     private void updateElements() {
-      Optional<List<Computer>> optComputers =
-            computerDAO.findWhereNameContainsSequenceWithPagination(
-                computerFilteredPage.getFilter(),
-                computerFilteredPage.getCurrentPage(),
-            computerFilteredPage.getElementsByPage());
-
-        if (optComputers.isPresent()) {
-          computerFilteredPage.setElements(optComputers);
-        } else {
-          computerFilteredPage.setElements(Optional.empty());
-        }
+//      List<Computer> computers = computerDAO.findByPage(computerFilteredPage);
+      try {
+        computerFilteredPage.setElements(computerDAO.findByPage(computerFilteredPage));
+    } catch (PageException | DAOException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+    }
+      
+//        if (computers == null) {
+//          computerFilteredPage.setElements(optComputers);
+//        } else {
+//          computerFilteredPage.setElements(Optional.empty());
+//        }
     }
 
 
     public List<Computer> getElements() {
-      Optional<List<Computer>> optComputers = computerFilteredPage.getElements();
-      if (optComputers.isPresent()) {
-        return computerFilteredPage.getElements().get();
-      } else {
-        return new ArrayList<>();
-      }
+      return computerFilteredPage.getElements();
+//      if (optComputers.isPresent()) {
+//        return computerFilteredPage.getElements().get();
+//      } else {
+//        return new ArrayList<>();
+//      }
     }
 }

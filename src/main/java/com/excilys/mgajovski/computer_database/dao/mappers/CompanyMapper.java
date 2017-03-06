@@ -11,6 +11,8 @@ import java.util.Optional;
 
 import com.excilys.mgajovski.computer_database.dao.Utils;
 import com.excilys.mgajovski.computer_database.entities.Company;
+import com.excilys.mgajovski.computer_database.exceptions.DAOException;
+import com.excilys.mgajovski.computer_database.exceptions.SQLMappingException;
 
 /**
  * @author Gajovski Maxime
@@ -39,20 +41,25 @@ public class CompanyMapper {
         return companies;
     }
 
+    //TODO
     /**
      * This method insert a company entity into database.
      * @param createPS : the prepared statement for the creation of a company row.
      * @param optCompany : the Optional<Company> to insert into the database.
      * @return the result of statement.executeUpdate()
+     * @throws SQLMappingException 
      * @throws SQLException if there's something wrong.
      */
-    public static int insertCompanyIntoDatabase(PreparedStatement createPS, Optional<Company> optCompany) throws SQLException {
+    public static int insertCompanyIntoDatabase(PreparedStatement createPS, Company company) throws SQLMappingException {
 
-        if (!optCompany.isPresent()) {
-            throw new IllegalArgumentException(Utils.ENTITY_NULL);
+        if (company == null) {
+            throw new IllegalArgumentException(DAOException.ENTITY_NULL);
         }
-        Company company = optCompany.get();
-        createPS.setString(1, company.getName());
-        return createPS.executeUpdate();
+        try {
+            createPS.setString(1, company.getName());
+            return createPS.executeUpdate();
+        } catch (SQLException e) {
+            throw new SQLMappingException(e.getMessage(), e);
+        }
     }
 }

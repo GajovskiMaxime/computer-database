@@ -4,7 +4,6 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
-import com.excilys.mgajovski.computer_database.cli.views.MainView;
 import com.excilys.mgajovski.computer_database.dao.DAO;
 import com.excilys.mgajovski.computer_database.dao.IComputerDAO;
 import com.excilys.mgajovski.computer_database.dao.columns.ComputerColumn;
@@ -21,11 +20,16 @@ public class CLITest {
 //        MainView.INSTANCE.displayMenu();
         
         IComputerDAO cDAO = DAO.COMPUTER;
+        Computer computer = Computer.builder().name("Yololo").build();
+        
         try {
-            System.out.println(cDAO.find(5));
+            System.out.println(cDAO.sizeOfFilteredQuery("lut"));
+            Computer comp = cDAO.find(629);
+            comp.setName("LOOOOL");
+            cDAO.update(comp);
         } catch (DAOException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+//            e.printStackTrace();
         }
        
       /*Optional<List<Computer>> computers = ComputerDAO.INSTANCE.findWhereNameContainsSequence("lut");

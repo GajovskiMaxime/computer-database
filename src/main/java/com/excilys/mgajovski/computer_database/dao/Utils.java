@@ -15,19 +15,16 @@ import java.util.logging.Logger;
 public class Utils {
 
     public static final Logger LOGGER = Logger.getLogger(Utils.class.getName());
-    public static final String ENTITY_NOT_FOUND = "Entity not found on the database.";
-    public static final String EMPTY_TABLE = "Table seems to be empty.";
-    public static final String PREPARED_STATEMENT_ERR = "Prepared Statement err. Mistakes into queries ?!";
-    public static final String CREATE_STATEMENT_ERR = "Impossible to create statement!";
+//    public static final String PREPARED_STATEMENT_ERR = "Prepared Statement err. Mistakes into queries ?!";
+//    public static final String CREATE_STATEMENT_ERR = "Impossible to create statement!";
     public static final String RESULT_SET_TO_LIST_ERR = "Mapping : ResultSet to List err!";
-    public static final String INIT_DAO = "DAO Initialization.";
-    public static final String ENTITY_NULL = "Entity must not be null";
-    public static final String NEGATIVE_OR_NULL_ID = "Wrong given id (negative or zero).";
-    public static final String ENTITY_SUCCESS = "Entity created successfully.";
-    public static final String ENTITY_NULL_OR_ALREADY_EXIST = "Null or already persisted object";
-    public static final String BAD_QUERY = "BAD QUERY!";
-    public static final String CONNECTION_CLOSED = "Connection closed succesfully!";
-
+//    public static final String INIT_DAO = "DAO Initialization.";
+    public static final String ENTITY_CREATED_SUCCESS = "Entity created successfully.";
+    public static final String ENTITY_UPDATED_SUCCESS = "Entity updated successfully.";
+//    public static final String ENTITY_NULL_OR_ALREADY_EXIST = "Null or already persisted object";
+//    public static final String BAD_QUERY = "BAD QUERY!";
+//    public static final String CONNECTION_CLOSED = "Connection closed succesfully!";
+//
 
     /**
      * This method convert a ResultSet into a List<HashMap<String, Object>>.

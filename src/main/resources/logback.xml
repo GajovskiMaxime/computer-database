@@ -8,9 +8,9 @@
         <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n" />
         </layout>
     </appender>
-    
+
     <appender name="daily" class="org.apache.log4j.DailyRollingFileAppender">
-    
+
         <param name="file" value="/home/excilys/Documents/logs"/>
         <param name="append" value="true"/>
         <param name="datePattern" value="'.'yyyy-MM-dd'.log'" />

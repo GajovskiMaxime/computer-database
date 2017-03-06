@@ -4,6 +4,7 @@ package com.excilys.mgajovski.computer_database.dto.page;
 /**
  * @author Gajovski Maxime
  * @date 2 mars 2017
+ * This class is a PageDTO child with filter attribute.
  */
 public class FilteredPageDTO<K> extends PageDTO<K> {
 
@@ -23,6 +24,10 @@ public class FilteredPageDTO<K> extends PageDTO<K> {
     return filter;
   }
 
+  /**
+   * This method set the filter attribute.
+   * @param filter : the filter to update.
+   */
   public void setFilter(String filter) {
     LOGGER.info(FILTER_UPDATED + "'" + filter + "'");
     this.filter = filter;

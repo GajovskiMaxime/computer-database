@@ -6,31 +6,47 @@ package com.excilys.mgajovski.computer_database.exceptions;
  */
 public class DAOException extends Exception {
 
-    public  static final String PREP_STATEMENT_FAILED = "PreparedStatement failed.";
-    
-    /**
-     * 
-     */
+    public static final String ENTITY_NULL = "entity must not be null";
+    public static final String ENTITY_NULL_OR_ALREADY_EXIST = "null or already persisted object";
+    public static final String ENTITY_NULL_OR_NOT_IN_DB = "null or not in database.";
+    public static final String EMPTY_TABLE = "table seems to be empty.";
+    public static final String ENTITY_NOT_FOUND = "entity not found on the database.";
+    public static final String NO_MATCH_FOR_FILTER = "entity not found for desired filter.";
+    public static final String NEGATIVE_OR_NULL_ID = "wrong given id (negative or zero).";
+    public  static final String PREP_STATEMENT_FAILED = "preparedStatement failed.";
+
     private static final long serialVersionUID = 1L;
 
-    public DAOException(){
+    /**
+     * Empty constructor for DAOException.
+     */
+    public DAOException() {
         super();
     }
 
-    public DAOException(String pMessage, Throwable pCause, boolean pEnableSuppression, boolean pWritableStackTrace) {
-        super(pMessage, pCause, pEnableSuppression, pWritableStackTrace);
+    /**
+     * Constructor with message and error field.
+     * @param message : the error message.
+     * @param error : the error.
+     */
+    public DAOException(String message, Throwable error) {
+        super(message, error);
     }
 
-    public DAOException(String pMessage, Throwable pCause) {
-        super(pMessage, pCause);
+    /**
+     * Constructor with message field.
+     * @param message : the error message.
+     */
+    public DAOException(String message) {
+        super(message);
     }
 
-    public DAOException(String pMessage) {
-        super(pMessage);
+    /**
+     * Constructor with error field.
+     * @param error : the error.
+     */
+    public DAOException(Throwable error) {
+        super(error);
     }
 
-    public DAOException(Throwable pCause) {
-        super(pCause);
-    }
-    
 }

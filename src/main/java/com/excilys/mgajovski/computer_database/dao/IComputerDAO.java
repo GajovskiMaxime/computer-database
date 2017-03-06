@@ -21,7 +21,7 @@ public interface IComputerDAO extends ICrud<Computer> {
    * @return
  * @throws DAOException 
    */
-  Optional<List<String>> findAllByColumn(ComputerColumn ...computerColumn) throws DAOException;
+  List<String> findAllByColumn(ComputerColumn ...computerColumn) throws DAOException;
 
 /**
  * @param computerColumns
