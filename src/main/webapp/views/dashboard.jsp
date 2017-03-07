@@ -7,6 +7,7 @@
 <jsp:useBean id="computerListManager" scope="session"
 	class="com.excilys.mgajovski.computer_database.managers.ComputerListManager">
 	<jsp:setProperty name="computerListManager" property="*" />
+   
 </jsp:useBean>
 
 <!DOCTYPE html>
@@ -43,12 +44,12 @@
 					</form>
 				</div>
 				<div class="pull-right">
-					<a class="btn btn-success" id="addComputer" href="addComputer.jsp">AddComputer</a> <a class="btn btn-default" id="editComputer" href="#" onclick="$.fn.toggleEditMode();">Edit</a>
+					<a class="btn btn-success" id="addComputer" href="addComputerView.jsp">AddComputer</a> <a class="btn btn-default" id="addComputer" href="#" onclick="$.fn.toggleEditMode();">Edit</a>
 				</div>
 			</div>
 		</div>
 
-		<form id="deleteForm" action="#" method="POST">
+		<form id="deleteForm" action="deleteComputer.jsp" method="POST">
 			<input type="hidden" name="selection" value="">
 		</form>
 
@@ -82,7 +83,7 @@
 							<td class="editMode"><input type="checkbox" name="cb"
 								class="cb" value="${computer.id}"></td>
 							<td><jsp:element name="a">
-	                            <jsp:attribute name="href">editComputer.html?id=${computer.id}</jsp:attribute>
+	                            <jsp:attribute name="href">editComputer.jsp?id=${computer.id}</jsp:attribute>
 	                            <jsp:body>
 	                                <c:out value="${computer.name}" />
 	                            </jsp:body>

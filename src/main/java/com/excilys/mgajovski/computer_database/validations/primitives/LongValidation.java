@@ -8,7 +8,10 @@ import com.excilys.mgajovski.computer_database.exceptions.mapping.IdException;
  */
 public final class LongValidation {
 
-    private static final String ID_INITIALIZED = "id already initialized : ";
+    private static final String ID_STRING_NULL= "Id seems to be null.";
+    private static final String ID_INITIALIZED = "Id seems already initialized.";
+    private static final String ID_NOT_INITIALIZED = "Id isn't initialized.";
+    private static final String ID_STRING_IS_NOT_A_LONG = "Id sring is not a long.";
 
     /**
      * This method looks if an id is already initialized in database.
@@ -21,5 +24,28 @@ public final class LongValidation {
             throw new IdException(ID_INITIALIZED);
         }
         return true;
+    }
+    
+    public static boolean idIsInitialized(long id) throws IdException{
+        if(id <= 0){
+            throw new IdException(ID_NOT_INITIALIZED);
+        }
+        return true;
+    }
+    
+    public static long parseIdStringToLong(String id) throws IdException{
+        if(id == null){
+            throw new IdException(ID_STRING_NULL);
+        }
+        try{
+            return Long.parseLong(id);
+        } catch(NumberFormatException e) {
+            throw new IdException(ID_STRING_IS_NOT_A_LONG);
+        }
+    }
+    
+    public static boolean isAnInitializedId(String id) throws IdException{
+        long longId = parseIdStringToLong(id);
+        return idIsInitialized(longId);
     }
 }

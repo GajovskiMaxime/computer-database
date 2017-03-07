@@ -47,6 +47,7 @@ public enum ComputerDAO implements IComputerDAO {
         try (Connection connection = DatabaseManager.INSTANCE.getConnection();
                 PreparedStatement create = connection.prepareStatement(ComputerDAOQueries.CREATE_COMPUTER,
                         Statement.RETURN_GENERATED_KEYS);) {
+            LOGGER.error("NOPE");
             if (ComputerMapper.insertComputerIntoDatabase(create, computer) == Statement.RETURN_GENERATED_KEYS) {
                 try (ResultSet resultSet = create.getGeneratedKeys();) {
                     resultSet.next();
@@ -56,6 +57,7 @@ public enum ComputerDAO implements IComputerDAO {
                     }
                 }
             }
+//            connection.commit();
             return computer;
         } catch (SQLException | SQLMappingException e) {
             throw new DAOException(e.getMessage(), e);
@@ -222,6 +224,7 @@ public enum ComputerDAO implements IComputerDAO {
             if (LOGGER.isInfoEnabled()) {
                 LOGGER.info("Row with " + id + " deleted " + (rowIsDeleted ? " successfully" : " failed"));
             }
+//            connection.commit();
             return rowIsDeleted;
         } catch (SQLException e) {
             throw new DAOException(e);
@@ -242,13 +245,14 @@ public enum ComputerDAO implements IComputerDAO {
             throw new DAOException(DAOException.ENTITY_NULL_OR_NOT_IN_DB);
         }
 
-        try (PreparedStatement create = DatabaseManager.INSTANCE.getConnection()
-                .prepareStatement(ComputerDAOQueries.CREATE_COMPUTER, Statement.RETURN_GENERATED_KEYS);) {
+        try (Connection connection = DatabaseManager.INSTANCE.getConnection();
+                PreparedStatement create = connection.prepareStatement(ComputerDAOQueries.CREATE_COMPUTER, Statement.RETURN_GENERATED_KEYS);) {
 
             boolean rowIsUpdated = ComputerMapper.insertComputerIntoDatabase(create, computer) == 1;
             if (LOGGER.isInfoEnabled()) {
                 LOGGER.info("Row with " + computer.getId() + " updated" + (rowIsUpdated ? " successfully" : " failed"));
             }
+            connection.commit();
             return computer;
 
         } catch (SQLException | SQLMappingException e) {

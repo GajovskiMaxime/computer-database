@@ -16,6 +16,26 @@ import com.excilys.mgajovski.computer_database.validations.checkers.ComputerChec
  * @date 3 mars 2017
  */
 public final class ComputerMapper {
+    
+    
+    public static ComputerDTOImpl transformToDTO(Computer computer) {
+
+        if(computer == null){
+            
+        }    
+        
+        ComputerDTOImpl computerDTO = new ComputerDTOImpl();
+        computerDTO.setCompanyName(computer.getCompany().getName());
+        computerDTO.setCompanyId(computer.getCompany().getId());
+        
+        computerDTO.setComputerId(computer.getId());
+        computerDTO.setComputerName(computer.getName());
+        computerDTO.setDiscontinued(computer.getDiscontinuedDate().toString());
+        computerDTO.setIntroduced(computer.getIntroducedDate().toString());
+        return computerDTO;
+    }
+
+
 
     /**
      * This method transform a DTO object into the associated entity.
@@ -23,7 +43,7 @@ public final class ComputerMapper {
      * @return a computer object if all computerDTO fields are correctly fulfilled.
      * @throws DTOMapperException if one DTO field is not correctly fulfilled.
      */
-    public static Computer transformDTO(ComputerDTOImpl computerDTO) throws DTOMapperException {
+    public static Computer transformFromDTO(ComputerDTOImpl computerDTO) throws DTOMapperException {
 
         try {
             ComputerChecker.dtoIsValid(computerDTO);

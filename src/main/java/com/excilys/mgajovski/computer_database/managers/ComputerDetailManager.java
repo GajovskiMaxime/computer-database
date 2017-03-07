@@ -14,6 +14,7 @@ import com.excilys.mgajovski.computer_database.dao.IComputerDAO;
 import com.excilys.mgajovski.computer_database.dto.impl.ComputerDTOImpl;
 import com.excilys.mgajovski.computer_database.dto.mappers.ComputerMapper;
 import com.excilys.mgajovski.computer_database.entities.Company;
+import com.excilys.mgajovski.computer_database.entities.Computer;
 import com.excilys.mgajovski.computer_database.exceptions.DAOException;
 import com.excilys.mgajovski.computer_database.exceptions.mapping.DTOMapperException;
 import com.excilys.mgajovski.computer_database.exceptions.mapping.DateException;
@@ -63,11 +64,19 @@ public class ComputerDetailManager {
     public String getComputerName() {
         return computerDTO.getComputerName();
     }
-
+    
+    /**
+     * This method return the companies in order to be displayed.
+     * @return a list of companies
+     * @throws DAOException : if an error occurs.
+     */
     public List<Company> getCompanies() throws DAOException {
         return companyDAO.findAll();
     }
-
+    
+    public Computer getComputer(long id) throws DAOException{
+        return computerDAO.find(id);
+    }
     /**
      * This method set the computerDTO name.
      * @param computerName : the computer name to set.
@@ -128,14 +137,14 @@ public class ComputerDetailManager {
      * This method looks if for each fields they are correctly fulfilled.
      * @return true if all fields are correctly fulfilled, false otherwise.
      */
-    public boolean computerFieldsAreValid() {
+    public String computerFieldsAreValid() {
         try {
             ComputerChecker.dtoIsValid(computerDTO);
         } catch (IdException | NameException | DateException e) {
-            LOGGER.error(e.getMessage(), e);
-            return false;
+            
+            return e.getMessage();
         }
-        return true;
+        return "success";
     }
 
     /**
@@ -143,7 +152,7 @@ public class ComputerDetailManager {
      */
     public void addComputer() {
         try {
-            computerDAO.create(ComputerMapper.transformDTO(computerDTO));
+            computerDAO.create(ComputerMapper.transformFromDTO(computerDTO));
         } catch (DAOException | DTOMapperException e) {
             LOGGER.error(e.getMessage(), e);
         }

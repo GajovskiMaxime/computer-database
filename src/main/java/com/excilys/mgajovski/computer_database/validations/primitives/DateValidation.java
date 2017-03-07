@@ -10,10 +10,10 @@ import com.excilys.mgajovski.computer_database.exceptions.mapping.DateException;
  */
 public final class DateValidation {
 
-  public static final String INVALID_DATE_FORMAT = "date format is not valid : ";
-  public static final String DATE_NULL = "date null.";
   public static final String DATE_FORMAT_REGEX = "\\d{4}-\\d{2}-\\d{2}";
-  public static final String BEFORE_DATE_ERR = "introduced date can't be after discontinued date.";
+  public static final String INVALID_DATE_FORMAT = "Date must respect the regex : " + DATE_FORMAT_REGEX;
+  public static final String DATE_NULL = "Date seems to be null.";  
+  public static final String BEFORE_DATE_ERR = "Introduced date can't be after Discontinued date.";
 
   /**
    * This method looks if the string date is not null and have a good format.

@@ -51,9 +51,8 @@ public class ComputerListManager {
      */
     public void setFilter(String filter) {
       computerFilteredPage.setFilter(filter);
-      updateNumberOfElementsFromFilteredRequest();
-      computerFilteredPage.refreshMaxPage(numberOfElementsFromFilteredRequest);
-      updateElements();
+    
+//      updateElements();
     }
 
     /**
@@ -75,9 +74,9 @@ public class ComputerListManager {
         try {
             numberOfElementsFromFilteredRequest = computerDAO.sizeOfFilteredQuery(computerFilteredPage.getFilter());
         } catch (DAOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
+        
         computerFilteredPage.refreshMaxPage(numberOfElementsFromFilteredRequest);
         updateElements();
     }
@@ -102,7 +101,7 @@ public class ComputerListManager {
      */
     public void setCurrentPage(int currentPage) {
       computerFilteredPage.setCurrentPage(currentPage);
-      updateElements();
+//      updateElements();
     }
 
     public int getElementsByPage() {
@@ -117,7 +116,7 @@ public class ComputerListManager {
     public void setElementsByPage(int elementsByPage) {
       computerFilteredPage.setElementsByPage(elementsByPage);
       computerFilteredPage.refreshMaxPage(numberOfElementsFromFilteredRequest);
-      updateElements();
+//      updateElements();
     }
 
     /**
@@ -140,9 +139,11 @@ public class ComputerListManager {
      * @throws DAOException 
      * @throws PageException 
      */
-    private void updateElements() {
+    public void updateElements() {
 //      List<Computer> computers = computerDAO.findByPage(computerFilteredPage);
       try {
+        updateNumberOfElementsFromFilteredRequest();
+//        computerFilteredPage.refreshMaxPage(numberOfElementsFromFilteredRequest);
         computerFilteredPage.setElements(computerDAO.findByPage(computerFilteredPage));
     } catch (PageException | DAOException e) {
         // TODO Auto-generated catch block

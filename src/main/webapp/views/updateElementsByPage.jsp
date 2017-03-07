@@ -7,5 +7,5 @@
 <c:set      target="${computerListManager}" 
             property="elementsByPage" 
             value="${param.elementsByPageButton}"/>
-
+<c:out      value="${computerListManager.updateElements()}"/>            
 <c:redirect url="dashboard.jsp"/>
