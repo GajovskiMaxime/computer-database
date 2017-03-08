@@ -1,5 +1,7 @@
 package com.excilys.mgajovski.computer_database.managers;
 
+import java.util.List;
+
 import javax.annotation.ManagedBean;
 import javax.annotation.PostConstruct;
 
@@ -11,8 +13,13 @@ import com.excilys.mgajovski.computer_database.dao.ICompanyDAO;
 import com.excilys.mgajovski.computer_database.dao.IComputerDAO;
 import com.excilys.mgajovski.computer_database.dto.impl.ComputerDTOImpl;
 import com.excilys.mgajovski.computer_database.dto.mappers.ComputerMapper;
+import com.excilys.mgajovski.computer_database.entities.Company;
 import com.excilys.mgajovski.computer_database.exceptions.DAOException;
+import com.excilys.mgajovski.computer_database.exceptions.mapping.DTOMapperException;
+import com.excilys.mgajovski.computer_database.exceptions.mapping.DateException;
 import com.excilys.mgajovski.computer_database.exceptions.mapping.IdException;
+import com.excilys.mgajovski.computer_database.exceptions.mapping.NameException;
+import com.excilys.mgajovski.computer_database.validations.checkers.ComputerChecker;
 import com.excilys.mgajovski.computer_database.validations.primitives.LongValidation;
 
 /**
@@ -51,10 +58,20 @@ public class EditComputerManager {
         return "success";
     }
     
+    /**
+     * This method return the companies in order to be displayed.
+     * @return a list of companies
+     * @throws DAOException : if an error occurs.
+     */
+    public List<Company> getCompanies() throws DAOException {
+        return companyDAO.findAll();
+    }
+    
     public void updateComputerDTO(String id){
         long longId = Long.parseLong(id);
         try {
             computerDTO = ComputerMapper.transformToDTO(computerDAO.find(longId));
+            LOGGER.warn(computerDTO.getComputerName());
         } catch (DAOException e) {
             e.printStackTrace();
         }
@@ -67,6 +84,11 @@ public class EditComputerManager {
     public void setComputerName(String computerName) {
         computerDTO.setComputerName(computerName);
     }
+    
+    public String getComputerName() {
+        return computerDTO.getComputerName();
+    }
+    
 
     public String getIntroduced() {
         return computerDTO.getIntroduced();
@@ -93,6 +115,7 @@ public class EditComputerManager {
     }
 
     public long getCompanyId() {
+        LOGGER.error("YOOOO" + computerDTO.getCompanyId() );
         return computerDTO.getCompanyId();
     }
 
@@ -116,5 +139,28 @@ public class EditComputerManager {
         computerDTO.setCompanyName(companyName);
     }
 
+
+    /**
+     * This method looks if for each fields they are correctly fulfilled.
+     * @return true if all fields are correctly fulfilled, false otherwise.
+     */
+    public String computerFieldsAreValid() {
+        try {
+            ComputerChecker.dtoIsValidWithIdInit(computerDTO, true);
+        } catch (IdException | NameException | DateException e) {
+            return e.getMessage();
+        }
+        return "success";
+    }
     
+    /**
+     * This method adds a computer if all DTO fields are correctly fulfilled.
+     */
+    public void updateComputer() {
+        try {
+            computerDAO.update(ComputerMapper.transformFromDTOWithIdInit(computerDTO, true));
+        } catch (DAOException | DTOMapperException e) {
+            LOGGER.error(e.getMessage(), e);
+        }
+    }
 }

@@ -16,19 +16,30 @@ import com.excilys.mgajovski.computer_database.validations.primitives.StringVali
 public final class ComputerChecker {
 
     /**
-     * This method looks all computerDTO fields and return if they're all correctly fulfilled.
-     * @param computerDTO : the corresponding DTO for computer entity.
+     * This method looks all computerDTO fields and return if they're all
+     * correctly fulfilled.
+     * 
+     * @param computerDTO
+     *            : the corresponding DTO for computer entity.
      * @return true if all fields are correctly fulfilled, false otherwise.
-     * @throws IdException : if the computer id field is not correctly fulfilled.
-     * @throws NameException : if the computer name field is not correctly fulfilled.
-     * @throws DateException : if the computer introduced & discontinued fields are not correctly fulfilled.
+     * @throws IdException
+     *             : if the computer id field is not correctly fulfilled.
+     * @throws NameException
+     *             : if the computer name field is not correctly fulfilled.
+     * @throws DateException
+     *             : if the computer introduced & discontinued fields are not
+     *             correctly fulfilled.
      */
-    public static boolean dtoIsValid(ComputerDTOImpl computerDTO) throws IdException, NameException, DateException {
+    public static boolean dtoIsValidWithIdInit(ComputerDTOImpl computerDTO, boolean idIsInit)
+            throws IdException, NameException, DateException {
 
-        return LongValidation.idIsNotInitialized(computerDTO.getComputerId())
-                && StringValidation.hasValidName(computerDTO.getComputerName())
+        boolean allDtoFieldsWithoutIdAreOkay = StringValidation.hasValidName(computerDTO.getComputerName())
                 && DateValidation.formatIsValid(computerDTO.getIntroduced())
                 && DateValidation.formatIsValid(computerDTO.getDiscontinued())
                 && DateValidation.datesAreInGoodTimeOrder(computerDTO.getIntroduced(), computerDTO.getDiscontinued());
+        boolean dtoIdIsOkay = idIsInit ? LongValidation.idIsInitialized(computerDTO.getComputerId())
+                : LongValidation.idIsNotInitialized(computerDTO.getComputerId());
+
+        return allDtoFieldsWithoutIdAreOkay && dtoIdIsOkay;
     }
 }

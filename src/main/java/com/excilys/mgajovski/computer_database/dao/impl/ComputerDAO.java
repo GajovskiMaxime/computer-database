@@ -244,18 +244,22 @@ public enum ComputerDAO implements IComputerDAO {
         if (computer == null || computer.getId() == 0) {
             throw new DAOException(DAOException.ENTITY_NULL_OR_NOT_IN_DB);
         }
-
+        System.out.println("YEP");
         try (Connection connection = DatabaseManager.INSTANCE.getConnection();
-                PreparedStatement create = connection.prepareStatement(ComputerDAOQueries.CREATE_COMPUTER, Statement.RETURN_GENERATED_KEYS);) {
+                PreparedStatement create = connection.prepareStatement(ComputerDAOQueries.UPDATE_COMPUTER);) {
+            
+            boolean rowIsUpdated = false;
+           
+                rowIsUpdated = ComputerMapper.insertComputerIntoDatabase2(create, computer) == 1;
 
-            boolean rowIsUpdated = ComputerMapper.insertComputerIntoDatabase(create, computer) == 1;
-            if (LOGGER.isInfoEnabled()) {
+                        if (LOGGER.isInfoEnabled()) {
                 LOGGER.info("Row with " + computer.getId() + " updated" + (rowIsUpdated ? " successfully" : " failed"));
             }
-            connection.commit();
+//            connection.commit();
             return computer;
 
         } catch (SQLException | SQLMappingException e) {
+            LOGGER.error(e.getMessage()); 
             throw new DAOException(e.getMessage(), e);
         }
     }

@@ -32,7 +32,7 @@ public enum DatabaseManager {
     public static final String KEY_MIN_SIZE_POOL = "dataSource.minimumPoolSize";
 
     private static HikariDataSource hikariDataSource;
-
+    private static final ThreadLocal<Connection> threadLocal = new ThreadLocal<>();
      static {
 
         Properties prefs = new Properties();
@@ -71,7 +71,7 @@ public enum DatabaseManager {
 
         HikariConfig config = new HikariConfig(prefs);
         hikariDataSource = new HikariDataSource(config);
-        hikariDataSource.setMaximumPoolSize(1);
+        hikariDataSource.setMaximumPoolSize(20);
         hikariDataSource.setAutoCommit(true);
         
      }
@@ -82,6 +82,8 @@ public enum DatabaseManager {
       * @throws SQLException if it's not possible to get connection.
       */
      public Connection getConnection() throws SQLException {
-        return hikariDataSource.getConnection();
+         Connection connection = hikariDataSource.getConnection();
+         threadLocal.set(connection);
+         return  (Connection) threadLocal.get();
     }
 }

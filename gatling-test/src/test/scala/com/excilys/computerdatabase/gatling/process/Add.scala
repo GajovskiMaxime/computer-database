@@ -16,7 +16,7 @@ object Add {
   )
   val feederAdd = csv("data/addComputer.csv").random
 
-  val add = exec(http("Add: Add page")
+  val add = exec(http("Add: Add page" + config.getString("application.urls.addPage"))
     .get(config.getString("application.urls.addPage")).check(status.is(200))
     .resources(http("Add: Add js")
       .get(config.getString("application.urls.static.js.add"))))

@@ -38,13 +38,11 @@ public class Utils {
         List<HashMap<String, Object>> list = new ArrayList<HashMap<String, Object>>();
         try {
             ResultSetMetaData md = rs.getMetaData();
-            System.out.println(md);
             int columns = md.getColumnCount();
             while (rs.next()) {
                 HashMap<String, Object> row = new HashMap<String, Object>(columns);
                 for (int i = 1; i <= columns; ++i) {
                     row.put(md.getColumnLabel(i), rs.getObject(i));
-                    System.out.println(md.getColumnLabel(i)+ " " + rs.getObject(i));
                 }
                 list.add(row);
             }

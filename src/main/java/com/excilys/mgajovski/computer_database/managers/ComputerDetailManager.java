@@ -139,7 +139,7 @@ public class ComputerDetailManager {
      */
     public String computerFieldsAreValid() {
         try {
-            ComputerChecker.dtoIsValid(computerDTO);
+            ComputerChecker.dtoIsValidWithIdInit(computerDTO, false);
         } catch (IdException | NameException | DateException e) {
             
             return e.getMessage();
@@ -150,11 +150,12 @@ public class ComputerDetailManager {
     /**
      * This method adds a computer if all DTO fields are correctly fulfilled.
      */
-    public void addComputer() {
+    public String addComputer() {
         try {
-            computerDAO.create(ComputerMapper.transformFromDTO(computerDTO));
+            computerDAO.create(ComputerMapper.transformFromDTOWithIdInit(computerDTO, false));
         } catch (DAOException | DTOMapperException e) {
-            LOGGER.error(e.getMessage(), e);
+            return e.getMessage();
         }
+        return "success";
     }
 }

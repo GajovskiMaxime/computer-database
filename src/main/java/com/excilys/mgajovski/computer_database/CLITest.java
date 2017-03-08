@@ -22,11 +22,13 @@ public class CLITest {
         IComputerDAO cDAO = DAO.COMPUTER;
         Computer computer = Computer.builder().name("Yololo").build();
         
+        
         try {
-            System.out.println(cDAO.sizeOfFilteredQuery("lut"));
+            System.out.println(cDAO.sizeOfFilteredQuery("test"));
             Computer comp = cDAO.find(629);
+            System.out.println(cDAO.update(comp));
             comp.setName("LOOOOL");
-            cDAO.update(comp);
+            System.out.println(cDAO.update(comp));
         } catch (DAOException e) {
             // TODO Auto-generated catch block
 //            e.printStackTrace();

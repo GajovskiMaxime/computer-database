@@ -7,13 +7,9 @@
     <jsp:setProperty name="computerListManager" property="*" />
 </jsp:useBean>
 
-
 <c:set      target="${deleteComputerManager}" 
             property="computerIds" 
             value="${param.selection}"/>
-
-
-
 <c:choose>
     
     <c:when test="${deleteComputerManager.allIdsAreValid() == 'success'}">
