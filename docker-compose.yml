@@ -1,0 +1,80 @@
+version: "3"
+
+services:
+
+
+    jenkins-data:
+        image: debian
+        container_name: jenkins_data
+        command: bash -c "./scripts/configure_jenkins_data.sh"
+        volumes:
+            - ./scripts/jenkins/data:/scripts
+            - shared_jenkins:/var/log/jenkins
+
+    jenkins-server:
+        image: jenkins
+        container_name: jenkins-server
+        ports:
+            - 8082:8080
+        user: root
+
+        command: bash -c "./scripts/configure_jenkins.sh"
+        volumes:
+            - ./scripts/jenkins/server:/scripts
+            - shared_jenkins:/var
+            - /var/run/docker.sock:/var/run/docker.sock
+            - /usr/bin/docker:/usr/bin/docker
+            - maven_jenkins:/var/jenkins_home/workspace/cdb_builds
+            - war_deploy:/var/jenkins_home/deploy
+
+    tomcat:
+        image: tomcat:7-jre8
+        container_name: tomcat
+        ports:
+            - 8081:8080
+        volumes:
+            - war_deploy:/usr/local/tomcat/webapps/
+        networks:
+            - production
+
+    mysql-unitTest:
+        image: mysql:latest
+        container_name: mysql-unitTest
+        volumes:
+            - ./scripts/sql:/docker-entrypoint.initdb.d
+        environment:
+            - MYSQL_ROOT_PASSWORD=root
+        networks:
+            - unitTest
+
+    mysql-prod:
+        image: mysql:latest
+        container_name: mysql-prod
+        volumes:
+            - ./scripts/sql:/docker-entrypoint-initdb.d
+        environment:
+            - MYSQL_ROOT_PASSWORD=root
+        networks:
+            - production
+
+    maven:
+        image: maven:3.3.9-jdk-8
+        container_name: mavenUnitTest
+        command: bash -c "./scripts/maven.sh"
+        volumes:
+            - ./scripts/maven:/scripts/
+            - maven_jenkins:/usr/src/mymaven
+        networks:
+            - unitTest
+
+
+networks:
+    unitTest:
+    production:
+
+volumes:
+    war_deploy:
+    mysql_volume:
+    docker_socket:
+    shared_jenkins:
+    maven_jenkins:

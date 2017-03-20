@@ -9,6 +9,10 @@
     <jsp:setProperty name="editComputerManager" property="*" />
 </jsp:useBean>
 
+<jsp:useBean id="computerListManager" scope="session" class="com.excilys.mgajovski.computer_database.managers.ComputerListManager">
+    <jsp:setProperty name="computerListManager" property="*"/>
+</jsp:useBean>
+
 <c:set      target="${editComputerManager}" 
             property="computerName" 
             value="${param.computerName}"/>
@@ -29,6 +33,7 @@
    
     <c:when test="${editComputerManager.computerFieldsAreValid() == 'success'}">
        ${editComputerManager.updateComputer()}
+       ${computerListManager.updateElements()}
     <c:redirect url="dashboard.jsp"/>
     </c:when>
    

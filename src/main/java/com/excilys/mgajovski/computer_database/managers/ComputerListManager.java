@@ -51,8 +51,7 @@ public class ComputerListManager {
      */
     public void setFilter(String filter) {
       computerFilteredPage.setFilter(filter);
-    
-//      updateElements();
+      updateElements();
     }
 
     /**

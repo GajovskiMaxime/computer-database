@@ -83,7 +83,7 @@
 							<td class="editMode"><input type="checkbox" name="cb"
 								class="cb" value="${computer.id}"></td>
 							<td><jsp:element name="a">
-	                            <jsp:attribute name="href">views/postEditComputer.jsp?id=${computer.id}</jsp:attribute>
+	                            <jsp:attribute name="href">postEditComputer.jsp?id=${computer.id}</jsp:attribute>
 	                            <jsp:body>
 	                                <c:out value="${computer.name}" />
 	                            </jsp:body>

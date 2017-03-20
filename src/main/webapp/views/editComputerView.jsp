@@ -35,7 +35,7 @@
 					<h1>Edit Computer</h1>
 
 					<form action="preEditComputer.jsp" method="POST">
-						<input value="${param.id}" id="id" />
+						<input type="hidden" id="id" value="${param.id}"/>
 						<!-- TODO: Change this value with the computer id -->
 						<fieldset>
 							<div class="form-group">

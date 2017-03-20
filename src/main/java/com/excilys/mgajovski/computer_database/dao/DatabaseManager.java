@@ -71,7 +71,7 @@ public enum DatabaseManager {
 
         HikariConfig config = new HikariConfig(prefs);
         hikariDataSource = new HikariDataSource(config);
-        hikariDataSource.setMaximumPoolSize(20);
+        hikariDataSource.setMaximumPoolSize(400);
         hikariDataSource.setAutoCommit(true);
         
      }

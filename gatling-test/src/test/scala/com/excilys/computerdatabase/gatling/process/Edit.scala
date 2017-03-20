@@ -21,7 +21,7 @@ object Edit {
   )
     .pause(3, 10)
     .exec(http("Edit: Select for edit")
-      .get(config.getString("application.baseUrl").get + "${computerURL}")
+      .get(config.getString("application.baseUrl").get + "views/" + "${computerURL}")
       .check(
         status.is(200),
         css(config.getString("application.urls.idElement.edit.id").get, "value").saveAs("computer_id")

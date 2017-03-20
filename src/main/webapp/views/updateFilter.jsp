@@ -7,6 +7,5 @@
 <c:set      target="${computerListManager}" 
             property="filter" 
             value="${param.filter}"/>
-<c:out      value="${computerListManager.updateElements()}"/>
-            
+<c:out      value="${computerListManager.updateElements()}"/>         
 <c:redirect url="dashboard.jsp"/>
