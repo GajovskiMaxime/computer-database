@@ -8,20 +8,20 @@ package com.excilys.mgajovski.computer_database.dto.impl;
  */
 public class CompanyDTOImpl {
 
-  private long companyId;
-  private String companyName;
+  private long id;
+  private String name;
 
-  public long getCompanyId() {
-    return companyId;
+  public long getId() {
+    return id;
   }
-  public void setCompanyId(long companyId) {
-    this.companyId = companyId;
+  public void setId(long companyId) {
+    this.id = companyId;
   }
-  public String getCompanyName() {
-    return companyName;
+  public String getName() {
+    return name;
   }
-  public void setCompanyName(String companyName) {
-    this.companyName = companyName;
+  public void setName(String companyName) {
+    this.name = companyName;
   }
 
 }

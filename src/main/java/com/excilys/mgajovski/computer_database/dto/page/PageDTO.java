@@ -43,16 +43,13 @@ public class PageDTO<K> {
     return currentPage;
   }
 
-//  /**
-//   * t
-//   */
-//  public void nextPage() {
-//      currentPage++;
-//  }
+  public void next() {
+      currentPage++;
+  }
 
-//  public void previousPage() {
-//      currentPage++;
-//  }
+  public void previous() {
+      currentPage++;
+  }
 
   /**
    * This method updates the currentPage.

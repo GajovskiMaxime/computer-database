@@ -14,8 +14,8 @@ import org.slf4j.LoggerFactory;
 import com.excilys.mgajovski.computer_database.dao.CompanyDAOQueries;
 import com.excilys.mgajovski.computer_database.dao.ComputerDAOQueries;
 import com.excilys.mgajovski.computer_database.dao.DatabaseManager;
-import com.excilys.mgajovski.computer_database.dao.ICompanyDAO;
 import com.excilys.mgajovski.computer_database.dao.Utils;
+import com.excilys.mgajovski.computer_database.dao.interfaces.CompanyDAO;
 import com.excilys.mgajovski.computer_database.dao.mappers.CompanyMapper;
 import com.excilys.mgajovski.computer_database.dao.mappers.ComputerMapper;
 import com.excilys.mgajovski.computer_database.dto.page.FilteredPageDTO;
@@ -30,10 +30,10 @@ import com.excilys.mgajovski.computer_database.exceptions.SQLMappingException;
  * @author Gajovski Maxime
  * @date 20 févr. 2017
  */
-public enum CompanyDAO implements ICompanyDAO {
+public enum CompanyDAOImpl implements CompanyDAO {
     INSTANCE;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CompanyDAO.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CompanyDAOImpl.class);
 //
 //    private static PreparedStatement findByIdPS;
 //    private static PreparedStatement findAllPS;
@@ -47,7 +47,7 @@ public enum CompanyDAO implements ICompanyDAO {
     /**
      * Private constructor for CompanyDAO singleton.
      */
-    CompanyDAO() {
+    CompanyDAOImpl() {
     }
 
     @Override

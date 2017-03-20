@@ -8,7 +8,7 @@ import javax.annotation.ManagedBean;
 import javax.annotation.PostConstruct;
 
 import com.excilys.mgajovski.computer_database.dao.DAO;
-import com.excilys.mgajovski.computer_database.dao.IComputerDAO;
+import com.excilys.mgajovski.computer_database.dao.interfaces.ComputerDAO;
 import com.excilys.mgajovski.computer_database.dto.page.FilteredPageDTO;
 import com.excilys.mgajovski.computer_database.entities.Computer;
 import com.excilys.mgajovski.computer_database.exceptions.DAOException;
@@ -22,7 +22,7 @@ import com.excilys.mgajovski.computer_database.exceptions.PageException;
 public class ComputerListManager {
 
     private FilteredPageDTO<Computer> computerFilteredPage;
-    private IComputerDAO computerDAO;
+    private ComputerDAO computerDAO;
     private int numberOfElementsFromFilteredRequest;
 
     private static final String FILTER_INI = "";

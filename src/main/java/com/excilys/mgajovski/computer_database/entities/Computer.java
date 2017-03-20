@@ -119,12 +119,11 @@ public class Computer {
     public static class Builder {
 
         private Computer computer = new Computer();
-
+        
         /**
          * Computer's builder constructor.
          */
         private Builder() {
-
         }
 
         /**

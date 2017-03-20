@@ -7,7 +7,7 @@ import javax.annotation.ManagedBean;
 import javax.annotation.PostConstruct;
 
 import com.excilys.mgajovski.computer_database.dao.DAO;
-import com.excilys.mgajovski.computer_database.dao.IComputerDAO;
+import com.excilys.mgajovski.computer_database.dao.interfaces.ComputerDAO;
 import com.excilys.mgajovski.computer_database.exceptions.DAOException;
 import com.excilys.mgajovski.computer_database.exceptions.mapping.IdException;
 import com.excilys.mgajovski.computer_database.validations.primitives.LongValidation;
@@ -20,7 +20,7 @@ import com.excilys.mgajovski.computer_database.validations.primitives.LongValida
 public class DeleteComputerManager {
 
     private String computerIds;
-    private IComputerDAO computerDAO;
+    private ComputerDAO computerDAO;
 
     /**
      * Public constructor for DeleteComputerManager.

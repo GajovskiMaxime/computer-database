@@ -58,39 +58,7 @@ public class ComputerMapper {
      * @return the result of statement.executeUpdate()
      * @throws SQLMappingException
      */
-    public static int insertComputerIntoDatabase(PreparedStatement createPS, Computer computer)throws SQLMappingException {
-
-        if (computer == null) {
-            throw new IllegalArgumentException(DAOException.ENTITY_NULL);
-        }
-
-        try {
-            createPS.setString(1, computer.getName());
-
-            if (computer.getIntroducedDate() == null) {
-                createPS.setNull(2, Types.DATE);
-            } else {
-                createPS.setDate(2, Date.valueOf(computer.getIntroducedDate()));
-            }
-
-            if (computer.getDiscontinuedDate() == null) {
-                createPS.setNull(3, Types.DATE);
-            } else {
-                createPS.setDate(3, Date.valueOf(computer.getDiscontinuedDate()));
-            }
-            if (computer.getCompany() == null) {
-                createPS.setNull(4, Types.BIGINT);
-            } else {
-                createPS.setLong(4, computer.getCompany().getId());
-            }
-            return createPS.executeUpdate();
-
-        } catch (SQLException e) {
-            throw new SQLMappingException(e.getMessage(), e);
-        }
-    }
-    
-    public static int insertComputerIntoDatabase2(PreparedStatement createPS, Computer computer)throws SQLMappingException {
+    public static boolean insertComputerIntoDatabaseWithUpdate(PreparedStatement createPS, Computer computer, boolean withUpdate)throws SQLMappingException {
 
         if (computer == null) {
             throw new IllegalArgumentException(DAOException.ENTITY_NULL);
@@ -116,12 +84,14 @@ public class ComputerMapper {
                 createPS.setLong(4, computer.getCompany().getId());
             }
             
-            createPS.setLong(5, computer.getId());
-            return createPS.executeUpdate();
+            if(withUpdate == true){
+                createPS.setLong(5, computer.getId());
+            }
+            
+            return createPS.executeUpdate() == 1;
 
         } catch (SQLException e) {
             throw new SQLMappingException(e.getMessage(), e);
         }
     }
-    
 }

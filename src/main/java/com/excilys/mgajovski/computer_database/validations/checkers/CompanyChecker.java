@@ -21,7 +21,7 @@ public final class CompanyChecker {
      */
     public static boolean dtoIsValid(CompanyDTOImpl companyDTO) throws IdException, NameException {
 
-        return LongValidation.idIsNotInitialized(companyDTO.getCompanyId())
-                && StringValidation.hasValidName(companyDTO.getCompanyName());
+        return LongValidation.idIsNotInitialized(companyDTO.getId())
+                && StringValidation.hasValidName(companyDTO.getName());
     }
 }

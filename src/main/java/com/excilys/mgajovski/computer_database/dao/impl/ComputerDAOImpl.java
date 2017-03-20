@@ -12,9 +12,9 @@ import org.slf4j.LoggerFactory;
 
 import com.excilys.mgajovski.computer_database.dao.ComputerDAOQueries;
 import com.excilys.mgajovski.computer_database.dao.DatabaseManager;
-import com.excilys.mgajovski.computer_database.dao.IComputerDAO;
 import com.excilys.mgajovski.computer_database.dao.Utils;
 import com.excilys.mgajovski.computer_database.dao.columns.ComputerColumn;
+import com.excilys.mgajovski.computer_database.dao.interfaces.ComputerDAO;
 import com.excilys.mgajovski.computer_database.dao.mappers.ComputerMapper;
 import com.excilys.mgajovski.computer_database.dto.page.FilteredPageDTO;
 import com.excilys.mgajovski.computer_database.dto.page.PageDTO;
@@ -27,15 +27,16 @@ import com.excilys.mgajovski.computer_database.exceptions.SQLMappingException;
  * @author Gajovski Maxime
  * @date 20 févr. 2017
  */
-public enum ComputerDAO implements IComputerDAO {
+public enum ComputerDAOImpl implements ComputerDAO {
     INSTANCE;
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(ComputerDAO.class);
-
+    
+    private static final Logger LOGGER = LoggerFactory.getLogger(ComputerDAOImpl.class);
+    
+    
     /**
      * Private constructor for ComputerDAO singleton.
      */
-    ComputerDAO() {
+    ComputerDAOImpl() {
     }
 
     @Override
@@ -47,17 +48,15 @@ public enum ComputerDAO implements IComputerDAO {
         try (Connection connection = DatabaseManager.INSTANCE.getConnection();
                 PreparedStatement create = connection.prepareStatement(ComputerDAOQueries.CREATE_COMPUTER,
                         Statement.RETURN_GENERATED_KEYS);) {
-            LOGGER.error("NOPE");
-            if (ComputerMapper.insertComputerIntoDatabase(create, computer) == Statement.RETURN_GENERATED_KEYS) {
+            if (ComputerMapper.insertComputerIntoDatabaseWithUpdate(create, computer, false)) {
                 try (ResultSet resultSet = create.getGeneratedKeys();) {
                     resultSet.next();
                     computer.setId(resultSet.getLong(1));
-                    if (LOGGER.isInfoEnabled()) {
-                        LOGGER.info(Utils.ENTITY_CREATED_SUCCESS);
-                    }
+                    LOGGER.info(Utils.ENTITY_CREATED_SUCCESS);
+
                 }
             }
-//            connection.commit();
+            connection.commit();
             return computer;
         } catch (SQLException | SQLMappingException e) {
             throw new DAOException(e.getMessage(), e);
@@ -158,7 +157,8 @@ public enum ComputerDAO implements IComputerDAO {
         if (page.getElementsByPage() < 0) {
             throw new PageException(PageException.NEGATIVE_NUMBERS_OF_ELEMENTS + page.getElementsByPage());
         }
-
+        
+        
         try (Connection connection = DatabaseManager.INSTANCE.getConnection();
                 PreparedStatement findByPageWithFilter = connection
                         .prepareStatement(ComputerDAOQueries.SELECT_WHERE_NAME_CONTAINS_SEQUENCE_BY_PAGE);) {
@@ -170,7 +170,7 @@ public enum ComputerDAO implements IComputerDAO {
                 List<Computer> computers = ComputerMapper
                         .getComputerListFromResultSet(Utils.convertResultSetToList(result));
                 if (computers.isEmpty()) {
-                    throw new PageException(PageException.LAST_PAGE_REACHED);
+                    throw new PageException(PageException.EMPTY_SET);
                 }
                 return computers;
             }
@@ -200,7 +200,7 @@ public enum ComputerDAO implements IComputerDAO {
                 List<Computer> computers = ComputerMapper
                         .getComputerListFromResultSet(Utils.convertResultSetToList(result));
                 if (computers.isEmpty()) {
-                    throw new PageException(PageException.LAST_PAGE_REACHED);
+                    throw new PageException(PageException.EMPTY_SET);
                 }
                 return computers;
             }
@@ -220,11 +220,8 @@ public enum ComputerDAO implements IComputerDAO {
                         .prepareStatement(ComputerDAOQueries.DELETE_COMPUTER_WITH_ID)) {
             deleteById.setLong(1, id);
             boolean rowIsDeleted = deleteById.executeUpdate() == 1;
-
-            if (LOGGER.isInfoEnabled()) {
-                LOGGER.info("Row with " + id + " deleted " + (rowIsDeleted ? " successfully" : " failed"));
-            }
-//            connection.commit();
+            LOGGER.info("Row with " + id + " deleted " + (rowIsDeleted ? " successfully" : " failed"));
+            connection.commit();
             return rowIsDeleted;
         } catch (SQLException e) {
             throw new DAOException(e);
@@ -244,18 +241,12 @@ public enum ComputerDAO implements IComputerDAO {
         if (computer == null || computer.getId() == 0) {
             throw new DAOException(DAOException.ENTITY_NULL_OR_NOT_IN_DB);
         }
-        System.out.println("YEP");
         try (Connection connection = DatabaseManager.INSTANCE.getConnection();
                 PreparedStatement create = connection.prepareStatement(ComputerDAOQueries.UPDATE_COMPUTER);) {
             
-            boolean rowIsUpdated = false;
-           
-                rowIsUpdated = ComputerMapper.insertComputerIntoDatabase2(create, computer) == 1;
-
-                        if (LOGGER.isInfoEnabled()) {
-                LOGGER.info("Row with " + computer.getId() + " updated" + (rowIsUpdated ? " successfully" : " failed"));
-            }
-//            connection.commit();
+            boolean rowIsUpdated = ComputerMapper.insertComputerIntoDatabaseWithUpdate(create, computer, true);
+            LOGGER.info("Row with " + computer.getId() + " updated" + (rowIsUpdated ? " successfully" : " failed"));
+            connection.commit();
             return computer;
 
         } catch (SQLException | SQLMappingException e) {

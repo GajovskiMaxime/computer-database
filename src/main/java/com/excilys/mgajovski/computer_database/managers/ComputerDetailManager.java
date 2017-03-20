@@ -9,8 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.excilys.mgajovski.computer_database.dao.DAO;
-import com.excilys.mgajovski.computer_database.dao.ICompanyDAO;
-import com.excilys.mgajovski.computer_database.dao.IComputerDAO;
+import com.excilys.mgajovski.computer_database.dao.interfaces.CompanyDAO;
+import com.excilys.mgajovski.computer_database.dao.interfaces.ComputerDAO;
 import com.excilys.mgajovski.computer_database.dto.impl.ComputerDTOImpl;
 import com.excilys.mgajovski.computer_database.dto.mappers.ComputerMapper;
 import com.excilys.mgajovski.computer_database.entities.Company;
@@ -33,8 +33,8 @@ public class ComputerDetailManager {
     private Logger LOGGER = LoggerFactory.getLogger(ComputerDetailManager.class);
 
     private ComputerDTOImpl computerDTO;
-    private ICompanyDAO companyDAO;
-    private IComputerDAO computerDAO;
+    private CompanyDAO companyDAO;
+    private ComputerDAO computerDAO;
     /**
      * Public constructor for ComputerDetailManager.
      */
@@ -110,7 +110,7 @@ public class ComputerDetailManager {
     }
 
     public long getCompanyId() {
-        return computerDTO.getCompanyId();
+        return computerDTO.getCompany().getId();
     }
 
     /**
@@ -118,11 +118,11 @@ public class ComputerDetailManager {
      * @param companyId : the computer company's id to set.
      */
     public void setCompanyId(long companyId) {
-        computerDTO.setCompanyId(companyId);
+        computerDTO.getCompany().setId(companyId);
     }
 
     public String getCompanyName() {
-        return computerDTO.getCompanyName();
+        return computerDTO.getCompany().getName();
     }
 
     /**
@@ -130,7 +130,7 @@ public class ComputerDetailManager {
      * @param companyName : the computer company's name to set.
      */
     public void setCompanyName(String companyName) {
-        computerDTO.setCompanyName(companyName);
+        computerDTO.getCompany().setName(companyName);
     }
 
     /**

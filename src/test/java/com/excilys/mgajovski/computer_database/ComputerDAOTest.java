@@ -4,10 +4,10 @@ import java.util.Optional;
 
 import org.junit.Test;
 
-import com.excilys.mgajovski.computer_database.dao.ICompanyDAO;
-import com.excilys.mgajovski.computer_database.dao.IComputerDAO;
-import com.excilys.mgajovski.computer_database.dao.impl.CompanyDAO;
-import com.excilys.mgajovski.computer_database.dao.impl.ComputerDAO;
+import com.excilys.mgajovski.computer_database.dao.impl.CompanyDAOImpl;
+import com.excilys.mgajovski.computer_database.dao.impl.ComputerDAOImpl;
+import com.excilys.mgajovski.computer_database.dao.interfaces.CompanyDAO;
+import com.excilys.mgajovski.computer_database.dao.interfaces.ComputerDAO;
 import com.excilys.mgajovski.computer_database.entities.Company;
 import com.excilys.mgajovski.computer_database.entities.Computer;
 
@@ -17,7 +17,7 @@ import com.excilys.mgajovski.computer_database.entities.Computer;
  */
 public class ComputerDAOTest {
    
-    private IComputerDAO computerDAO = ComputerDAO.INSTANCE;
+    private ComputerDAO computerDAO = ComputerDAOImpl.INSTANCE;
     
 
     private static final long negativeID = -50;

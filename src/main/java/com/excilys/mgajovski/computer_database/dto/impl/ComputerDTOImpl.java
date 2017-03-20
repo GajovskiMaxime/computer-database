@@ -10,9 +10,24 @@ public class ComputerDTOImpl {
     private String computerName;
     private String introduced;
     private String discontinued;
-    private long companyId;
-    private String companyName;
-
+    private CompanyDTOImpl company;
+    
+    public ComputerDTOImpl(){
+    }
+    
+    public CompanyDTOImpl getCompany(){
+        return company;
+    }
+    
+    public void setCompany(CompanyDTOImpl company){
+        this.company = company;
+    }
+    
+    
+    public void companyIsNull(){
+        this.company = null;
+    }
+    
     public long getComputerId() {
         return computerId;
     }
@@ -44,20 +59,17 @@ public class ComputerDTOImpl {
     public void setDiscontinued(String discontinued) {
         this.discontinued = discontinued;
     }
+    
 
-    public long getCompanyId() {
-        return companyId;
-    }
-
-    public void setCompanyId(long companyId) {
-        this.companyId = companyId;
-    }
-
-    public String getCompanyName() {
-        return companyName;
-    }
-
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
+    @Override
+    public String toString() {
+        
+        return  "computerId : " + computerId + "\n" +
+                "computerName : " + computerName + "\n" +
+                "introduced date : " + introduced + "\n" +
+                "discontinued date : " + discontinued + "\n" +
+                "companyId : " + company.getId() + "\n" + 
+                "companyName : " + company.getName() + "\n" ;
+        
     }
 }

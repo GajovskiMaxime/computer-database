@@ -2,8 +2,8 @@ package com.excilys.mgajovski.computer_database.dto.mappers;
 
 import java.time.LocalDate;
 
+import com.excilys.mgajovski.computer_database.dto.impl.CompanyDTOImpl;
 import com.excilys.mgajovski.computer_database.dto.impl.ComputerDTOImpl;
-import com.excilys.mgajovski.computer_database.entities.Company;
 import com.excilys.mgajovski.computer_database.entities.Computer;
 import com.excilys.mgajovski.computer_database.exceptions.mapping.DTOMapperException;
 import com.excilys.mgajovski.computer_database.exceptions.mapping.DateException;
@@ -11,7 +11,6 @@ import com.excilys.mgajovski.computer_database.exceptions.mapping.IdException;
 import com.excilys.mgajovski.computer_database.exceptions.mapping.NameException;
 import com.excilys.mgajovski.computer_database.validations.checkers.ComputerChecker;
 
-import net.sf.saxon.lib.Logger;
 
 /**
  * @author Gajovski Maxime
@@ -19,29 +18,38 @@ import net.sf.saxon.lib.Logger;
  */
 public final class ComputerMapper {
     
+    private static final String COMPUTER_EMPTY_OR_NEGATIVE_ID = "Computer id not set or negative value.";
+    private static final String COMPUTER_NULL = "Computer seems to be null.";
     
     public static ComputerDTOImpl transformToDTO(Computer computer) {
+        
         if(computer == null){
-            throw new IllegalArgumentException("Computer can't be null.");
-        }    
-        
-        ComputerDTOImpl computerDTO = new ComputerDTOImpl();
-        
-        if(computer.getCompany() != null){
-            computerDTO.setCompanyName(computer.getCompany().getName());
-            computerDTO.setCompanyId(computer.getCompany().getId());
+            throw new IllegalArgumentException(COMPUTER_NULL);
+        }
+        if(computer.getId() < 0){
+            throw new IllegalArgumentException(COMPUTER_EMPTY_OR_NEGATIVE_ID);
         }
         
+        ComputerDTOImpl computerDTO = new ComputerDTOImpl();
+       
         String introduced = computer.getIntroducedDate() == null ? 
-                "" : computer.getIntroducedDate().toString();
+                null : computer.getIntroducedDate().toString();
         
         String discontinued = computer.getDiscontinuedDate() == null ? 
-                "" : computer.getDiscontinuedDate().toString();
+                null : computer.getDiscontinuedDate().toString();
         
         computerDTO.setComputerId(computer.getId());
         computerDTO.setComputerName(computer.getName());
         computerDTO.setDiscontinued(discontinued);
-        computerDTO.setIntroduced(introduced);
+        computerDTO.setIntroduced(introduced);  
+        
+        if(computer.getCompany() == null){
+            computerDTO.companyIsNull();
+        }
+        else{
+            CompanyDTOImpl company = CompanyMapper.transformToDTO(computer.getCompany());
+            computerDTO.setCompany(company);
+        }
         
         return computerDTO;
     }

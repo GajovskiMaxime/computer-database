@@ -13,7 +13,26 @@ import com.excilys.mgajovski.computer_database.validations.checkers.CompanyCheck
  * @date 3 mars 2017
  */
 public class CompanyMapper {
-
+    
+    private static final String COMPANY_EMPTY_OR_NEGATIVE_ID = "Company id not set or negative value.";
+    private static final String COMPANY_NULL = "Company seems to be null.";
+    
+    public static CompanyDTOImpl transformToDTO(Company company) {
+        
+        if(company == null){
+            throw new IllegalArgumentException(COMPANY_NULL);
+        }
+        if(company.getId() < 0){
+            throw new IllegalArgumentException(COMPANY_EMPTY_OR_NEGATIVE_ID);
+        }
+        
+        CompanyDTOImpl companyDTO = new CompanyDTOImpl();
+        companyDTO.setId(company.getId());
+        companyDTO.setName(company.getName());
+        
+        return companyDTO;
+    }
+    
    /**
     * This method transform a DTO object into the associated entity.
     * @param companyDTO : the object to transform.
@@ -21,15 +40,15 @@ public class CompanyMapper {
     * @throws DTOMapperException if one DTO field is not correctly fulfilled.
     */
     public static Company transformDTO(CompanyDTOImpl companyDTO) throws DTOMapperException {
-
+        
         try {
             CompanyChecker.dtoIsValid(companyDTO);
         } catch (IdException | NameException e) {
             throw new DTOMapperException(e.getMessage(), e);
         }
         Company company = Company.builder()
-                .id(companyDTO.getCompanyId())
-                .name(companyDTO.getCompanyName())
+                .id(companyDTO.getId())
+                .name(companyDTO.getName())
                 .build();
 
         return company;

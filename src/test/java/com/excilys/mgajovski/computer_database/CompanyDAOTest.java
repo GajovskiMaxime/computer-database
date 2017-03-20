@@ -1,7 +1,7 @@
 package com.excilys.mgajovski.computer_database;
 
-import com.excilys.mgajovski.computer_database.dao.ICompanyDAO;
-import com.excilys.mgajovski.computer_database.dao.impl.CompanyDAO;
+import com.excilys.mgajovski.computer_database.dao.impl.CompanyDAOImpl;
+import com.excilys.mgajovski.computer_database.dao.interfaces.CompanyDAO;
 import com.excilys.mgajovski.computer_database.entities.Company;
 import com.excilys.mgajovski.computer_database.entities.Computer;
 import com.excilys.mgajovski.computer_database.factories.CompanyFactory;
@@ -21,7 +21,7 @@ import org.junit.runner.RunWith;
 public class CompanyDAOTest {
     
     //private static final CompanyDAO companyDAO = PowerMockito.mock(CompanyDAO.class);
-    private static final CompanyDAO companyDAO = CompanyDAO.INSTANCE;
+    private static final CompanyDAOImpl companyDAO = CompanyDAOImpl.INSTANCE;
     private static final int DATABASE_SIZE = 50;
     
     private static final long negativeID = -50;
