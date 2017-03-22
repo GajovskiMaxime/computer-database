@@ -1,78 +1,223 @@
 package com.excilys.mgajovski.computer_database.services.Impl;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
 
-import com.excilys.mgajovski.computer_database.dao.DAO;
-import com.excilys.mgajovski.computer_database.dao.columns.ComputerColumn;
-import com.excilys.mgajovski.computer_database.dto.page.FilteredPageDTO;
-import com.excilys.mgajovski.computer_database.dto.page.PageDTO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.excilys.mgajovski.computer_database.dao.DatabaseManager;
+import com.excilys.mgajovski.computer_database.dao.interfaces.ComputerDAO;
 import com.excilys.mgajovski.computer_database.entities.Computer;
 import com.excilys.mgajovski.computer_database.exceptions.DAOException;
 import com.excilys.mgajovski.computer_database.exceptions.PageException;
+import com.excilys.mgajovski.computer_database.exceptions.ServiceException;
+import com.excilys.mgajovski.computer_database.pager.FilteredPage;
+import com.excilys.mgajovski.computer_database.pager.Page;
 import com.excilys.mgajovski.computer_database.services.ComputerService;
 
 /**
- * @author	Gajovski Maxime
- * @date	20 mars 2017
+ * @author Gajovski Maxime.
+ * @date 20 mars 2017
  */
-public enum ComputerServiceImpl implements ComputerService{
+
+@Service
+public class ComputerServiceImpl implements ComputerService {
+  
+
+  @Autowired
+  private ComputerDAO computerDAO;
+  
+  @Autowired
+  private DatabaseManager databaseManager;
+  
+  public static final Logger LOGGER = LoggerFactory.getLogger(ComputerServiceImpl.class.getName());
+  
+  @Override
+  public Computer find(long id) throws ServiceException {
+    Connection connection = null;
+    Computer computer = null;
+    try {
+      connection = databaseManager.getConnection();
+      computer = computerDAO.find(connection, id);
+    } catch (DAOException | SQLException exception) {
+      throw new ServiceException(exception);
+    } finally {
+      try {
+        databaseManager.closeConnection(connection);
+      } catch (SQLException exception) {
+        throw new ServiceException(exception);
+      }
+    }
+    return computer;
+  }
+
+  @Override
+  public List<Computer> findAll() throws ServiceException {
+
+    Connection connection = null;
+    List<Computer> computers = null;
+    try {
+      connection = databaseManager.getConnection();
+      computers = computerDAO.findAll(connection);
+    } catch (DAOException | SQLException exception) {
+      throw new ServiceException(exception);
+    } finally {
+      try {
+        databaseManager.closeConnection(connection);
+      } catch (SQLException exception) {
+        throw new ServiceException(exception);
+      }
+    }
+    return computers;
+  }
+
+  @Override
+  public List<Computer> findByPage(Page<Computer> k) throws ServiceException {
+    Connection connection = null;
+    List<Computer> computers = null;
+    try {
+      connection = databaseManager.getConnection();
+      computers = computerDAO.findByPage(connection, k);
+    } catch (DAOException | SQLException | PageException exception) {
+      throw new ServiceException(exception);
+    } finally {
+      try {
+        databaseManager.closeConnection(connection);
+      } catch (SQLException exception) {
+        throw new ServiceException(exception);
+      }
+    }
+    return computers;
+  }
+
+  @Override
+  public List<Computer> findByPage(FilteredPage<Computer> k) throws ServiceException {
+    Connection connection = null;
+    List<Computer> computers = null;
+    try {
+      connection = databaseManager.getConnection();
+      computers = computerDAO.findByPage(connection, k);
+    } catch (DAOException | SQLException | PageException exception) {
+      throw new ServiceException(exception);
+    } finally {
+      try {
+        databaseManager.closeConnection(connection);
+      } catch (SQLException exception) {
+        throw new ServiceException(exception);
+      }
+    }
+    return computers;
+  }
+
+  @Override
+  public Computer create(Computer obj) throws ServiceException {
+    Connection connection = null;
+    Computer computer = null;
+
+    try {
+      connection = databaseManager.getConnection();
+      computer = computerDAO.create(connection, obj);
+      databaseManager.commit(connection);
+
+    } catch (DAOException | SQLException exception) {
+      throw new ServiceException(exception);
+    } finally {
+      try {
+        databaseManager.closeConnection(connection);
+      } catch (SQLException exception) {
+        throw new ServiceException(exception);
+      }
+    }
+    return computer;
+  }
+
+  @Override
+  public List<Computer> findByFilter(String filter) throws ServiceException {
+    Connection connection = null;
+    List<Computer> computers = null;
+    try {
+      connection = databaseManager.getConnection();
+      computers = computerDAO.findByFilter(connection, filter);
+    } catch (DAOException | SQLException exception) {
+      throw new ServiceException(exception);
+    } finally {
+      try {
+        databaseManager.closeConnection(connection);
+      } catch (SQLException exception) {
+        throw new ServiceException(exception);
+      }
+    }
+    return computers;
+  }
+
+  @Override
+  public Computer update(Computer obj) throws ServiceException {
+
+    Connection connection = null;
+    Computer computer = null;
+
+    try {
+      connection = databaseManager.getConnection();
+      computer = computerDAO.update(connection, obj);
+      databaseManager.commit(connection);
+
+    } catch (DAOException | SQLException exception) {
+      throw new ServiceException(exception);
+    } finally {
+      try {
+        databaseManager.closeConnection(connection);
+      } catch (SQLException exception) {
+        throw new ServiceException(exception);
+      }
+    }
+    return computer;
+  }
+
+  @Override
+  public void delete(Computer obj) throws ServiceException {
+    this.delete(obj.getId());
+  }
+
+  @Override
+  public void delete(long id) throws ServiceException {
+    Connection connection = null;
+    try {
+      connection = databaseManager.getConnection();
+      computerDAO.delete(connection, id);
+      databaseManager.commit(connection);
+    } catch (DAOException | SQLException exception) {
+      throw new ServiceException(exception);
+    } finally {
+      try {
+        databaseManager.closeConnection(connection);
+      } catch (SQLException exception) {
+        throw new ServiceException(exception);
+      }
+    }
+  }
+
+  @Override
+  public int sizeOfFilteredQuery(String sequence) throws ServiceException {
     
-    INSTANCE;
-    
-    @Override
-    public List<String> findAllByColumn(ComputerColumn... computerColumn) throws DAOException {
-        return DAO.COMPUTER.findAllByColumn(computerColumn);
+    Connection connection = null;
+    int size = -1;
+    try{
+      databaseManager.getConnection();
+      size = computerDAO.sizeOfFilteredQuery(connection, sequence);
+    } catch(DAOException | SQLException exception){
+      throw new ServiceException(exception);
+    }finally {
+      try {
+        databaseManager.closeConnection(connection);
+      } catch (SQLException exception) {
+        throw new ServiceException(exception);
+      }
     }
-
-    @Override
-    public Computer find(long id) throws DAOException {
-        return DAO.COMPUTER.find(id);
-    }
-
-    @Override
-    public List<Computer> findAll() throws DAOException {
-        return DAO.COMPUTER.findAll();
-    }
-
-    @Override
-    public List<Computer> findByPage(PageDTO<Computer> k) throws PageException, DAOException {
-        return DAO.COMPUTER.findByPage(k);
-    }
-
-    
-    @Override
-    public List<Computer> findByPage(FilteredPageDTO<Computer> k) throws PageException, DAOException {
-        return DAO.COMPUTER.findByPage(k);
-    }
-
-    @Override
-    public Computer create(Computer obj) throws DAOException {        
-        return DAO.COMPUTER.create(obj);
-    }
-
-    @Override
-    public List<Computer> findByFilter(String filter) throws DAOException {
-        return DAO.COMPUTER.findByFilter(filter);
-    }
-    
-    @Override
-    public Computer update(Computer obj) throws DAOException {
-        return DAO.COMPUTER.update(obj);
-    }
-    
-    @Override
-    public boolean delete(Computer obj) throws DAOException {
-        return DAO.COMPUTER.delete(obj);
-    }
-
-    @Override
-    public boolean delete(long id) throws DAOException {        
-        return DAO.COMPUTER.delete(id);
-    }
-
-    @Override
-    public int sizeOfFilteredQuery(String sequence) throws DAOException {
-        return DAO.COMPUTER.sizeOfFilteredQuery(sequence);
-    }
+    return size;
+  }
 
 }

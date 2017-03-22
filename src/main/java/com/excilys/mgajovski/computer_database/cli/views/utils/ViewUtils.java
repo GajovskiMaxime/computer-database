@@ -8,7 +8,7 @@ import java.util.Scanner;
  * @date 21 févr. 2017
  */
 public final class ViewUtils {
-
+    
     static final String BAD_INPUT = "Bad Input! Try again !\n";
     static final String COMPUTER_NOT_DELETED = "Computer not deleted ! *HALLELUJAH*\n";
     static final String NEGATIVE_PAGE_REQUEST = "You can't reach a negative page number !\n";

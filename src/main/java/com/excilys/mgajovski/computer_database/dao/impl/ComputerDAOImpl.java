@@ -9,268 +9,289 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Repository;
 
 import com.excilys.mgajovski.computer_database.dao.ComputerDAOQueries;
-import com.excilys.mgajovski.computer_database.dao.DatabaseManager;
 import com.excilys.mgajovski.computer_database.dao.Utils;
 import com.excilys.mgajovski.computer_database.dao.columns.ComputerColumn;
 import com.excilys.mgajovski.computer_database.dao.interfaces.ComputerDAO;
 import com.excilys.mgajovski.computer_database.dao.mappers.ComputerMapper;
-import com.excilys.mgajovski.computer_database.dto.page.FilteredPageDTO;
-import com.excilys.mgajovski.computer_database.dto.page.PageDTO;
+import com.excilys.mgajovski.computer_database.entities.Company;
 import com.excilys.mgajovski.computer_database.entities.Computer;
 import com.excilys.mgajovski.computer_database.exceptions.DAOException;
 import com.excilys.mgajovski.computer_database.exceptions.PageException;
 import com.excilys.mgajovski.computer_database.exceptions.SQLMappingException;
+import com.excilys.mgajovski.computer_database.pager.FilteredPage;
+import com.excilys.mgajovski.computer_database.pager.Page;
 
 /**
  * @author Gajovski Maxime
  * @date 20 févr. 2017
  */
-public enum ComputerDAOImpl implements ComputerDAO {
-    INSTANCE;
-    
-    private static final Logger LOGGER = LoggerFactory.getLogger(ComputerDAOImpl.class);
-    
-    
-    /**
-     * Private constructor for ComputerDAO singleton.
-     */
-    ComputerDAOImpl() {
+@Repository
+@Scope("singleton")
+public class ComputerDAOImpl implements ComputerDAO {  
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(ComputerDAOImpl.class);
+
+  /**
+   * Private constructor for ComputerDAO singleton.
+   */
+  ComputerDAOImpl() {
+  }
+
+  @Override
+  public Computer create(Connection connection, Computer computer) throws DAOException {
+
+    if (computer == null || computer.getId() > 0) {
+      throw new DAOException(DAOException.ENTITY_NULL_OR_ALREADY_EXIST);
     }
 
-    @Override
-    public Computer create(Computer computer) throws DAOException {
+    try (PreparedStatement create = connection.prepareStatement(ComputerDAOQueries.CREATE_COMPUTER,
+        Statement.RETURN_GENERATED_KEYS);) {
+      if (ComputerMapper.insertComputerIntoDatabaseWithUpdate(create, computer, false)) {
+        try (ResultSet resultSet = create.getGeneratedKeys();) {
+          resultSet.next();
+          computer.setId(resultSet.getLong(1));
+          LOGGER.info(Utils.ENTITY_CREATED_SUCCESS);
 
-        if (computer == null || computer.getId() > 0) {
-            throw new DAOException(DAOException.ENTITY_NULL_OR_ALREADY_EXIST);
         }
-        try (Connection connection = DatabaseManager.INSTANCE.getConnection();
-                PreparedStatement create = connection.prepareStatement(ComputerDAOQueries.CREATE_COMPUTER,
-                        Statement.RETURN_GENERATED_KEYS);) {
-            if (ComputerMapper.insertComputerIntoDatabaseWithUpdate(create, computer, false)) {
-                try (ResultSet resultSet = create.getGeneratedKeys();) {
-                    resultSet.next();
-                    computer.setId(resultSet.getLong(1));
-                    LOGGER.info(Utils.ENTITY_CREATED_SUCCESS);
-
-                }
-            }
-            connection.commit();
-            return computer;
-        } catch (SQLException | SQLMappingException e) {
-            throw new DAOException(e.getMessage(), e);
-        }
-
+      }
+      return computer;
+    } catch (SQLException | SQLMappingException e) {
+      throw new DAOException(e.getMessage(), e);
     }
 
-    @Override
-    public Computer find(long id) throws DAOException {
+  }
 
-        if (id <= 0) {
-            throw new DAOException(DAOException.NEGATIVE_OR_NULL_ID);
-        }
+  @Override
+  public Computer find(Connection connection, long id) throws DAOException {
 
-        try (PreparedStatement findById = DatabaseManager.INSTANCE.getConnection()
-                .prepareStatement(ComputerDAOQueries.RIGHT_JOIN_WITH_ID);) {
-
-            findById.setLong(1, id);
-            try (ResultSet resultSet = findById.executeQuery();) {
-                List<Computer> computers = ComputerMapper
-                        .getComputerListFromResultSet(Utils.convertResultSetToList(resultSet));
-                if (computers.isEmpty()) {
-                    throw new DAOException(DAOException.ENTITY_NOT_FOUND);
-                }
-                return computers.get(0);
-            }
-        } catch (SQLException e) {
-            throw new DAOException(e.getMessage(), e);
-        }
+    if (id <= 0) {
+      throw new DAOException(DAOException.NEGATIVE_OR_NULL_ID);
     }
 
-    @Override
-    public List<Computer> findAll() throws DAOException {
+    try (PreparedStatement findById = connection
+        .prepareStatement(ComputerDAOQueries.RIGHT_JOIN_WITH_ID);) {
 
-        try (PreparedStatement findAll = DatabaseManager.INSTANCE.getConnection()
-                .prepareStatement(ComputerDAOQueries.RIGHT_JOIN); ResultSet result = findAll.executeQuery();) {
-
-            List<Computer> computers = ComputerMapper
-                    .getComputerListFromResultSet(Utils.convertResultSetToList(result));
-            if (computers.isEmpty()) {
-                throw new DAOException(DAOException.EMPTY_TABLE);
-            }
-            return computers;
-        } catch (SQLException e) {
-            throw new DAOException(e.getMessage(), e);
+      findById.setLong(1, id);
+      try (ResultSet resultSet = findById.executeQuery();) {
+        List<Computer> computers = ComputerMapper
+            .getComputerListFromResultSet(Utils.convertResultSetToList(resultSet));
+        if (computers.isEmpty()) {
+          throw new DAOException(DAOException.ENTITY_NOT_FOUND);
         }
+        return computers.get(0);
+      }
+    } catch (SQLException e) {
+      throw new DAOException(e.getMessage(), e);
+    }
+  }
+
+  @Override
+  public List<Computer> findAll(Connection connection) throws DAOException {
+
+    try (PreparedStatement findAll = connection.prepareStatement(ComputerDAOQueries.RIGHT_JOIN);
+        ResultSet result = findAll.executeQuery();) {
+
+      List<Computer> computers = ComputerMapper
+          .getComputerListFromResultSet(Utils.convertResultSetToList(result));
+      if (computers.isEmpty()) {
+        throw new DAOException(DAOException.EMPTY_TABLE);
+      }
+      return computers;
+    } catch (SQLException e) {
+      throw new DAOException(e.getMessage(), e);
+    }
+  }
+
+  @Override
+  public List<Computer> findByFilter(Connection connection, String filter) throws DAOException {
+    try (PreparedStatement findByFilter = connection
+        .prepareStatement(ComputerDAOQueries.SELECT_WHERE_NAME_CONTAINS_SEQUENCE);) {
+
+      findByFilter.setString(1, '%' + filter + '%');
+      try (ResultSet result = findByFilter.executeQuery()) {
+        List<Computer> computers = ComputerMapper
+            .getComputerListFromResultSet(Utils.convertResultSetToList(result));
+        if (computers.isEmpty()) {
+          throw new DAOException(DAOException.NO_MATCH_FOR_FILTER);
+        }
+        return computers;
+      }
+    } catch (SQLException e) {
+      throw new DAOException(e.getMessage(), e);
+    }
+  }
+
+  @Override
+  public List<Computer> findByPage(Connection connection, FilteredPage<Computer> page)
+      throws PageException, DAOException {
+
+    if (page == null) {
+      throw new PageException(PageException.PAGE_NULL);
+    }
+    if (page.getCurrentPage() < 0) {
+      throw new PageException(PageException.NEGATIVE_CURRENT_PAGE + page.getCurrentPage());
+    }
+    if (page.getElementsByPage() < 0) {
+      throw new PageException(
+          PageException.NEGATIVE_NUMBERS_OF_ELEMENTS + page.getElementsByPage());
     }
 
-    @Override
-    public List<String> findAllByColumn(ComputerColumn... computerColumns) throws DAOException {
+    try (PreparedStatement findByPageWithFilter = connection
+        .prepareStatement(ComputerDAOQueries.SELECT_WHERE_NAME_CONTAINS_SEQUENCE_BY_PAGE);) {
 
-        String query = "select " + ComputerColumn.arrayToString(computerColumns) + " from computer";
-
-        try (Connection connection = DatabaseManager.INSTANCE.getConnection();
-                ResultSet result = connection.createStatement().executeQuery(query);) {
-
-            List<String> computers = Utils.hashMapListToString(Utils.convertResultSetToList(result));
-
-            if (computers.isEmpty()) {
-                throw new DAOException(DAOException.EMPTY_TABLE);
-            }
-            return computers;
-
-        } catch (SQLException e) {
-            throw new DAOException(e.getMessage(), e);
+      findByPageWithFilter.setString(1, '%' + page.getFilter() + '%');
+      findByPageWithFilter.setInt(2, page.getElementsByPage());
+      findByPageWithFilter.setInt(3, page.getElementsByPage() * page.getCurrentPage());
+      try (ResultSet result = findByPageWithFilter.executeQuery();) {
+        List<Computer> computers = ComputerMapper
+            .getComputerListFromResultSet(Utils.convertResultSetToList(result));
+        if (computers.isEmpty()) {
+          throw new PageException(PageException.EMPTY_SET);
         }
+        return computers;
+      }
+    } catch (SQLException e) {
+      throw new DAOException(e.getMessage(), e);
+    }
+  }
+
+  @Override
+  public List<Computer> findByPage(Connection connection, Page<Computer> page)
+      throws PageException, DAOException {
+
+    if (page == null) {
+      throw new PageException(PageException.PAGE_NULL);
+    }
+    if (page.getCurrentPage() < 0) {
+      throw new PageException(PageException.NEGATIVE_CURRENT_PAGE + page.getCurrentPage());
+    }
+    if (page.getElementsByPage() < 0) {
+      throw new PageException(
+          PageException.NEGATIVE_NUMBERS_OF_ELEMENTS + page.getElementsByPage());
     }
 
-    @Override
-    public List<Computer> findByFilter(String filter) throws DAOException {
-        try (Connection connection = DatabaseManager.INSTANCE.getConnection();
-                PreparedStatement findByFilter = connection
-                        .prepareStatement(ComputerDAOQueries.SELECT_WHERE_NAME_CONTAINS_SEQUENCE);) {
-
-            findByFilter.setString(1, '%' + filter + '%');
-            try (ResultSet result = findByFilter.executeQuery()) {
-                List<Computer> computers = ComputerMapper
-                        .getComputerListFromResultSet(Utils.convertResultSetToList(result));
-                if (computers.isEmpty()) {
-                    throw new DAOException(DAOException.NO_MATCH_FOR_FILTER);
-                }
-                return computers;
-            }
-        } catch (SQLException e) {
-            throw new DAOException(e.getMessage(), e);
+    try (PreparedStatement findByPage = connection
+        .prepareStatement(ComputerDAOQueries.SELECT_ALL_BY_PAGE);) {
+      findByPage.setInt(1, page.getElementsByPage());
+      findByPage.setInt(2, page.getElementsByPage() * page.getCurrentPage());
+      try (ResultSet result = findByPage.executeQuery()) {
+        List<Computer> computers = ComputerMapper
+            .getComputerListFromResultSet(Utils.convertResultSetToList(result));
+        if (computers.isEmpty()) {
+          throw new PageException(PageException.EMPTY_SET);
         }
+        return computers;
+      }
+    } catch (SQLException e) {
+      throw new DAOException(e.getMessage(), e);
+    }
+  }
+
+  @Override
+  public void delete(Connection connection, long id) throws DAOException {
+    if (id <= 0) {
+      throw new DAOException(DAOException.NEGATIVE_OR_NULL_ID);
     }
 
-    @Override
-    public List<Computer> findByPage(FilteredPageDTO<Computer> page) throws PageException, DAOException {
+    String deleteComputerQuery = "delete from computer where id=" + id;
+    try (Statement statement = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+        ResultSet.CONCUR_UPDATABLE)) {
+      boolean isDeleted = statement.executeUpdate(deleteComputerQuery) == 1;
+      LOGGER.info(
+          "Computer with id :" + id + (isDeleted ? " deleted successfuly." : " not deleted."));
+    } catch (SQLException e) {
+      throw new DAOException(e.getMessage(), e);
+    }
+  }
 
-        if (page == null) {
-            throw new PageException(PageException.PAGE_NULL);
-        }
-        if (page.getCurrentPage() < 0) {
-            throw new PageException(PageException.NEGATIVE_CURRENT_PAGE + page.getCurrentPage());
-        }
-        if (page.getElementsByPage() < 0) {
-            throw new PageException(PageException.NEGATIVE_NUMBERS_OF_ELEMENTS + page.getElementsByPage());
-        }
-        
-        
-        try (Connection connection = DatabaseManager.INSTANCE.getConnection();
-                PreparedStatement findByPageWithFilter = connection
-                        .prepareStatement(ComputerDAOQueries.SELECT_WHERE_NAME_CONTAINS_SEQUENCE_BY_PAGE);) {
+  @Override
+  public void delete(Connection connection, Computer computer) throws DAOException {
+    if (computer == null) {
+      throw new DAOException(DAOException.ENTITY_NULL_OR_ALREADY_EXIST);
+    }
+    this.delete(connection, computer.getId());
+  }
 
-            findByPageWithFilter.setString(1, '%' + page.getFilter() + '%');
-            findByPageWithFilter.setInt(2, page.getElementsByPage());
-            findByPageWithFilter.setInt(3, page.getElementsByPage() * page.getCurrentPage());
-            try (ResultSet result = findByPageWithFilter.executeQuery();) {
-                List<Computer> computers = ComputerMapper
-                        .getComputerListFromResultSet(Utils.convertResultSetToList(result));
-                if (computers.isEmpty()) {
-                    throw new PageException(PageException.EMPTY_SET);
-                }
-                return computers;
-            }
-        } catch (SQLException e) {
-            throw new DAOException(e.getMessage(), e);
+  @Override
+  public Computer update(Connection connection, Computer computer) throws DAOException {
+    if (computer == null || computer.getId() == 0) {
+      throw new DAOException(DAOException.ENTITY_NULL_OR_NOT_IN_DB);
+    }
+    try (PreparedStatement create = connection
+        .prepareStatement(ComputerDAOQueries.UPDATE_COMPUTER);) {
+
+      boolean rowIsUpdated = ComputerMapper.insertComputerIntoDatabaseWithUpdate(create, computer,
+          true);
+      LOGGER.info("Row with " + computer.getId() + " updated"
+          + (rowIsUpdated ? " successfully" : " failed"));
+      return computer;
+
+    } catch (SQLException | SQLMappingException e) {
+      LOGGER.error(e.getMessage());
+      throw new DAOException(e.getMessage(), e);
+    }
+  }
+
+  @Override
+  public int sizeOfFilteredQuery(Connection connection, String filter) throws DAOException {
+    try (PreparedStatement sizeOfFilteredQuery = connection
+        .prepareStatement(ComputerDAOQueries.COUNT_FILTERED_ROWS);) {
+      sizeOfFilteredQuery.setString(1, '%' + filter + '%');
+      try (ResultSet rs = sizeOfFilteredQuery.executeQuery()) {
+
+        if (!rs.isBeforeFirst()) {
+          throw new DAOException();
         }
+        rs.next();
+        return rs.getInt(1);
+      }
+    } catch (SQLException e) {
+      throw new DAOException(e.getMessage(), e);
+    }
+  }
+
+  public void unreferenceOrRemoveCompanyForeignKey(Connection connection, long id, boolean remove)
+      throws DAOException {
+
+    if (id <= 0) {
+      throw new DAOException(DAOException.NEGATIVE_OR_NULL_ID);
     }
 
-    @Override
-    public List<Computer> findByPage(PageDTO<Computer> page) throws PageException, DAOException {
+    String computersToDeleteQuery = "select * from computer where company_id=" + id;
 
-        if (page == null) {
-            throw new PageException(PageException.PAGE_NULL);
-        }
-        if (page.getCurrentPage() < 0) {
-            throw new PageException(PageException.NEGATIVE_CURRENT_PAGE + page.getCurrentPage());
-        }
-        if (page.getElementsByPage() < 0) {
-            throw new PageException(PageException.NEGATIVE_NUMBERS_OF_ELEMENTS + page.getElementsByPage());
-        }
+    try (ResultSet computersToDeleteRs = connection
+        .createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE)
+        .executeQuery(computersToDeleteQuery);) {
 
-        try (Connection connection = DatabaseManager.INSTANCE.getConnection();
-                PreparedStatement findByPage = connection.prepareStatement(ComputerDAOQueries.SELECT_ALL_BY_PAGE);) {
-            findByPage.setInt(1, page.getElementsByPage());
-            findByPage.setInt(2, page.getElementsByPage() * page.getCurrentPage());
-            try (ResultSet result = findByPage.executeQuery()) {
-                List<Computer> computers = ComputerMapper
-                        .getComputerListFromResultSet(Utils.convertResultSetToList(result));
-                if (computers.isEmpty()) {
-                    throw new PageException(PageException.EMPTY_SET);
-                }
-                return computers;
-            }
-        } catch (SQLException e) {
-            throw new DAOException(e.getMessage(), e);
+      while (computersToDeleteRs.next()) {
+        LOGGER.info(
+            "Computer with id :" + computersToDeleteRs.getLong(ComputerColumn.ID.getColumnName())
+                + " updated successfuly.");
+        computersToDeleteRs.updateNull(ComputerColumn.ID_COMPANY.getColumnName());
+        computersToDeleteRs.updateRow();
+        if (remove) {
+          LOGGER.info(
+              "Computer with id :" + computersToDeleteRs.getLong(ComputerColumn.ID.getColumnName())
+                  + " deleted successfully");
+          computersToDeleteRs.deleteRow();
         }
+      }
+    } catch (SQLException sqlException) {
+      throw new DAOException(sqlException.getMessage(), sqlException);
     }
+  }
 
-    @Override
-    public boolean delete(long id) throws DAOException {
-        if (id <= 0) {
-            throw new DAOException(DAOException.NEGATIVE_OR_NULL_ID);
-        }
-
-        try (Connection connection = DatabaseManager.INSTANCE.getConnection();
-                PreparedStatement deleteById = connection
-                        .prepareStatement(ComputerDAOQueries.DELETE_COMPUTER_WITH_ID)) {
-            deleteById.setLong(1, id);
-            boolean rowIsDeleted = deleteById.executeUpdate() == 1;
-            LOGGER.info("Row with " + id + " deleted " + (rowIsDeleted ? " successfully" : " failed"));
-            connection.commit();
-            return rowIsDeleted;
-        } catch (SQLException e) {
-            throw new DAOException(e);
-        }
+  @Override
+  public void unreferenceOrRemoveCompanyForeignKey(Connection connection, Company company, boolean remove)
+      throws DAOException {
+    if (company == null) {
+      throw new DAOException(DAOException.ENTITY_NULL_OR_ALREADY_EXIST);
     }
+    this.unreferenceOrRemoveCompanyForeignKey(connection, company.getId(), remove);
+  }
 
-    @Override
-    public boolean delete(Computer computer) throws DAOException {
-        if (computer == null) {
-            throw new DAOException(DAOException.ENTITY_NULL_OR_ALREADY_EXIST);
-        }
-        return this.delete(computer.getId());
-    }
-
-    @Override
-    public Computer update(Computer computer) throws DAOException {
-        if (computer == null || computer.getId() == 0) {
-            throw new DAOException(DAOException.ENTITY_NULL_OR_NOT_IN_DB);
-        }
-        try (Connection connection = DatabaseManager.INSTANCE.getConnection();
-                PreparedStatement create = connection.prepareStatement(ComputerDAOQueries.UPDATE_COMPUTER);) {
-            
-            boolean rowIsUpdated = ComputerMapper.insertComputerIntoDatabaseWithUpdate(create, computer, true);
-            LOGGER.info("Row with " + computer.getId() + " updated" + (rowIsUpdated ? " successfully" : " failed"));
-            connection.commit();
-            return computer;
-
-        } catch (SQLException | SQLMappingException e) {
-            LOGGER.error(e.getMessage()); 
-            throw new DAOException(e.getMessage(), e);
-        }
-    }
-
-    @Override
-    public int sizeOfFilteredQuery(String filter) throws DAOException {
-        try (Connection connection = DatabaseManager.INSTANCE.getConnection();
-                PreparedStatement sizeOfFilteredQuery = connection
-                        .prepareStatement(ComputerDAOQueries.COUNT_FILTERED_ROWS);) {
-            sizeOfFilteredQuery.setString(1, '%' + filter + '%');
-            try (ResultSet rs = sizeOfFilteredQuery.executeQuery()) {
-
-                if (!rs.isBeforeFirst()) {
-                    throw new DAOException();
-                }
-                rs.next();
-                return rs.getInt(1);
-            }
-        } catch (SQLException e) {
-            throw new DAOException(e.getMessage(), e);
-        }
-    }
 }

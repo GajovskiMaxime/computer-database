@@ -1,94 +1,101 @@
 package com.excilys.mgajovski.computer_database.cli.controllers;
 
-
 import java.util.List;
 import java.util.Scanner;
 
+import javax.annotation.PostConstruct;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import com.excilys.mgajovski.computer_database.cli.controllers.utils.ControllerUtils;
 import com.excilys.mgajovski.computer_database.cli.views.CompanyView;
 import com.excilys.mgajovski.computer_database.cli.views.MainView;
-import com.excilys.mgajovski.computer_database.dto.page.PageDTO;
 import com.excilys.mgajovski.computer_database.entities.Company;
-import com.excilys.mgajovski.computer_database.exceptions.DAOException;
 import com.excilys.mgajovski.computer_database.exceptions.PageException;
-import com.excilys.mgajovski.computer_database.services.Service;
+import com.excilys.mgajovski.computer_database.exceptions.ServiceException;
+import com.excilys.mgajovski.computer_database.pager.CompanyPageService;
+import com.excilys.mgajovski.computer_database.pager.Page;
+import com.excilys.mgajovski.computer_database.services.CompanyService;
 
 /**
  * @author Gajovski Maxime
  * @date 21 févr. 2017
  */
-public enum CompanyController {
-    INSTANCE;
+@Scope("singleton")
+@Component
+public class CompanyController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CompanyController.class);
-    public static final PageDTO<Company> PAGE = new PageDTO<>();
-    
-    private static final int FIRST_PAGE = 0;
-    private static final int NUMBER_OF_ELEMENTS = 10;
-    
-    static{
-        PAGE.setCurrentPage(FIRST_PAGE);
-        PAGE.setElementsByPage(NUMBER_OF_ELEMENTS);
-    }
-    
-    /**
-     * Private constructor for CompanyListCtrl singleton.
-     */
-    CompanyController() {
-    }
+  private static Logger LOGGER = LoggerFactory.getLogger(CompanyController.class);
 
-    /**
-     * Main loop for CompanyListCtrl.
-     * @param scanner : the user's input.
-     */
-    public void companyListMainLoop(Scanner scanner) {
-        String userChoice = null;
-        List<Company> companies;
-        do {
-            userChoice = scanner.nextLine();
-            switch (userChoice) {
-            case "n":
-                try {
-                    companies = Service.COMPANY.findByPage(PAGE);
-                } catch (DAOException e) {
-                    
-                } catch(PageException e) {
-                    PAGE.previous();
-                }
-                
-                PAGE.setElements(Service.COMPANY.findByPage(PAGE));
-                CompanyView.INSTANCE.displayCurrentPage(PAGE);
-                break;
-                
-            case "p":
-                if (PAGE.getCurrentPage() <= 0) {
-                    PAGE.next();
-                    LOGGER.warn(ControllerUtils.NEGATIVE_NUMBER_PAGE);
-                }
-                PAGE.previous();
-                PAGE.setElements(Service.COMPANY.findByPage(PAGE));
-                CompanyView.INSTANCE.displayCurrentPage(PAGE);
-                break;
-            case "m":
-                PAGE.setCurrentPage(0);
-                MainView.INSTANCE.displayMenu();
-                break;
-            default:
-                LOGGER.warn(ControllerUtils.USER_BAD_INPUT);
-                continue;
-            }
-        } while (!userChoice.equals("m"));
-    }
+  @Autowired
+  public CompanyPageService companyPageService;
 
-    public List<Company> getFirstCompanies() {
-        return Service.COMPANY.findByPage(currentPage, NUMBER).get();
-    }
+  @Autowired
+  public CompanyService companyService;
 
-    public int getCurrentPage() {
-        return currentPage;
-    }
+  @Autowired
+  public CompanyView companyView;
 
+  @Autowired
+  public MainView mainView;
+  
+  public Page<Company> page;
+
+  /**
+   * Private constructor for CompanyListCtrl singleton.
+   */
+  CompanyController() {
+  }
+
+  @PostConstruct
+  public void initialize() {
+      page = companyPageService.create();
+  }
+
+  /**
+   * Main loop for CompanyListCtrl.
+   * 
+   * @param scanner
+   *          : the user's input.
+   */
+  public void companyListMainLoop(Scanner scanner) {
+    String userChoice = null;
+    do {
+      userChoice = scanner.nextLine();
+      switch (userChoice) {
+      case "n":
+        page = companyPageService.next(page);
+        companyView.displayCurrentPage();
+        break;
+
+      case "p":
+        page = companyPageService.previous(page);
+        companyView.displayCurrentPage();
+        break;
+      case "m":
+        page = companyPageService.resetPage(page);
+        mainView.displayMenu();
+        break;
+      default:
+        LOGGER.warn(ControllerUtils.USER_BAD_INPUT);
+        continue;
+      }
+    } while (!userChoice.equals("m"));
+  }
+
+  public int getCurrentPage() {
+    return page.getCurrentPage();
+  }
+
+  public int getElementsByPage() {
+    return page.getElementsByPage();
+  }
+
+  public List<Company> getElements() {
+    return page.getElements();
+  }
 }

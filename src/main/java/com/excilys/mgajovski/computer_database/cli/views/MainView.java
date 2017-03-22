@@ -1,5 +1,9 @@
 package com.excilys.mgajovski.computer_database.cli.views;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
 import com.excilys.mgajovski.computer_database.cli.controllers.MainController;
 import com.excilys.mgajovski.computer_database.cli.views.utils.ViewUtils;
 
@@ -7,9 +11,14 @@ import com.excilys.mgajovski.computer_database.cli.views.utils.ViewUtils;
  * @author Gajovski Maxime
  * @date 20 févr. 2017
  */
-public enum MainView {
-    INSTANCE;
 
+@Scope("singleton")
+@Component
+public class MainView {
+    
+    @Autowired
+    private MainController mainController;
+    
     private static final  String[] MAIN_MENU_LABELS = {
             "List computers",
             "List companies",
@@ -58,6 +67,6 @@ public enum MainView {
         displayHeaderMenu();
         ViewUtils.displayBread("Main Menu");
         displayMenuItems();
-        MainController.INSTANCE.switchMenu(ViewUtils.SCANNER);
+        mainController.switchMenu(ViewUtils.SCANNER);
     }
 }

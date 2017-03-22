@@ -16,7 +16,7 @@ public final class CompanyDAOQueries {
 
     public static final String SELECT_COMPANY_WITH_ID = "SELECT * FROM " + COMPANY_TABLE + " WHERE id = ?";
 
-    public static final String DELETE_COMPANY_WITH_ID = "DELETE FROM " + COMPANY_TABLE + " WHERE id = ?";
+    public static final String DELETE_COMPANY_AND_COMPUTERS_WHERE_ID = "DELETE FROM computer WHERE company_id=?; DELETE FROM company WHERE id=? ;";
 
     public static final String SELECT_NAMES_BY_PAGE = "SELECT name FROM " + COMPANY_TABLE + " LIMIT ? OFFSET ?";
 

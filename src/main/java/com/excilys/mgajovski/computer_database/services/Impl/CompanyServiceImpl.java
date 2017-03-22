@@ -1,70 +1,251 @@
 package com.excilys.mgajovski.computer_database.services.Impl;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
 
-import com.excilys.mgajovski.computer_database.dao.DAO;
-import com.excilys.mgajovski.computer_database.dto.page.FilteredPageDTO;
-import com.excilys.mgajovski.computer_database.dto.page.PageDTO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.excilys.mgajovski.computer_database.dao.DatabaseManager;
+import com.excilys.mgajovski.computer_database.dao.interfaces.CompanyDAO;
+import com.excilys.mgajovski.computer_database.dao.interfaces.ComputerDAO;
 import com.excilys.mgajovski.computer_database.entities.Company;
 import com.excilys.mgajovski.computer_database.exceptions.DAOException;
 import com.excilys.mgajovski.computer_database.exceptions.PageException;
+import com.excilys.mgajovski.computer_database.exceptions.ServiceException;
+import com.excilys.mgajovski.computer_database.pager.FilteredPage;
+import com.excilys.mgajovski.computer_database.pager.Page;
 import com.excilys.mgajovski.computer_database.services.CompanyService;
 
 /**
- * @author	Gajovski Maxime
- * @date	20 mars 2017
+ * @author Gajovski Maxime
+ * @date 20 mars 2017
  */
-public enum CompanyServiceImpl implements CompanyService {
-    INSTANCE;
-    
-    @Override
-    public Company find(long id) throws DAOException {
-        return DAO.COMPANY.find(id);
-    }
+@Service
+public class CompanyServiceImpl implements CompanyService {
 
-    @Override
-    public List<Company> findAll() throws DAOException {
-        return DAO.COMPANY.findAll();
-    }
+  @Autowired
+  private CompanyDAO companyDAO;
 
-    @Override
-    public List<Company> findByPage(PageDTO<Company> k) throws PageException, DAOException {
-        return DAO.COMPANY.findByPage(k);
-    }
+  @Autowired
+  private ComputerDAO computerDAO;
+  
+  @Autowired
+  private DatabaseManager databaseManager;
+  
+  
+  @Override
+  public Company find(long id) throws ServiceException {
 
-    @Override
-    public List<Company> findByPage(FilteredPageDTO<Company> k) throws PageException, DAOException {
-        return DAO.COMPANY.findByPage(k);
+    Company company = null;
+    Connection connection = null;
+    try {
+      connection = databaseManager.getConnection();
+      company = companyDAO.find(connection, id);
+    } catch (DAOException | SQLException exception) {
+      throw new ServiceException(exception);
+    } finally {
+      try {
+        databaseManager.closeConnection(connection);
+      } catch (SQLException exception) {
+        throw new ServiceException(exception);
+      }
     }
+    return company;
+  }
 
-    @Override
-    public Company create(Company obj) throws DAOException {
-        return DAO.COMPANY.create(obj);
-    }
+  @Override
+  public List<Company> findAll() throws ServiceException {
+    List<Company> companies = null;
+    Connection connection = null;
 
-    @Override
-    public List<Company> findByFilter(String filter) throws DAOException {
-        return DAO.COMPANY.findByFilter(filter);
+    try {
+      connection = databaseManager.getConnection();
+      companies = companyDAO.findAll(connection);
+    } catch (DAOException | SQLException exception) {
+      throw new ServiceException(exception);
+    } finally {
+      try {
+        databaseManager.closeConnection(connection);
+      } catch (SQLException exception) {
+        throw new ServiceException(exception);
+      }
     }
+    return companies;
+  }
 
-    @Override
-    public Company update(Company obj) throws DAOException {
-        return DAO.COMPANY.update(obj);
+  @Override
+  public List<Company> findByPage(Page<Company> k) throws ServiceException {
+    List<Company> companies = null;
+    Connection connection = null;
+    try {
+      connection = databaseManager.getConnection();
+      companies = companyDAO.findByPage(connection, k);
+    } catch (DAOException | SQLException | PageException exception) {
+      throw new ServiceException(exception);
+    } finally {
+      try {
+        databaseManager.closeConnection(connection);
+      } catch (SQLException exception) {
+        throw new ServiceException(exception);
+      }
     }
+    return companies;
+  }
 
-    @Override
-    public boolean delete(Company obj) throws DAOException {
-        return DAO.COMPANY.delete(obj);
+  @Override
+  public List<Company> findByPage(FilteredPage<Company> k) throws ServiceException {
+    List<Company> companies = null;
+    Connection connection = null;
+    try {
+      connection = databaseManager.getConnection();
+      companies = companyDAO.findByPage(connection, k);
+    } catch (DAOException | SQLException | PageException exception) {
+      throw new ServiceException(exception);
+    } finally {
+      try {
+        databaseManager.closeConnection(connection);
+      } catch (SQLException exception) {
+        throw new ServiceException(exception);
+      }
     }
+    return companies;
+  }
 
-    @Override
-    public boolean delete(long id) throws DAOException {
-        return DAO.COMPANY.delete(id);
-    }
+  @Override
+  public Company create(Company obj) throws ServiceException {
 
-    @Override
-    public int sizeOfFilteredQuery(String sequence) throws DAOException {
-        return DAO.COMPANY.sizeOfFilteredQuery(sequence);
+    Company company = null;
+    Connection connection = null;
+    try {
+      connection = databaseManager.getConnection();
+      company = companyDAO.create(connection, obj);
+      databaseManager.commit(connection);
+    } catch (DAOException | SQLException exception) {
+      throw new ServiceException(exception);
+    } finally {
+      try {
+        databaseManager.closeConnection(connection);
+      } catch (SQLException exception) {
+        throw new ServiceException(exception);
+      }
     }
+    return company;
+  }
+
+  @Override
+  public List<Company> findByFilter(String filter) throws ServiceException {
+
+    List<Company> companies = null;
+    Connection connection = null;
+    try {
+      connection = databaseManager.getConnection();
+      companies = companyDAO.findByFilter(connection, filter);
+      databaseManager.commit(connection);
+    } catch (DAOException | SQLException exception) {
+      throw new ServiceException(exception);
+    } finally {
+      try {
+        databaseManager.closeConnection(connection);
+      } catch (SQLException exception) {
+        throw new ServiceException(exception);
+      }
+    }
+    return companies;
+  }
+
+  @Override
+  public Company update(Company obj) throws ServiceException {
+    Connection connection = null;
+    Company company = null;
+    try {
+      connection = databaseManager.getConnection();
+      company = companyDAO.update(connection, obj);
+      databaseManager.commit(connection);
+    } catch (DAOException | SQLException exception) {
+      throw new ServiceException(exception);
+    } finally {
+      try {
+        databaseManager.closeConnection(connection);
+      } catch (SQLException exception) {
+        throw new ServiceException(exception);
+      }
+    }
+    return company;
+  }
+
+  @Override
+  public void delete(Company obj) throws ServiceException {
+    this.delete(obj.getId());
+  }
+
+  @Override
+  public void delete(long id) throws ServiceException {
+    Connection connection = null;
+
+    try {
+      connection = databaseManager.getConnection();
+      computerDAO.unreferenceOrRemoveCompanyForeignKey(connection, id, true);
+      companyDAO.delete(connection, id);
+      databaseManager.commit(connection);
+    } catch (DAOException | SQLException exception) {
+      try {
+        databaseManager.rollbackConnection(connection);
+      } catch (SQLException exceptionRollBack) {
+        throw new ServiceException(exceptionRollBack);
+      }
+      throw new ServiceException(exception);
+    } finally {
+      try {
+        databaseManager.closeConnection(connection);
+      } catch (SQLException exception) {
+        throw new ServiceException(exception);
+      }
+    }
+  }
+
+  @Override
+  public void deleteWithoutCascade(long id) throws ServiceException {
+    Connection connection = null;
+    try {
+      connection = databaseManager.getConnection();
+      computerDAO.unreferenceOrRemoveCompanyForeignKey(connection, id, false);
+      companyDAO.delete(connection, id);
+      databaseManager.commit(connection);
+    } catch (DAOException | SQLException exception) {
+      try {
+        databaseManager.rollbackConnection(connection);
+      } catch (SQLException exceptionRollBack) {
+        throw new ServiceException(exceptionRollBack);
+      }
+      throw new ServiceException(exception);
+    } finally {
+      try {
+        databaseManager.closeConnection(connection);
+      } catch (SQLException exception) {
+        throw new ServiceException(exception);
+      }
+    }
+  }
+
+  @Override
+  public int sizeOfFilteredQuery(String sequence) throws ServiceException {
+    Connection connection = null;
+    int size = -1;
+    try{
+      connection = databaseManager.getConnection();
+      size = companyDAO.sizeOfFilteredQuery(connection, sequence);
+    } catch (DAOException | SQLException exception){
+      throw new ServiceException(exception);
+    } finally {
+      try {
+        databaseManager.closeConnection(connection);
+      } catch (SQLException exception) {
+        throw new ServiceException(exception);
+      }
+    }
+    return size;
+  }
 
 }

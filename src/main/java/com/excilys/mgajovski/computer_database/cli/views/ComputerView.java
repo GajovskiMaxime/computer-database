@@ -1,18 +1,24 @@
 package com.excilys.mgajovski.computer_database.cli.views;
 
-import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import com.excilys.mgajovski.computer_database.cli.controllers.ComputerController;
 import com.excilys.mgajovski.computer_database.cli.views.utils.ComputerViewUtils;
 import com.excilys.mgajovski.computer_database.cli.views.utils.ViewUtils;
-import com.excilys.mgajovski.computer_database.entities.Computer;
 
 /**
  * @author Gajovski Maxime
  * @date 21 févr. 2017
  */
-public enum ComputerView {
-    INSTANCE;
+
+@Scope("singleton")
+@Component
+public class ComputerView {
+    
+  @Autowired
+  private ComputerController computerController;
 
     /**
      * Private constructor for ComputerListView singleton.
@@ -20,18 +26,10 @@ public enum ComputerView {
     ComputerView() {
     }
 
-    public void printCurrentPage(int page, List<Computer> computers) {
-        ComputerViewUtils.displayComputerCurrentPage(page);
-        ComputerViewUtils.displayComputersDetails(computers);
+    public void displayCurrentPage() {
+        ComputerViewUtils.displayComputerCurrentPage(computerController.getCurrentPage());
+        ComputerViewUtils.displayComputersDetails(computerController.getElements());
         ViewUtils.footer(ComputerViewUtils.LIST_VIEW_FOOTER_LABELS);
-        ComputerController.INSTANCE.computerListMainLoop(ViewUtils.SCANNER);
+        computerController.computerListMainLoop(ViewUtils.SCANNER);
     }
-
-    /**
-     * Display the first page of computers.
-     */
-    public void printFirstPage() {
-        printCurrentPage(ComputerController.INSTANCE.getCurrentPage(), ComputerController.INSTANCE.getFirstComputers());
-    }
-
 }

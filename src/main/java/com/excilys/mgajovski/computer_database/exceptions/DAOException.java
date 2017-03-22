@@ -4,7 +4,7 @@ package com.excilys.mgajovski.computer_database.exceptions;
  * @author Gajovski Maxime
  * @date 24 févr. 2017
  */
-public class DAOException extends Exception {
+public class DAOException extends ServiceException {
 
     public static final String ENTITY_NULL = "entity must not be null";
     public static final String ENTITY_NULL_OR_ALREADY_EXIST = "null or already persisted object";

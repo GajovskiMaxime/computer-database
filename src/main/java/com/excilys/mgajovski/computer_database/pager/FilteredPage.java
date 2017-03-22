@@ -1,4 +1,4 @@
-package com.excilys.mgajovski.computer_database.dto.page;
+package com.excilys.mgajovski.computer_database.pager;
 
 
 /**
@@ -6,17 +6,17 @@ package com.excilys.mgajovski.computer_database.dto.page;
  * @date 2 mars 2017
  * This class is a PageDTO child with filter attribute.
  */
-public class FilteredPageDTO<K> extends PageDTO<K> {
+public class FilteredPage<K> extends Page<K> {
 
   private static final String FILTER_UPDATED = "Filter set to : ";
 
   private String filter;
-
+  
   /**
    * Public constructor for FilteredPageDTO.
    * @see PageDTO.
    */
-  public FilteredPageDTO() {
+  public FilteredPage() {
     super();
   }
 
