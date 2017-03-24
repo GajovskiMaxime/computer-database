@@ -2,7 +2,9 @@ package com.excilys.mgajovski.computer_database.services.Impl;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -95,12 +97,18 @@ public class CompanyServiceImpl implements CompanyService {
   }
 
   @Override
-  public List<Company> findByPage(FilteredPage<Company> k) throws ServiceException {
+  public Map<String, Object> findByPage(FilteredPage<Company> k) throws ServiceException {
     List<Company> companies = null;
     Connection connection = null;
+    int rowsReturnedFromFilterQuery = 0;
+    Map<String, Object> map  = new HashMap<>();
+
     try {
       connection = databaseManager.getConnection();
       companies = companyDAO.findByPage(connection, k);
+      map.put("list", companies);
+      map.put("size", rowsReturnedFromFilterQuery);
+
     } catch (DAOException | SQLException | PageException exception) {
       throw new ServiceException(exception);
     } finally {
@@ -110,7 +118,7 @@ public class CompanyServiceImpl implements CompanyService {
         throw new ServiceException(exception);
       }
     }
-    return companies;
+    return map;
   }
 
   @Override

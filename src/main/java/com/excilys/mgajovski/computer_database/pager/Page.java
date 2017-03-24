@@ -88,4 +88,12 @@ public class Page<K> {
     this.resultFromQuery = resultFromQuery;
   }
   
+  @Override
+  public String toString(){
+    return  "class : " + getClass().getSimpleName() + " \n" + 
+            "currentPage : " + currentPage + " \n" + 
+            "elementsByPage : " + elementsByPage + " \n" + 
+            "maxPage : " + maxPage + " \n";
+    
+  }
 }

@@ -29,9 +29,13 @@
 		<gatling-charts-highcharts.version>2.2.3</gatling-charts-highcharts.version>
 		<jcl-over-slf4j.version>1.7.21</jcl-over-slf4j.version>
 		<spring.version>4.1.4.RELEASE</spring.version>
+		<javax.servlet>3.0.1</javax.servlet>
+
 	</properties>
 
 	<build>
+		<finalName>computer_database</finalName>
+
 		<plugins>
 
 			<plugin>
@@ -41,6 +45,17 @@
 				<configuration>
 					<source>${java.source}</source>
 					<target>${java.target}</target>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<warSourceDirectory>src/main/webapp</warSourceDirectory>
+					<warName>computer_database</warName>
+					<failOnMissingWebXml>false</failOnMissingWebXml>
 				</configuration>
 			</plugin>
 
@@ -80,8 +95,13 @@
 				<artifactId>tomcat7-maven-plugin</artifactId>
 				<version>${tomcat7-maven-plugin.version}</version>
 				<configuration>
-					<server>cdb-server</server>
-					<url>http://localhost:8080/manager/text</url>
+					<!-- <server>cdb-server</server> -->
+					<!-- <url>http://localhost:8080/manager/text</url> -->
+					<server>tomcat</server>
+					<username>admin</username>
+					<password>admin</password>
+					<update>true</update>
+
 					<path>/${project.artifactId}</path>
 				</configuration>
 			</plugin>
@@ -144,6 +164,13 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>1.7.5</version>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>${javax.servlet}</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
@@ -217,13 +244,6 @@
 		<!-- FIN - Tomcat Embarqué -->
 
 		<dependency>
-			<groupId>com.zaxxer</groupId>
-			<artifactId>HikariCP</artifactId>
-			<version>2.5.1</version>
-		</dependency>
-
-
-		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
 			<version>${spring.version}</version>
@@ -239,20 +259,33 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
 			<version>${spring.version}</version>
+<!-- 			<scope>runtime</scope> -->
+			<exclusions>
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
 			<groupId>org.springframework</groupId>
-			<artifactId>spring-web</artifactId>
+			<artifactId>spring-jdbc</artifactId>
 			<version>${spring.version}</version>
 		</dependency>
-		
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+
 		<dependency>
 			<groupId>javax.inject</groupId>
 			<artifactId>javax.inject</artifactId>
 			<version>1</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>javax.annotation</groupId>
 			<artifactId>javax.annotation-api</artifactId>
@@ -264,6 +297,25 @@
 			<groupId>io.gatling.highcharts</groupId>
 			<artifactId>gatling-charts-highcharts</artifactId>
 			<version>${gatling-charts-highcharts.version}</version>
+		</dependency>
+
+		<!-- <dependency> -->
+		<!-- <groupId>org.dbunit</groupId> -->
+		<!-- <artifactId>dbunit</artifactId> -->
+		<!-- <version>2.5.3</version> -->
+		<!-- <scope>test</scope> -->
+		<!-- </dependency> -->
+
+		<dependency>
+			<groupId>de.ppi.dbunit.datasetbuilder</groupId>
+			<artifactId>dbunit-datasetbuilder</artifactId>
+			<version>1.4</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.mybatis</groupId>
+			<artifactId>mybatis</artifactId>
+			<version>3.4.1</version>
 		</dependency>
 
 	</dependencies>

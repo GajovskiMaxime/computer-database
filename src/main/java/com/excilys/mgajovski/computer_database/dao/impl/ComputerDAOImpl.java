@@ -269,13 +269,13 @@ public class ComputerDAOImpl implements ComputerDAO {
 
       while (computersToDeleteRs.next()) {
         LOGGER.info(
-            "Computer with id :" + computersToDeleteRs.getLong(ComputerColumn.ID.getColumnName())
+            "Computer with id :" + computersToDeleteRs.getLong(ComputerColumn.ID.toString())
                 + " updated successfuly.");
-        computersToDeleteRs.updateNull(ComputerColumn.ID_COMPANY.getColumnName());
+        computersToDeleteRs.updateNull(ComputerColumn.ID_COMPANY.toString());
         computersToDeleteRs.updateRow();
         if (remove) {
           LOGGER.info(
-              "Computer with id :" + computersToDeleteRs.getLong(ComputerColumn.ID.getColumnName())
+              "Computer with id :" + computersToDeleteRs.getLong(ComputerColumn.ID.toString())
                   + " deleted successfully");
           computersToDeleteRs.deleteRow();
         }

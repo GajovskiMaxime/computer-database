@@ -32,5 +32,11 @@ public class FilteredPage<K> extends Page<K> {
     LOGGER.info(FILTER_UPDATED + "'" + filter + "'");
     this.filter = filter;
   }
+  
 
+  @Override
+  public String toString(){
+    return  super.toString() + 
+        "filter : " + filter + " \n"; 
+  }
 }

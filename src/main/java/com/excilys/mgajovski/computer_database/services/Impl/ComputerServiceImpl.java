@@ -2,7 +2,10 @@ package com.excilys.mgajovski.computer_database.services.Impl;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -95,12 +98,19 @@ public class ComputerServiceImpl implements ComputerService {
   }
 
   @Override
-  public List<Computer> findByPage(FilteredPage<Computer> k) throws ServiceException {
+  public Map<String, Object> findByPage(FilteredPage<Computer> k) throws ServiceException {
     Connection connection = null;
+    
     List<Computer> computers = null;
+    int rowsReturnedFromFilterQuery;
+    Map<String, Object> map  = new HashMap<>();
     try {
       connection = databaseManager.getConnection();
       computers = computerDAO.findByPage(connection, k);
+      rowsReturnedFromFilterQuery = computerDAO.sizeOfFilteredQuery(connection, k.getFilter());
+      map.put("list", computers);
+      map.put("size", rowsReturnedFromFilterQuery);
+      
     } catch (DAOException | SQLException | PageException exception) {
       throw new ServiceException(exception);
     } finally {
@@ -110,7 +120,7 @@ public class ComputerServiceImpl implements ComputerService {
         throw new ServiceException(exception);
       }
     }
-    return computers;
+    return map;
   }
 
   @Override

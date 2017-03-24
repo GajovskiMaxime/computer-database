@@ -1,6 +1,7 @@
 package com.excilys.mgajovski.computer_database.pager;
 
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +18,11 @@ import com.excilys.mgajovski.computer_database.services.Service;
 public abstract class PageServiceImpl<K> {
 
   public static final Logger LOGGER = LoggerFactory.getLogger(PageServiceImpl.class.getName());
-
+  
+  public static final String PAGE_CREATED_SUCCESSFULLY = "Page created successfully.\n"; 
+  public static final String PAGE_CREATED_ERR = "Page wasn't created.\n"; 
+  
+  
   public static final int PAGE_INIT = 0;
   public static final int NB_OF_ELEMENTS_INIT = 10;
   public static final String FILTER_INIT = "";
@@ -30,13 +35,15 @@ public abstract class PageServiceImpl<K> {
   }
   
   public FilteredPage<K> setElementsByPage(FilteredPage<K> filteredPage, int elementsByPage){
+    
     try{
+      Map<String, Object> map = service.findByPage(filteredPage);
+      
       filteredPage.setCurrentPage(PAGE_INIT);
       filteredPage.setElementsByPage(elementsByPage);
-      filteredPage.setElements(service.findByPage(filteredPage));
-      int sizeOfQuery = service.sizeOfFilteredQuery(filteredPage.getFilter());
-      filteredPage.setResultFromQuery(sizeOfQuery);      
-      filteredPage.setMaxPage(sizeOfQuery / elementsByPage);
+      filteredPage.setElements((List<K>) map.get("list"));
+      filteredPage.setResultFromQuery((Integer)map.get("size"));      
+      filteredPage.setMaxPage((Integer)map.get("size") / elementsByPage);
     } catch (ServiceException serviceException) {
       LOGGER.error(serviceException.getMessage());
     }
@@ -44,14 +51,16 @@ public abstract class PageServiceImpl<K> {
   }
   
   public FilteredPage<K> setFilter(FilteredPage<K> filteredPage, String filter){
+    
     try{
+      Map<String, Object> map = service.findByPage(filteredPage);
+
       filteredPage.setCurrentPage(PAGE_INIT);
       filteredPage.setFilter(filter);
-      filteredPage.setElements(service.findByPage(filteredPage));
-      int sizeOfQuery = service.sizeOfFilteredQuery(filter);
+      filteredPage.setElements((List<K>) map.get("list"));
       int elementsByPage = filteredPage.getElementsByPage();
-      filteredPage.setResultFromQuery(sizeOfQuery);      
-      filteredPage.setMaxPage(sizeOfQuery / elementsByPage);
+      filteredPage.setResultFromQuery((Integer) map.get("size"));      
+      filteredPage.setMaxPage((Integer) map.get("size")/ elementsByPage);
     } catch (ServiceException serviceException) {
       LOGGER.error(serviceException.getMessage());
     }
@@ -77,22 +86,26 @@ public abstract class PageServiceImpl<K> {
     } catch (ServiceException serviceException) {
       LOGGER.error(serviceException.getMessage(), serviceException);
     }
+    LOGGER.info(page.toString());
     return page;
   }
 
 
   public FilteredPage<K> createWithFilter() {
     FilteredPage<K> filteredPage = new FilteredPage<>();
+    Map<String, Object> map ;
     try {
       filteredPage.setFilter(FILTER_INIT);
       filteredPage.setCurrentPage(PAGE_INIT);
       filteredPage.setElementsByPage(NB_OF_ELEMENTS_INIT);
-      filteredPage.setElements(service.findByPage(filteredPage));
-      filteredPage.setResultFromQuery(service.sizeOfFilteredQuery(FILTER_INIT));
-      filteredPage.setMaxPage(10);
+      map = service.findByPage(filteredPage);
+      filteredPage.setElements((List<K>)map.get("list"));
+      filteredPage.setResultFromQuery((Integer)map.get("size"));
+      filteredPage.setMaxPage(filteredPage.getResultFromQuery() / NB_OF_ELEMENTS_INIT);
     } catch (ServiceException serviceException) {
       LOGGER.error(serviceException.getMessage(), serviceException);
     }
+    LOGGER.info(filteredPage.toString());
     return filteredPage;
   }
   
@@ -117,7 +130,7 @@ public abstract class PageServiceImpl<K> {
 
     try {
       page.setCurrentPage(page.getCurrentPage() + 1);
-      page.setElements(service.findByPage(page));
+      page.setElements((List<K>)service.findByPage(page).get("list"));
     } catch (ServiceException serviceException) {
       LOGGER.warn(serviceException.getMessage());
       page.setCurrentPage(page.getCurrentPage() - 1);
@@ -153,7 +166,7 @@ public abstract class PageServiceImpl<K> {
     
     try {
       page.setCurrentPage(page.getCurrentPage() - 1);
-      page.setElements(service.findByPage(page));
+      page.setElements((List<K>)service.findByPage(page).get("list"));
     } catch (ServiceException serviceException) {
       LOGGER.warn(serviceException.getMessage());
     }

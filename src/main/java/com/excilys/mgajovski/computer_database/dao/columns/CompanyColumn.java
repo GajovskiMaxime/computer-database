@@ -19,7 +19,7 @@ public enum CompanyColumn {
         this.columnName = columnName;
     }
 
-    public String getColumnName() {
+    public String toString() {
         return columnName;
     }
 
@@ -31,7 +31,7 @@ public enum CompanyColumn {
     public static String arrayToString(CompanyColumn... companyColumns) {
         String string = "";
         for (CompanyColumn companyColumn : companyColumns) {
-            string += companyColumn.getColumnName() + ", ";
+            string += companyColumn.toString() + ", ";
         }
         return string.substring(0, string.length() - 2);
     }
@@ -46,7 +46,7 @@ public enum CompanyColumn {
             return null;
         }
         for (CompanyColumn order : CompanyColumn.values()) {
-            if (order.getColumnName().equals(column.toLowerCase())) {
+            if (order.toString().equals(column.toLowerCase())) {
                 return order;
             }
         }

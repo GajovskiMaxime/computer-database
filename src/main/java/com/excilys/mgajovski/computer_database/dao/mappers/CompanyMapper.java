@@ -8,6 +8,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.dbunit.dataset.DataSetException;
+import org.dbunit.dataset.IDataSet;
+import org.dbunit.dataset.builder.DataSetBuilder;
+
+import com.excilys.mgajovski.computer_database.dao.columns.CompanyColumn;
 import com.excilys.mgajovski.computer_database.entities.Company;
 import com.excilys.mgajovski.computer_database.exceptions.DAOException;
 import com.excilys.mgajovski.computer_database.exceptions.SQLMappingException;
@@ -59,5 +64,25 @@ public class CompanyMapper {
         } catch (SQLException e) {
             throw new SQLMappingException(e.getMessage(), e);
         }
+    }
+    
+
+    public static IDataSet companiesToDataSet(List<Company> companies) throws DataSetException{ 
+      
+      DataSetBuilder builder = null;  
+      IDataSet dataset = null;
+      try {
+          builder = new DataSetBuilder();
+          for(Company company : companies){
+            builder.newRow("company")
+            .with(CompanyColumn.ID.toString(), company.getId())
+            .with(CompanyColumn.NAME.toString(), company.getName())
+            .add();
+          }
+          dataset = builder.build();
+        } catch (DataSetException dataSetException) {
+          throw dataSetException;
+        }
+      return dataset;
     }
 }

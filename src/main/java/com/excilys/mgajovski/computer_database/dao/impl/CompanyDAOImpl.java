@@ -33,10 +33,7 @@ public class CompanyDAOImpl implements CompanyDAO {
   private static final Logger LOGGER = LoggerFactory.getLogger(CompanyDAOImpl.class);
 
   
-  /**
-   * Private constructor for CompanyDAO singleton.
-   */
-  CompanyDAOImpl() {
+  public CompanyDAOImpl() {  
   }
 
   @Override

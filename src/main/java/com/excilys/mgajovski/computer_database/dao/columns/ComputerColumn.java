@@ -23,7 +23,7 @@ public enum ComputerColumn {
         this.columnName = columnName;
     }
 
-    public String getColumnName() {
+    public String toString() {
         return columnName;
     }
 
@@ -35,7 +35,7 @@ public enum ComputerColumn {
     public static String arrayToString(ComputerColumn... computerColumns) {
         String string = "";
         for (ComputerColumn computerColumn : computerColumns) {
-            string += computerColumn.getColumnName() + ", ";
+            string += computerColumn.toString() + ", ";
         }
         return string.substring(0, string.length() - 2);
     }
@@ -50,7 +50,7 @@ public enum ComputerColumn {
             return null;
         }
         for (ComputerColumn order : ComputerColumn.values()) {
-            if (order.getColumnName().equals(column.toLowerCase())) {
+            if (order.toString().equals(column.toLowerCase())) {
                 return order;
             }
         }
