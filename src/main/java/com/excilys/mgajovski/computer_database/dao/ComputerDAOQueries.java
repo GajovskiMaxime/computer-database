@@ -10,7 +10,7 @@ public class ComputerDAOQueries {
 
     public static final String CREATE_COMPUTER = "INSERT INTO " + COMPUTER_TABLE
             + "(name, introduced, discontinued, company_id) VALUES(?, ?, ?, ?)";
-
+        
     public static final String SELECT_ALL_COMPUTERS = "SELECT * FROM " + COMPUTER_TABLE;
 
     public static final String SELECT_ALL_COMPUTERS_NAMES = "SELECT name FROM " + COMPUTER_TABLE;

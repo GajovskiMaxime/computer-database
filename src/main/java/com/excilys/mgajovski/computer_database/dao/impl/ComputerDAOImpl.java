@@ -7,11 +7,23 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.blazebit.persistence.Criteria;
+import com.blazebit.persistence.CriteriaBuilder;
+import com.blazebit.persistence.CriteriaBuilderFactory;
+import com.blazebit.persistence.InsertCriteriaBuilder;
+import com.blazebit.persistence.UpdateCriteriaBuilder;
+import com.blazebit.persistence.spi.CriteriaBuilderConfiguration;
 import com.excilys.mgajovski.computer_database.dao.ComputerDAOQueries;
 import com.excilys.mgajovski.computer_database.dao.Utils;
 import com.excilys.mgajovski.computer_database.dao.columns.ComputerColumn;
@@ -31,37 +43,64 @@ import com.excilys.mgajovski.computer_database.pager.Page;
  */
 @Repository
 @Scope("singleton")
-public class ComputerDAOImpl implements ComputerDAO {  
+public class ComputerDAOImpl implements ComputerDAO {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ComputerDAOImpl.class);
+
+  @Autowired
+  EntityManager em;
+
+  @Autowired
+  CriteriaBuilderFactory cbf;
 
   /**
    * Private constructor for ComputerDAO singleton.
    */
   ComputerDAOImpl() {
+
+  }
+
+  @PostConstruct
+  public void init() {
   }
 
   @Override
+  @Transactional
   public Computer create(Connection connection, Computer computer) throws DAOException {
 
     if (computer == null || computer.getId() > 0) {
       throw new DAOException(DAOException.ENTITY_NULL_OR_ALREADY_EXIST);
     }
 
-    try (PreparedStatement create = connection.prepareStatement(ComputerDAOQueries.CREATE_COMPUTER,
-        Statement.RETURN_GENERATED_KEYS);) {
-      if (ComputerMapper.insertComputerIntoDatabaseWithUpdate(create, computer, false)) {
-        try (ResultSet resultSet = create.getGeneratedKeys();) {
-          resultSet.next();
-          computer.setId(resultSet.getLong(1));
-          LOGGER.info(Utils.ENTITY_CREATED_SUCCESS);
+    LOGGER.error(computer.toString());
+//    em.getTransaction().begin();
 
-        }
-      }
-      return computer;
-    } catch (SQLException | SQLMappingException e) {
-      throw new DAOException(e.getMessage(), e);
-    }
+    em.persist(computer);
+    //    em.getTransaction().commit();
+//    cbf.insert(em, Computer.class).from(Computer.class, "computer")
+//        .setParameter(ComputerColumn.NAME.toString(), computer.getName())
+//        .setParameter(ComputerColumn.INTRODUCED_DATE.toString(), computer.getIntroduced())
+//        .setParameter(ComputerColumn.DISCONTINUED_DATE.toString(), computer.getDiscontinued());
+//        .setParameter(ComputerColumn.ID_COMPANY.toString());
+    LOGGER.error(computer.toString());
+    return computer;
+
+    //
+    // try (PreparedStatement create =
+    // connection.prepareStatement(ComputerDAOQueries.CREATE_COMPUTER,
+    // Statement.RETURN_GENERATED_KEYS);) {
+    // if (ComputerMapper.insertComputerIntoDatabaseWithUpdate(create, computer, false)) {
+    // try (ResultSet resultSet = create.getGeneratedKeys();) {
+    // resultSet.next();
+    // computer.setId(resultSet.getLong(1));
+    // LOGGER.info(Utils.ENTITY_CREATED_SUCCESS);
+    //
+    // }
+    // }
+    // return computer;
+    // } catch (SQLException | SQLMappingException e) {
+    // throw new DAOException(e.getMessage(), e);
+    // }
 
   }
 
@@ -72,38 +111,14 @@ public class ComputerDAOImpl implements ComputerDAO {
       throw new DAOException(DAOException.NEGATIVE_OR_NULL_ID);
     }
 
-    try (PreparedStatement findById = connection
-        .prepareStatement(ComputerDAOQueries.RIGHT_JOIN_WITH_ID);) {
-
-      findById.setLong(1, id);
-      try (ResultSet resultSet = findById.executeQuery();) {
-        List<Computer> computers = ComputerMapper
-            .getComputerListFromResultSet(Utils.convertResultSetToList(resultSet));
-        if (computers.isEmpty()) {
-          throw new DAOException(DAOException.ENTITY_NOT_FOUND);
-        }
-        return computers.get(0);
-      }
-    } catch (SQLException e) {
-      throw new DAOException(e.getMessage(), e);
-    }
+    return cbf.create(em, Computer.class).from(Computer.class, "computer").where("computer.id")
+        .eq(id).getSingleResult();
   }
 
   @Override
   public List<Computer> findAll(Connection connection) throws DAOException {
+    return cbf.create(em, Computer.class).getResultList();
 
-    try (PreparedStatement findAll = connection.prepareStatement(ComputerDAOQueries.RIGHT_JOIN);
-        ResultSet result = findAll.executeQuery();) {
-
-      List<Computer> computers = ComputerMapper
-          .getComputerListFromResultSet(Utils.convertResultSetToList(result));
-      if (computers.isEmpty()) {
-        throw new DAOException(DAOException.EMPTY_TABLE);
-      }
-      return computers;
-    } catch (SQLException e) {
-      throw new DAOException(e.getMessage(), e);
-    }
   }
 
   @Override
@@ -140,23 +155,15 @@ public class ComputerDAOImpl implements ComputerDAO {
           PageException.NEGATIVE_NUMBERS_OF_ELEMENTS + page.getElementsByPage());
     }
 
-    try (PreparedStatement findByPageWithFilter = connection
-        .prepareStatement(ComputerDAOQueries.SELECT_WHERE_NAME_CONTAINS_SEQUENCE_BY_PAGE);) {
-
-      findByPageWithFilter.setString(1, '%' + page.getFilter() + '%');
-      findByPageWithFilter.setInt(2, page.getElementsByPage());
-      findByPageWithFilter.setInt(3, page.getElementsByPage() * page.getCurrentPage());
-      try (ResultSet result = findByPageWithFilter.executeQuery();) {
-        List<Computer> computers = ComputerMapper
-            .getComputerListFromResultSet(Utils.convertResultSetToList(result));
-        if (computers.isEmpty()) {
-          throw new PageException(PageException.EMPTY_SET);
-        }
-        return computers;
-      }
-    } catch (SQLException e) {
-      throw new DAOException(e.getMessage(), e);
-    }
+    LOGGER.error(page.toString());
+    List<Computer> computerByPage = cbf.create(em, Computer.class).from(Computer.class, "computer")
+//         .where("computer.name").like()..value(page.getFilter()).noEscape()
+        .whereExpression("computer.name LIKE '%" + page.getFilter() + "%'")
+        .setFirstResult(page.getCurrentPage())
+        .setMaxResults(page.getElementsByPage())
+        .getResultList();
+    LOGGER.error("Computer size : " + computerByPage.size());
+    return computerByPage;
   }
 
   @Override
@@ -197,15 +204,17 @@ public class ComputerDAOImpl implements ComputerDAO {
       throw new DAOException(DAOException.NEGATIVE_OR_NULL_ID);
     }
 
-    String deleteComputerQuery = "delete from computer where id=" + id;
-    try (Statement statement = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
-        ResultSet.CONCUR_UPDATABLE)) {
-      boolean isDeleted = statement.executeUpdate(deleteComputerQuery) == 1;
-      LOGGER.info(
-          "Computer with id :" + id + (isDeleted ? " deleted successfuly." : " not deleted."));
-    } catch (SQLException e) {
-      throw new DAOException(e.getMessage(), e);
-    }
+    cbf.delete(em, Computer.class, "computer").where("computer.id").eq(id).executeUpdate();
+
+    // String deleteComputerQuery = "delete from computer where id=" + id;
+    // try (Statement statement = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+    // ResultSet.CONCUR_UPDATABLE)) {
+    // boolean isDeleted = statement.executeUpdate(deleteComputerQuery) == 1;
+    // LOGGER.info(
+    // "Computer with id :" + id + (isDeleted ? " deleted successfuly." : " not deleted."));
+    // } catch (SQLException e) {
+    // throw new DAOException(e.getMessage(), e);
+    // }
   }
 
   @Override
@@ -221,19 +230,36 @@ public class ComputerDAOImpl implements ComputerDAO {
     if (computer == null || computer.getId() == 0) {
       throw new DAOException(DAOException.ENTITY_NULL_OR_NOT_IN_DB);
     }
-    try (PreparedStatement create = connection
-        .prepareStatement(ComputerDAOQueries.UPDATE_COMPUTER);) {
+    
+//    em.find(arg0, arg1)
+    em.getTransaction().begin();
+    em.merge(computer);
+    
+    em.getTransaction().commit();
+//    UpdateCriteriaBuilder<Computer> cb = cbf.update(em, Computer.class, "computer")
+//        .set(ComputerColumn.NAME.toString(), computer.getName())
+//        .set(ComputerColumn.INTRODUCED_DATE.toString(), computer.getIntroduced())
+//        .set(ComputerColumn.DISCONTINUED_DATE.toString(), computer.getDiscontinued())
+//        .where(ComputerColumn.ID.toString()).eq(computer.getId());
+//    cb.executeUpdate();
+    return computer;
 
-      boolean rowIsUpdated = ComputerMapper.insertComputerIntoDatabaseWithUpdate(create, computer,
-          true);
-      LOGGER.info("Row with " + computer.getId() + " updated"
-          + (rowIsUpdated ? " successfully" : " failed"));
-      return computer;
+    // from(Person.class, "p").where("p").eqExpression("cat.owner")
+    // .select("CONCAT(p.name, '''s cat')").end().where("name").isNull();
 
-    } catch (SQLException | SQLMappingException e) {
-      LOGGER.error(e.getMessage());
-      throw new DAOException(e.getMessage(), e);
-    }
+    // try (PreparedStatement create = connection
+    // .prepareStatement(ComputerDAOQueries.UPDATE_COMPUTER);) {
+    //
+    // boolean rowIsUpdated = ComputerMapper.insertComputerIntoDatabaseWithUpdate(create, computer,
+    // true);
+    // LOGGER.info("Row with " + computer.getId() + " updated"
+    // + (rowIsUpdated ? " successfully" : " failed"));
+    // return computer;
+    //
+    // } catch (SQLException | SQLMappingException e) {
+    // LOGGER.error(e.getMessage());
+    // throw new DAOException(e.getMessage(), e);
+    // }
   }
 
   @Override
@@ -268,14 +294,13 @@ public class ComputerDAOImpl implements ComputerDAO {
         .executeQuery(computersToDeleteQuery);) {
 
       while (computersToDeleteRs.next()) {
-        LOGGER.info(
-            "Computer with id :" + computersToDeleteRs.getLong(ComputerColumn.ID.toString())
-                + " updated successfuly.");
+        LOGGER.info("Computer with id :" + computersToDeleteRs.getLong(ComputerColumn.ID.toString())
+            + " updated successfuly.");
         computersToDeleteRs.updateNull(ComputerColumn.ID_COMPANY.toString());
         computersToDeleteRs.updateRow();
         if (remove) {
-          LOGGER.info(
-              "Computer with id :" + computersToDeleteRs.getLong(ComputerColumn.ID.toString())
+          LOGGER
+              .info("Computer with id :" + computersToDeleteRs.getLong(ComputerColumn.ID.toString())
                   + " deleted successfully");
           computersToDeleteRs.deleteRow();
         }
@@ -286,8 +311,8 @@ public class ComputerDAOImpl implements ComputerDAO {
   }
 
   @Override
-  public void unreferenceOrRemoveCompanyForeignKey(Connection connection, Company company, boolean remove)
-      throws DAOException {
+  public void unreferenceOrRemoveCompanyForeignKey(Connection connection, Company company,
+      boolean remove) throws DAOException {
     if (company == null) {
       throw new DAOException(DAOException.ENTITY_NULL_OR_ALREADY_EXIST);
     }

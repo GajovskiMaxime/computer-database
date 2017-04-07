@@ -7,16 +7,22 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
 
+import com.blazebit.persistence.CriteriaBuilder;
+import com.blazebit.persistence.CriteriaBuilderFactory;
 import com.excilys.mgajovski.computer_database.dao.CompanyDAOQueries;
 import com.excilys.mgajovski.computer_database.dao.Utils;
 import com.excilys.mgajovski.computer_database.dao.interfaces.CompanyDAO;
 import com.excilys.mgajovski.computer_database.dao.mappers.CompanyMapper;
 import com.excilys.mgajovski.computer_database.entities.Company;
+import com.excilys.mgajovski.computer_database.entities.Computer;
 import com.excilys.mgajovski.computer_database.exceptions.DAOException;
 import com.excilys.mgajovski.computer_database.exceptions.PageException;
 import com.excilys.mgajovski.computer_database.exceptions.SQLMappingException;
@@ -32,6 +38,12 @@ import com.excilys.mgajovski.computer_database.pager.Page;
 public class CompanyDAOImpl implements CompanyDAO {
   private static final Logger LOGGER = LoggerFactory.getLogger(CompanyDAOImpl.class);
 
+  
+  @Autowired
+  EntityManager em;
+  
+  @Autowired
+  CriteriaBuilderFactory cbf;
   
   public CompanyDAOImpl() {  
   }
@@ -86,21 +98,21 @@ public class CompanyDAOImpl implements CompanyDAO {
 
   @Override
   public List<Company> findAll(Connection connection) throws DAOException {
-    
-    try (PreparedStatement findAll = connection
-            .prepareStatement(CompanyDAOQueries.SELECT_ALL_COMPANIES);) {
-      try (ResultSet result = findAll.executeQuery()) {
-
-        List<Company> companies = CompanyMapper
-            .getCompanyListFromResultSet(Utils.convertResultSetToList(result));
-        if (companies.isEmpty()) {
-          throw new DAOException(DAOException.EMPTY_TABLE);
-        }
-        return companies;
-      }
-    } catch (SQLException e) {
-      throw new DAOException(e.getMessage(), e);
-    }
+    return cbf.create(em, Company.class).getResultList();
+//    try (PreparedStatement findAll = connection
+//            .prepareStatement(CompanyDAOQueries.SELECT_ALL_COMPANIES);) {
+//      try (ResultSet result = findAll.executeQuery()) {
+//
+//        List<Company> companies = CompanyMapper
+//            .getCompanyListFromResultSet(Utils.convertResultSetToList(result));
+//        if (companies.isEmpty()) {
+//          throw new DAOException(DAOException.EMPTY_TABLE);
+//        }
+//        return companies;
+//      }
+//    } catch (SQLException e) {
+//      throw new DAOException(e.getMessage(), e);
+//    }
   }
 
 

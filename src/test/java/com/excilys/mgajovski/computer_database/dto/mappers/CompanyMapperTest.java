@@ -13,7 +13,7 @@ public class CompanyMapperTest {
     
     @Test(expected=IllegalArgumentException.class)
     public void transformToDTOWithNull(){
-      CompanyMapper.transformToDTO(null);
+      CompanyDTOMapperImpl.transformToDTO(null);
     }
     
     @Test(expected=IllegalArgumentException.class)
@@ -23,7 +23,7 @@ public class CompanyMapperTest {
                 .id(-40)
                 .build();
         
-        CompanyMapper.transformToDTO(company);
+        CompanyDTOMapperImpl.transformToDTO(company);
     }
     
     @Test
@@ -37,7 +37,7 @@ public class CompanyMapperTest {
                 .name(companyName)
                 .build();
         
-        CompanyDTOImpl companyDTO = CompanyMapper.transformToDTO(company);
+        CompanyDTOImpl companyDTO = CompanyDTOMapperImpl.transformToDTO(company);
         assert(companyDTO.getId() == companyId);
         assert(companyDTO.getName().equals(companyName));
     }

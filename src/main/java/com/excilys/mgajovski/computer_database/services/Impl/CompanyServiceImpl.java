@@ -39,7 +39,7 @@ public class CompanyServiceImpl implements CompanyService {
   
   @Override
   public Company find(long id) throws ServiceException {
-
+    
     Company company = null;
     Connection connection = null;
     try {

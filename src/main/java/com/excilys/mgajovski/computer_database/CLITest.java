@@ -4,12 +4,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import com.excilys.mgajovski.computer_database.cli.views.MainView;
-import com.excilys.mgajovski.computer_database.entities.Company;
-import com.excilys.mgajovski.computer_database.exceptions.DAOException;
-import com.excilys.mgajovski.computer_database.pager.Page;
-import com.excilys.mgajovski.computer_database.services.CompanyService;
-import com.excilys.mgajovski.computer_database.spring.BeanConfig;
+//import com.excilys.mgajovski.computer_database.cli.views.MainView;
+//import com.excilys.mgajovski.computer_database.entities.Company;
+//import com.excilys.mgajovski.computer_database.entities.Computer;
+//import com.excilys.mgajovski.computer_database.exceptions.DAOException;
+//import com.excilys.mgajovski.computer_database.exceptions.ServiceException;
+//import com.excilys.mgajovski.computer_database.pager.Page;
+//import com.excilys.mgajovski.computer_database.services.CompanyService;
+//import com.excilys.mgajovski.computer_database.services.ComputerService;
+//import com.excilys.mgajovski.computer_database.spring.BeanConfig;
 
 /**
  * @author Gajovski Maxime
@@ -17,14 +20,22 @@ import com.excilys.mgajovski.computer_database.spring.BeanConfig;
  */
 public class CLITest {
   
-  @Autowired
-  public static MainView mainView;  
+//  @Autowired
+//  public static MainView mainView;  
   
   public static void main(String[] args) {
-      ApplicationContext context = new AnnotationConfigApplicationContext(BeanConfig.class);
-      CompanyService  service = context.getBean(CompanyService.class);  
-      MainView mainView = context.getBean(MainView.class);  
-      mainView.displayMenu();
+//      ApplicationContext context = new AnnotationConfigApplicationContext(BeanConfig.class);
+//      ComputerService  service = context.getBean(ComputerService.class);  
+//      try {
+//        for(Computer computer : service.findAll()){
+//          System.out.println(computer.toString());
+//        }
+//      } catch (ServiceException e) {
+//        // TODO Auto-generated catch block
+//        e.printStackTrace();
+//      }
+      //      MainView mainView = context.getBean(MainView.class);  
+//      mainView.displayMenu();
 //        try {
 //            service.delete(20);
 //

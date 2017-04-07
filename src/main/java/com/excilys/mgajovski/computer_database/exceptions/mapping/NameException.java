@@ -1,5 +1,7 @@
 package com.excilys.mgajovski.computer_database.exceptions.mapping;
 
+import com.excilys.mgajovski.computer_database.utils.ErrorTags;
+
 /**
  * @author Gajovski Maxime
  * @date 3 mars 2017
@@ -19,6 +21,14 @@ public class NameException extends DTOMapperException {
   }
 
 
+  public NameException(ErrorTags errTag, Throwable error) {
+    super(errTag.toString(), error);
+  }
+  
+  public NameException(ErrorTags errTag) {
+    super(errTag.toString());
+  }
+  
   /**
    * Constructor with error and message field.
    * @param message : the error.

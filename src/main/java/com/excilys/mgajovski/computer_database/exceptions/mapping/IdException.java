@@ -18,6 +18,7 @@ public class IdException extends DTOMapperException {
       super();
   }
 
+  
   /**
    * Constructor with error and message field.
    * @param message : the error message.

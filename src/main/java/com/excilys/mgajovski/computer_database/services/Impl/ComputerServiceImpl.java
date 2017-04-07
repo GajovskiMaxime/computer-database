@@ -209,7 +209,28 @@ public class ComputerServiceImpl implements ComputerService {
       }
     }
   }
+  
+  @Override
+  public void delete(List<Long> ids) throws ServiceException {
+    Connection connection = null;
+    try {
+      connection = databaseManager.getConnection();
+      for(Long id : ids){
+        computerDAO.delete(connection, id);
+      }
+      databaseManager.commit(connection);
+    } catch (DAOException | SQLException exception) {
+      throw new ServiceException(exception);
+    } finally {
+      try {
+        databaseManager.closeConnection(connection);
+      } catch (SQLException exception) {
+        throw new ServiceException(exception);
+      }
+    }
+  }
 
+  
   @Override
   public int sizeOfFilteredQuery(String sequence) throws ServiceException {
     

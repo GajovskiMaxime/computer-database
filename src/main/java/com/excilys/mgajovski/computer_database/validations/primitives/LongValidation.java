@@ -1,6 +1,7 @@
 package com.excilys.mgajovski.computer_database.validations.primitives;
 
 import com.excilys.mgajovski.computer_database.exceptions.mapping.IdException;
+import com.excilys.mgajovski.computer_database.utils.ErrorTags;
 
 /**
  * @author Gajovski Maxime
@@ -8,44 +9,53 @@ import com.excilys.mgajovski.computer_database.exceptions.mapping.IdException;
  */
 public final class LongValidation {
 
-    private static final String ID_STRING_NULL= "Id seems to be null.";
-    private static final String ID_INITIALIZED = "Id seems already initialized.";
-    private static final String ID_NOT_INITIALIZED = "Id isn't initialized.";
-    private static final String ID_STRING_IS_NOT_A_LONG = "Id sring is not a long.";
+  public static ErrorTags idIsNotInitialized(long id) {
+    if (id != 0) {
+      return ErrorTags.ID_IS_INIT;
+    }
+    return ErrorTags.SUCCESS;
+  }
 
-    /**
-     * This method looks if an id is already initialized in database.
-     * @param id : the long id to test.
-     * @return true if the id is not initialized, else otherwise.
-     * @throws IdException if the id is already initialized.
-     */
-    public static boolean idIsNotInitialized(long id) throws IdException {
-        if (id != 0) {
-            throw new IdException(ID_INITIALIZED);
-        }
-        return true;
+  public static ErrorTags idIsInitialized(long id) {
+    if (id <= 0) {
+      return ErrorTags.ID_IS_NOT_INIT;
     }
+    return ErrorTags.SUCCESS;
+  }
+
+  public static ErrorTags isAnInitializedId(String id)  {
+    if (id == null) {
+      return ErrorTags.ID_IS_NULL;
+    }
+    if (id.isEmpty()) {
+      return ErrorTags.ID_IS_EMPTY;
+    }
+    long longId;
     
-    public static boolean idIsInitialized(long id) throws IdException{
-        if(id <= 0){
-            throw new IdException(ID_NOT_INITIALIZED);
-        }
-        return true;
+    try {
+      longId = Long.parseUnsignedLong(id);
+    } catch (NumberFormatException e) {
+      return ErrorTags.ID_IS_NaN;
     }
-    
-    public static long parseIdStringToLong(String id) throws IdException{
-        if(id == null){
-            throw new IdException(ID_STRING_NULL);
-        }
-        try{
-            return Long.parseLong(id);
-        } catch(NumberFormatException e) {
-            throw new IdException(ID_STRING_IS_NOT_A_LONG);
-        }
-    }
-    
-    public static boolean isAnInitializedId(String id) throws IdException{
-        long longId = parseIdStringToLong(id);
-        return idIsInitialized(longId);
-    }
+    return idIsInitialized(longId);
+  }
+  
+//  public static ErrorTags companyIdIsSelected(String id){
+//    if (id == null) {
+//      return ErrorTags.ID_IS_NULL;
+//    }
+//    if (id.isEmpty()) {
+//      return ErrorTags.ID_IS_EMPTY;
+//    }
+//    long longId;
+//    
+//    try {
+//      longId = Long.parseUnsignedLong(id);
+//    } catch (NumberFormatException e) {
+//      return ErrorTags.ID_IS_NaN;
+//    }
+//    if(longId == 0){
+//      return 
+//    }
+//  }
 }

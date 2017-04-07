@@ -7,6 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import com.excilys.mgajovski.computer_database.dto.DTO;
+
 
 /**
  * @author Gajovski Maxime
@@ -24,7 +26,7 @@ public class Page<K> {
   protected int maxPage;
   private int resultFromQuery;
 
-  protected List<K> elements;
+  protected List<DTO<K>> elements;
 
   /**
    * Public constructor for PageDTO.
@@ -33,12 +35,12 @@ public class Page<K> {
 
   }
 
-  public List<K> getElements() {
+  public List<DTO<K>> getElements() {
     return elements;
   }
 
 
-  public void setElements(List<K> elements) {
+  public void setElements(List<DTO<K>> elements) {
     this.elements = elements;
   }
 

@@ -67,16 +67,16 @@ public class ComputerMapper {
         try {
             createPS.setString(1, computer.getName());
 
-            if (computer.getIntroducedDate() == null) {
+            if (computer.getIntroduced() == null) {
                 createPS.setNull(2, Types.DATE);
             } else {
-                createPS.setDate(2, Date.valueOf(computer.getIntroducedDate()));
+                createPS.setDate(2, Date.valueOf(computer.getIntroduced()));
             }
 
-            if (computer.getDiscontinuedDate() == null) {
+            if (computer.getDiscontinued() == null) {
                 createPS.setNull(3, Types.DATE);
             } else {
-                createPS.setDate(3, Date.valueOf(computer.getDiscontinuedDate()));
+                createPS.setDate(3, Date.valueOf(computer.getDiscontinued()));
             }
             if (computer.getCompany() == null) {
                 createPS.setNull(4, Types.BIGINT);

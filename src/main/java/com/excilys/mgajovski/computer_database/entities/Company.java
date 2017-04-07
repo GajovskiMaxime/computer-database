@@ -1,14 +1,26 @@
 package com.excilys.mgajovski.computer_database.entities;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 /**
  * Company entity.
  * This is the representation of a company.
  * @author Gajovski Maxime
  * @date 20 févr. 2017
  */
+@Entity
+@Table(name ="company")
 public class Company {
-
+    
+    @Id
+    @GeneratedValue
     private long id;
+    
+    @Column(name="name")
     private String name;
 
     /**

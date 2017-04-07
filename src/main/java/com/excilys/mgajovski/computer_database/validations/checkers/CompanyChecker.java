@@ -1,8 +1,13 @@
 package com.excilys.mgajovski.computer_database.validations.checkers;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.excilys.mgajovski.computer_database.dto.impl.CompanyDTOImpl;
 import com.excilys.mgajovski.computer_database.exceptions.mapping.IdException;
 import com.excilys.mgajovski.computer_database.exceptions.mapping.NameException;
+import com.excilys.mgajovski.computer_database.utils.ErrorTags;
+import com.excilys.mgajovski.computer_database.utils.SpringPaths;
 import com.excilys.mgajovski.computer_database.validations.primitives.LongValidation;
 import com.excilys.mgajovski.computer_database.validations.primitives.StringValidation;
 
@@ -19,9 +24,15 @@ public final class CompanyChecker {
      * @throws IdException : if the company id field is not correctly fulfilled.
      * @throws NameException : if the company name field is not correctly fulfilled.
      */
-    public static boolean dtoIsValid(CompanyDTOImpl companyDTO) throws IdException, NameException {
-
-        return LongValidation.idIsNotInitialized(companyDTO.getId())
-                && StringValidation.hasValidName(companyDTO.getName());
-    }
+//    public static boolean dtoIsValid(CompanyDTOImpl companyDTO) throws IdException, NameException {
+//        
+//      Map<SpringPaths, ErrorTags> errorMap = new HashMap<>();
+//
+//        return LongValidation.idIsNotInitialized(companyDTO.getId())
+//                && StringValidation.hasValidName(companyDTO.getName());
+//    }
+//    
+//   public static boolean companyDTOIsNotNull(CompanyDTOImpl companyDTO){
+//     return companyDTO != null;
+//   }
 }

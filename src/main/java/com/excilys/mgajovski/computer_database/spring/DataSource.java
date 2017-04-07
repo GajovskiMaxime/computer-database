@@ -1,12 +1,6 @@
 package com.excilys.mgajovski.computer_database.spring;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.Properties;
 
-import javax.annotation.PostConstruct;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +9,6 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.stereotype.Repository;
 
 import com.excilys.mgajovski.computer_database.dao.DatabaseProperties;
-import com.excilys.mgajovski.computer_database.dao.DatabaseTags;
 
 
 /**

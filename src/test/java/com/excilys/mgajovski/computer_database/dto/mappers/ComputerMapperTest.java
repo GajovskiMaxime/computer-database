@@ -16,7 +16,7 @@ public class ComputerMapperTest {
     
     @Test(expected=IllegalArgumentException.class)
     public void transformToDTOWithNull(){
-      ComputerMapper.transformToDTO(null);
+      ComputerDTOMapperImpl.transformToDTO(null);
     }
     
     @Test(expected=IllegalArgumentException.class)
@@ -27,7 +27,7 @@ public class ComputerMapperTest {
                 .id(computerId)
                 .build();
         
-        ComputerMapper.transformToDTO(computer);
+        ComputerDTOMapperImpl.transformToDTO(computer);
     }
     
     @Test
@@ -47,7 +47,7 @@ public class ComputerMapperTest {
                 .discontinued(discontinued)
                 .build();    
         
-        ComputerDTOImpl computerDTO = ComputerMapper.transformToDTO(computer);
+        ComputerDTOImpl computerDTO = ComputerDTOMapperImpl.transformToDTO(computer);
         
         assert(computerDTO != null);
         
@@ -87,7 +87,7 @@ public class ComputerMapperTest {
                 .company(company)
                 .build();    
         
-        ComputerDTOImpl computerDTO = ComputerMapper.transformToDTO(computer);
+        ComputerDTOImpl computerDTO = ComputerDTOMapperImpl.transformToDTO(computer);
         
         assert(computerDTO != null);
         
@@ -128,7 +128,7 @@ public class ComputerMapperTest {
                 .company(company)
                 .build();    
         
-        ComputerDTOImpl computerDTO = ComputerMapper.transformToDTO(computer);
+        ComputerDTOImpl computerDTO = ComputerDTOMapperImpl.transformToDTO(computer);
         
         assert(computerDTO != null);
         

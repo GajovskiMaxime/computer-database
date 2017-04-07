@@ -1,15 +1,21 @@
 package com.excilys.mgajovski.computer_database.dto.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 /**
  * @author Gajovski Maxime
  * @date 3 mars 2017 DTO class for computer entity.
  */
-public class ComputerDTOImpl {
+@Component
+public class ComputerDTOImpl implements ComputerDTO {
 
-    private long computerId;
-    private String computerName;
+    private long id;
+    private String name;
     private String introduced;
     private String discontinued;
+    
+    @Autowired
     private CompanyDTOImpl company;
     
     public ComputerDTOImpl(){
@@ -28,20 +34,20 @@ public class ComputerDTOImpl {
         this.company = null;
     }
     
-    public long getComputerId() {
-        return computerId;
+    public long getId() {
+        return id;
     }
 
-    public void setComputerId(long computerId) {
-        this.computerId = computerId;
+    public void setId(long computerId) {
+        this.id = computerId;
     }
 
-    public String getComputerName() {
-        return computerName;
+    public String getName() {
+        return name;
     }
 
-    public void setComputerName(String computerName) {
-        this.computerName = computerName;
+    public void setName(String computerName) {
+        this.name = computerName;
     }
 
     public String getIntroduced() {
@@ -64,8 +70,8 @@ public class ComputerDTOImpl {
     @Override
     public String toString() {
         
-        return  "computerId : " + computerId + "\n" +
-                "computerName : " + computerName + "\n" +
+        return  "computerId : " + id + "\n" +
+                "computerName : " + name + "\n" +
                 "introduced date : " + introduced + "\n" +
                 "discontinued date : " + discontinued + "\n" +
                 "companyId : " + company.getId() + "\n" + 

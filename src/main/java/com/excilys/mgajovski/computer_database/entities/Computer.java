@@ -2,6 +2,16 @@ package com.excilys.mgajovski.computer_database.entities;
 
 import java.time.LocalDate;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
 import com.excilys.mgajovski.computer_database.utils.Utils;
 
 /**
@@ -11,12 +21,23 @@ import com.excilys.mgajovski.computer_database.utils.Utils;
  * @date 20 févr. 2017
  * @see IComputer
  */
+@Entity
+@Table(name="computer")
 public class Computer {
-
+    
+    @Id @GeneratedValue
     private long id;
+    
+    @Column(name="name")
     private String name;
-    private LocalDate introducedDate;
-    private LocalDate discontinuedDate;
+    
+    @Column(name="introduced")
+    private LocalDate introduced;
+    
+    @Column(name="discontinued")
+    private LocalDate discontinued;
+    
+    @ManyToOne
     private Company company;
 
     /**
@@ -43,20 +64,20 @@ public class Computer {
         this.name = name;
     }
 
-    public LocalDate getIntroducedDate() {
-        return introducedDate;
+    public LocalDate getIntroduced() {
+        return introduced;
     }
 
-    public void setIntroducedDate(LocalDate introducedDate) {
-        this.introducedDate = introducedDate;
+    public void setIntroduced(LocalDate introducedDate) {
+        this.introduced = introducedDate;
     }
 
-    public LocalDate getDiscontinuedDate() {
-        return discontinuedDate;
+    public LocalDate getDiscontinued() {
+        return discontinued;
     }
 
-    public void setDiscontinuedDate(LocalDate discontinued) {
-        this.discontinuedDate = discontinued;
+    public void setDiscontinued(LocalDate discontinued) {
+        this.discontinued = discontinued;
     }
 
     public Company getCompany() {
@@ -97,8 +118,8 @@ public class Computer {
     public String toString() {
         return "Class : " + this.getClass().getSimpleName() + "\n" + "\t" + "id : " + getId() + "\n" + "\t" + "name : "
                 + getName() + "\n" + "\t" + "introduced date : "
-                + (getIntroducedDate() == null ? Utils.UNDEFINED : getIntroducedDate()) + "\n" + "\t"
-                + "discontinued date : " + (getDiscontinuedDate() == null ? Utils.UNDEFINED : getDiscontinuedDate())
+                + (getIntroduced() == null ? Utils.UNDEFINED : getIntroduced()) + "\n" + "\t"
+                + "discontinued date : " + (getDiscontinued() == null ? Utils.UNDEFINED : getDiscontinued())
                 + "\n" + "\t" + "company name : " + (getCompany() == null ? Utils.UNDEFINED : getCompany().getName())
                 + "\n";
     }
@@ -161,7 +182,7 @@ public class Computer {
          * @return Computer.Builder
          */
         public Builder introduced(LocalDate introducedDate) {
-            computer.introducedDate = introducedDate;
+            computer.introduced = introducedDate;
             return this;
         }
 
@@ -171,7 +192,7 @@ public class Computer {
          * @return Computer.Builder
          */
         public Builder discontinued(LocalDate discontinuedDate) {
-            computer.discontinuedDate = discontinuedDate;
+            computer.discontinued = discontinuedDate;
             return this;
         }
 

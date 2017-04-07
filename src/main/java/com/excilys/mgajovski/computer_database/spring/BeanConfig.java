@@ -1,11 +1,7 @@
 package com.excilys.mgajovski.computer_database.spring;
 
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-
-import com.excilys.mgajovski.computer_database.services.CompanyService;
-import com.excilys.mgajovski.computer_database.services.Service;
 
 /**
  * @author	Gajovski Maxime
@@ -14,10 +10,5 @@ import com.excilys.mgajovski.computer_database.services.Service;
 @Configuration
 @ComponentScan("com.excilys.mgajovski.computer_database")
 public class BeanConfig {
-//  
-//  @Bean
-//  public CompanyService getCompanyService(){
-//    return Service.COMPANY;
-//  }
-//  
+
 }

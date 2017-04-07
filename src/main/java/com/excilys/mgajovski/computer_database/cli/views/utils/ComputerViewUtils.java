@@ -42,8 +42,8 @@ public final class ComputerViewUtils {
             System.out.printf(COMPUTER_FORMAT_LINE,
                     computer.getId(),
                     computer.getName(),
-                    computer.getIntroducedDate() == null ? "" : computer.getIntroducedDate(),
-                    computer.getDiscontinuedDate() == null ? "" : computer.getDiscontinuedDate(),
+                    computer.getIntroduced() == null ? "" : computer.getIntroduced(),
+                    computer.getDiscontinued() == null ? "" : computer.getDiscontinued(),
                     computer.getCompany() == null ? "" : computer.getCompany().getName());
         }
     }

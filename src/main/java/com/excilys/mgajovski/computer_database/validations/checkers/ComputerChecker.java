@@ -1,9 +1,11 @@
 package com.excilys.mgajovski.computer_database.validations.checkers;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.excilys.mgajovski.computer_database.dto.impl.ComputerDTOImpl;
-import com.excilys.mgajovski.computer_database.exceptions.mapping.DateException;
-import com.excilys.mgajovski.computer_database.exceptions.mapping.IdException;
-import com.excilys.mgajovski.computer_database.exceptions.mapping.NameException;
+import com.excilys.mgajovski.computer_database.utils.ErrorTags;
+import com.excilys.mgajovski.computer_database.utils.SpringPaths;
 import com.excilys.mgajovski.computer_database.validations.primitives.DateValidation;
 import com.excilys.mgajovski.computer_database.validations.primitives.LongValidation;
 import com.excilys.mgajovski.computer_database.validations.primitives.StringValidation;
@@ -15,31 +17,27 @@ import com.excilys.mgajovski.computer_database.validations.primitives.StringVali
 
 public final class ComputerChecker {
 
-    /**
-     * This method looks all computerDTO fields and return if they're all
-     * correctly fulfilled.
-     * 
-     * @param computerDTO
-     *            : the corresponding DTO for computer entity.
-     * @return true if all fields are correctly fulfilled, false otherwise.
-     * @throws IdException
-     *             : if the computer id field is not correctly fulfilled.
-     * @throws NameException
-     *             : if the computer name field is not correctly fulfilled.
-     * @throws DateException
-     *             : if the computer introduced & discontinued fields are not
-     *             correctly fulfilled.
-     */
-    public static boolean dtoIsValidWithIdInit(ComputerDTOImpl computerDTO, boolean idIsInit)
-            throws IdException, NameException, DateException {
+  public static Map<SpringPaths, ErrorTags> dtoIsValidWithIdInit(ComputerDTOImpl computerDTO,
+      boolean idIsInit) {
 
-        boolean allDtoFieldsWithoutIdAreOkay = StringValidation.hasValidName(computerDTO.getComputerName())
-                && DateValidation.formatIsValid(computerDTO.getIntroduced())
-                && DateValidation.formatIsValid(computerDTO.getDiscontinued())
-                && DateValidation.datesAreInGoodTimeOrder(computerDTO.getIntroduced(), computerDTO.getDiscontinued());
-        boolean dtoIdIsOkay = idIsInit ? LongValidation.idIsInitialized(computerDTO.getComputerId())
-                : LongValidation.idIsNotInitialized(computerDTO.getComputerId());
+    Map<SpringPaths, ErrorTags> errorMap = new HashMap<>();
 
-        return allDtoFieldsWithoutIdAreOkay && dtoIdIsOkay;
+//    if (idIsInit) {
+//      errorMap.put(SpringPaths.ID, LongValidation.idIsInitialized(computerDTO.getId()));
+//    } else {
+//      errorMap.put(SpringPaths.ID, LongValidation.idIsNotInitialized(computerDTO.getId()));
+//    }
+
+    errorMap.put(SpringPaths.NAME, StringValidation.hasValidName(computerDTO.getName()));
+    errorMap.put(SpringPaths.INTRODUCED, DateValidation.formatIsValid(computerDTO.getIntroduced()));
+    errorMap.put(SpringPaths.DISCONTINUED,
+        DateValidation.formatIsValid(computerDTO.getDiscontinued()));
+    if (errorMap.get(SpringPaths.INTRODUCED) == ErrorTags.SUCCESS
+        && errorMap.get(SpringPaths.DISCONTINUED) == ErrorTags.SUCCESS) {
+      errorMap.put(SpringPaths.DISCONTINUED, DateValidation
+          .datesAreInGoodTimeOrder(computerDTO.getIntroduced(), computerDTO.getDiscontinued()));
     }
+//    errorMap.put(SpringPaths., value)
+    return errorMap;
+  }
 }
